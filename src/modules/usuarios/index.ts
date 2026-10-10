@@ -5,6 +5,8 @@
  */
 export { entrar, sair, obterUsuarioAtual, exigirPapel, autorizarApi } from "./auth/service";
 export { LoginSchema } from "./auth/schema";
+export { caminhoInternoSeguro, destinoAposLogin } from "./auth/redirecionamento";
+export type { AreaEscolhida } from "./auth/redirecionamento";
 export type { Login } from "./auth/schema";
 export { buscarUsuarioPorId } from "./perfis/service";
 export { papelAtende, paginaInicialDoPapel } from "./perfis/permissoes";

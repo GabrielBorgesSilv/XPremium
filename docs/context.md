@@ -85,6 +85,17 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Senha com scrypt (`node:crypto`) | bcrypt/argon2 (dependência nova) | Seguro e nativo do Node. |
 | 10/10/2026 | Seed: 1 assessor + 2 usuários (`@hubxp.test`), senha em `SENHA_DEMO`, ids determinísticos; sem admin por ora | Senha fixa no README; criar admin | Dois usuários permitem testar que um não vê o outro; senha trocável se a app for publicada. |
 | 10/10/2026 | Branch `feature/m1-contrato-auth` só com o contrato; tela de login na `feature/m1-login` | Contrato + tela juntos | PR menor; a equipe já programa contra a interface. |
+| 10/10/2026 | Tela de login em `/login`, com o visual do `prototipo.html` num CSS module próprio | Formulário na home `/` | Não altera a home nem o `globals.css` do protótipo de UI (outra pessoa). |
+| 10/10/2026 | "Sou assessor"/"Sou cliente" escolhem só a área de destino; "Sou assessor" sem o papel entra e vai para `/cliente` com aviso | Remover os botões | Mantém o protótipo; a permissão continua vindo só da conta. |
+| 10/10/2026 | Login só por e-mail; sem CPF | "E-mail ou CPF" do protótipo; CPF opcional | Inicialmente pedido CPF, depois retirado: CPF gerado no seed pode coincidir com um real (LGPD). |
+| 10/10/2026 | E-mail ignora espaços nas pontas e maiúsculas | Recusar e-mail com espaços | Autocompletar do celular costuma incluir espaço. |
+| 10/10/2026 | Falha de login com mensagem genérica ("E-mail ou senha inválidos.") | Mensagens específicas | Não revela quais e-mails têm conta. |
+| 10/10/2026 | Já logado em `/login` → vai para a própria área | Mostrar o formulário | Para trocar de conta, sai primeiro. |
+| 10/10/2026 | Depois do login, volta para a página protegida pedida (`?voltar=`, só caminhos internos); se houver `voltar`, ele vence a área escolhida | Sempre ir para a área escolhida | Quem clicou num link volta para onde queria; caminhos externos são recusados. |
+| 10/10/2026 | `src/proxy.ts` repassa o caminho pedido num cabeçalho interno para o `exigirPapel` | Parâmetro no `exigirPapel` | Ninguém da equipe precisa passar o caminho; layouts não conhecem a subpágina. |
+| 10/10/2026 | Logout como Server Action (`sairAction`); botão no `WorkspaceShell` fica para a branch de menus, combinando com o dono do protótipo | Botão agora | O frontend de sair não existe e o shell é de outra pessoa. |
+| 10/10/2026 | Cadastro (só a conta: etapa 1) e "Esqueci minha senha" (link no console em dev) em branches próprias: `feature/m1-cadastro`, `feature/m1-recuperar-senha` | Tudo na `feature/m1-login`; 4 etapas do cadastro | Etapas 2–4 são a anamnese (módulo cliente); PRs menores. |
+| 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
 ### Processo
 
@@ -95,6 +106,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
 ## Questões em aberto
 
+- Limite de tentativas de login (sem limite no MVP).
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.

@@ -3,16 +3,18 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 
 import { eq } from "drizzle-orm";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 
 import { db } from "@/core/db";
+import { CABECALHO_CAMINHO } from "@/core/requisicao";
 
 import { decidirAcesso, paginaInicialDoPapel } from "../perfis/permissoes";
 import type { Papel, Usuario } from "../perfis/schema";
 import { buscarContaPorEmail, buscarUsuarioPorId } from "../perfis/service";
 import { usuariosSessoes } from "./db";
+import { caminhoInternoSeguro } from "./redirecionamento";
 import type { Login } from "./schema";
 import { verificarSenha } from "./senha";
 
@@ -84,14 +86,20 @@ export const obterUsuarioAtual = cache(async (): Promise<Usuario | null> => {
   return buscarUsuarioPorId(sessao.usuarioId);
 });
 
+/** /login, com ?voltar=<página pedida> quando o proxy informou um caminho interno. */
+async function caminhoDoLogin(): Promise<string> {
+  const voltar = caminhoInternoSeguro((await headers()).get(CABECALHO_CAMINHO));
+  return voltar ? `/login?voltar=${encodeURIComponent(voltar)}` : "/login";
+}
+
 /**
  * Para páginas, layouts e Server Actions: garante o papel mínimo ou redireciona.
- * Sem login → /login. Sem permissão → área inicial do próprio usuário.
+ * Sem login → /login?voltar=<página pedida>. Sem permissão → área inicial do próprio usuário.
  */
 export async function exigirPapel(papel: Papel): Promise<Usuario> {
   const usuario = await obterUsuarioAtual();
   const decisao = decidirAcesso(usuario, papel);
-  if (decisao === "nao-autenticado" || !usuario) redirect("/login");
+  if (decisao === "nao-autenticado" || !usuario) redirect(await caminhoDoLogin());
   if (decisao === "sem-permissao") redirect(paginaInicialDoPapel(usuario.papel));
   return usuario;
 }

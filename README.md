@@ -96,6 +96,18 @@ const usuario = await obterUsuarioAtual();
 - Sessão no banco (`usuarios_sessoes`), cookie `hub_sessao` (httpOnly), válida por 7 dias; logout invalida no servidor. Senhas com scrypt.
 - `entrar(dados)` e `sair()` só funcionam em Server Action ou Route Handler (escrevem cookie).
 
+**Tela de login:** `/login` (visual do `prototipo.html`). Login só por e-mail (espaços nas pontas e maiúsculas são ignorados). "Sou assessor"/"Sou cliente" escolhem a área de destino; a permissão vem sempre do papel da conta. Quem abre uma página protegida sem login vai para `/login?voltar=<página>` e volta para ela depois de entrar (só caminhos internos).
+
+**Botão de sair**, em qualquer componente:
+
+```tsx
+import { sairAction } from "@/app/login/actions";
+
+<form action={sairAction}><button type="submit">Sair</button></form>
+```
+
+`src/proxy.ts` só repassa o caminho da requisição (cabeçalho interno `x-hub-caminho`) para o `exigirPapel` montar o `voltar`; não faz autorização.
+
 **Logins da demo** (criados pelo seed; senha = `SENHA_DEMO` do `.env`):
 
 | E-mail | Papel |
