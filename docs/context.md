@@ -115,6 +115,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Sessão válida por 7 dias | 8 horas; até fechar o navegador | Ninguém precisa relogar durante o hackathon; padrão do guia do Next. |
 | 10/10/2026 | Senha com scrypt (`node:crypto`) | bcrypt/argon2 (dependência nova) | Seguro e nativo do Node. |
 | 10/10/2026 | Seed: 1 assessor + 2 usuários (`@hubxp.test`), senha em `SENHA_DEMO`, ids determinísticos; sem admin por ora | Senha fixa no README; criar admin | Dois usuários permitem testar que um não vê o outro; senha trocável se a app for publicada. |
+| 10/10/2026 | Seed passa a ter **1 assessor + 4 usuários** (`usuario3` e `usuario4` completam as 4 carteiras de demonstração do M4; PR #34) | 1 assessor + 2 usuários | Uma conta por carteira de demonstração do M4. |
 | 10/10/2026 | Branch `feature/m1-contrato-auth` só com o contrato; tela de login na `feature/m1-login` | Contrato + tela juntos | PR menor; a equipe já programa contra a interface. |
 | 10/10/2026 | Tela de login em `/login`, com o visual do `prototipo.html` num CSS module próprio | Formulário na home `/` | Não altera a home nem o `globals.css` do protótipo de UI (outra pessoa). |
 | 10/10/2026 | "Sou assessor"/"Sou cliente" escolhem só a área de destino; "Sou assessor" sem o papel entra e vai para `/cliente` com aviso | Remover os botões | Mantém o protótipo; a permissão continua vindo só da conta. |

@@ -127,6 +127,8 @@ import { sairAction } from "@/app/login/actions";
 | `usuario2@hubxp.test` | usuario |
 | `usuario3@hubxp.test` | usuario |
 | `usuario4@hubxp.test` | usuario |
+| `usuario3@hubxp.test` | usuario |
+| `usuario4@hubxp.test` | usuario |
 
 Os quatro usuários são clientes vinculados ao assessor de demo (tabela `assessor_vinculos`), cada um com uma carteira de demonstração (`assessor_posicoes`). A agenda já vem com convites pendentes e reuniões confirmadas entre eles.
 
