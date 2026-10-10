@@ -10,3 +10,9 @@ export const LoginSchema = z.object({
 });
 
 export type Login = z.infer<typeof LoginSchema>;
+
+/** Regra de senha nova (cadastro e redefinição): 8 a 200 caracteres. */
+export const SenhaNovaSchema = z
+  .string()
+  .min(8, "A senha precisa ter pelo menos 8 caracteres.")
+  .max(200, "A senha pode ter no máximo 200 caracteres.");

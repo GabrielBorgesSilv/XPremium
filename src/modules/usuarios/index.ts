@@ -20,6 +20,12 @@ export {
   VERSAO_TERMO_CONSENTIMENTO,
 } from "./cadastro/schema";
 export type { Cadastro, DadosPessoais, EstadoCivil, FaixaRenda } from "./cadastro/schema";
+export { linkRecuperacaoValido, redefinirSenha, solicitarRecuperacao } from "./recuperacao/service";
+export {
+  PedidoRecuperacaoSchema,
+  RedefinicaoSenhaSchema,
+  VALIDADE_LINK_MINUTOS,
+} from "./recuperacao/schema";
 export { papelAtende, paginaInicialDoPapel } from "./perfis/permissoes";
 export { PapelSchema } from "./perfis/schema";
 export type { Papel, Usuario } from "./perfis/schema";

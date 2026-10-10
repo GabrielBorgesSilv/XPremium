@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { SenhaNovaSchema } from "../auth/schema";
+
 /** DTOs de entrada e saída: cadastro de conta e dados pessoais. */
 
 /** Versão do termo de consentimento exibido no cadastro (muda quando o texto mudar). */
@@ -60,10 +62,7 @@ export const CadastroSchema = z
       .toLowerCase()
       .max(254, "E-mail muito longo.")
       .pipe(z.email("Informe um e-mail válido.")),
-    senha: z
-      .string()
-      .min(8, "A senha precisa ter pelo menos 8 caracteres.")
-      .max(200, "A senha pode ter no máximo 200 caracteres."),
+    senha: SenhaNovaSchema,
     confirmacaoSenha: z.string(),
     nascimento: z.string().superRefine((valor, ctx) => {
       const data = dataReal(valor);

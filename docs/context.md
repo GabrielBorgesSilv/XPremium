@@ -119,6 +119,13 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Consentimento LGPD obrigatório, gravado com data e versão do termo (`2026-10-10`) | Só exigir o checkbox | Evidência do que foi aceito se o texto mudar. |
 | 10/10/2026 | Seed sem dados pessoais; `db:exportar` grava o celular vazio | Recusar exportação; não exportar dados pessoais | Celular gerado pode ser de pessoa real; contas criadas na app continuam exportáveis. |
 | 10/10/2026 | Visual do cadastro: formulário do onboarding do protótipo, só a etapa 1, sem a barra de 4 etapas | Barra de etapas; layout do login | Etapas 2–4 ainda não existem. |
+| 10/10/2026 | Recuperar senha: link de uso único, válido por 30 min, só o hash do token no banco; resposta sempre igual exista ou não a conta | Enviar e-mail real; pedir ajuda à assessoria | Sem serviço de e-mail; o fluxo não muda quando o envio real entrar. |
+| 10/10/2026 | Em desenvolvimento o link aparece no terminal, só o link (sem e-mail); em produção não aparece | Link + e-mail no log | CLAUDE.md proíbe dados pessoais em logs. |
+| 10/10/2026 | Novo pedido invalida os links anteriores | Vários links válidos | Evita links circulando. |
+| 10/10/2026 | Ao redefinir, encerra todas as sessões da conta e vai para `/login` ("Senha alterada") | Já entrar; manter sessões | Quem estava logado com a senha antiga (inclusive acesso indevido) sai. |
+| 10/10/2026 | Telas de recuperar/redefinir no layout do login | Layout do cadastro | O protótipo não tem essas telas. |
+| 10/10/2026 | Links montados com `APP_URL` do `.env` (padrão `http://localhost:3000`), nunca com o Host da requisição; página do link com `referrer: no-referrer` | Usar o Host da requisição | Host pode ser forjado (links falsos quando houver e-mail); o token na URL não vaza por Referer. Escolha técnica do Claude, a confirmar. |
+| 10/10/2026 | Regra de senha nova única (`SenhaNovaSchema`) para cadastro e redefinição | — | Mesma regra nos dois fluxos. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
 ### Processo
@@ -130,7 +137,8 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
 ## Questões em aberto
 
-- Limite de tentativas de login (sem limite no MVP).
+- Limite de tentativas de login e de pedidos de recuperação de senha (sem limite no MVP).
+- Serviço de envio de e-mail (hoje o link de redefinição só aparece no terminal em desenvolvimento).
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.

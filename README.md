@@ -100,6 +100,8 @@ const usuario = await obterUsuarioAtual();
 
 **Cadastro:** `/cadastro` (etapa 1 do onboarding do protótipo). Cria a conta sempre com papel `usuario` e já entra (vai para `/cliente`). Campos obrigatórios: nome, e-mail, senha (8 a 200 caracteres) e confirmação, data de nascimento (18 anos ou mais), celular com DDD, profissão, estado civil, renda mensal e consentimento LGPD (gravado com data e versão do termo). As etapas 2–4 (anamnese) são do módulo `cliente`.
 
+**Recuperar senha:** `/recuperar-senha` pede o e-mail e sempre responde "se o e-mail estiver cadastrado, enviamos um link" (não revela se a conta existe). Sem serviço de e-mail ainda: **em desenvolvimento o link aparece no terminal do `npm run dev`** (só o link, sem o e-mail). O link (`/redefinir-senha?token=...`) vale 30 minutos, é de uso único e só o último pedido vale. Ao salvar a nova senha (mesma regra do cadastro), todas as sessões da conta são encerradas e a pessoa entra de novo pelo `/login`. Links usam `APP_URL` do `.env`.
+
 **Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
 
 **Botão de sair**, em qualquer componente:
@@ -194,7 +196,7 @@ git add dados/seed && git commit -m "Atualiza dados do seed"
 ```
 
 - Um registro por linha e ordenado pelo id, para reduzir conflitos de merge.
-- A tabela `usuarios_sessoes` nunca é exportada, e o celular de `usuarios_dados_pessoais` vai vazio.
+- As tabelas `usuarios_sessoes` e `usuarios_recuperacoes_senha` nunca são exportadas, e o celular de `usuarios_dados_pessoais` vai vazio.
 - **LGPD:** a exportação é recusada se alguma coluna de e-mail tiver domínio diferente de `.test` (reservado, nunca real). Só dados fictícios no git.
 
 **Escrevendo o `seed.ts` de um módulo:**

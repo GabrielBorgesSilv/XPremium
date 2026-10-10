@@ -9,7 +9,7 @@ import estilos from "./login.module.css";
 
 const ESPERA_AVISO_MS = 2500;
 
-export function FormularioLogin({ voltar }: { voltar: string | null }) {
+export function FormularioLogin({ voltar, senhaAlterada }: { voltar: string | null; senhaAlterada: boolean }) {
   const [estado, acao, enviando] = useActionState<EstadoLogin, FormData>(entrarAction, {});
   const [escolha, setEscolha] = useState<"assessor" | "cliente">("assessor");
   const router = useRouter();
@@ -77,6 +77,9 @@ export function FormularioLogin({ voltar }: { voltar: string | null }) {
         <Link href="/recuperar-senha">Esqueci minha senha</Link>
       </div>
 
+      {senhaAlterada && !estado.erro && !estado.aviso && (
+        <p role="status" className={estilos.sucesso}>Senha alterada. Entre com a nova senha.</p>
+      )}
       {estado.erro && <p role="alert" className={estilos.erro}>{estado.erro}</p>}
       {estado.aviso && <p role="status" className={estilos.aviso}>{estado.aviso}</p>}
 
