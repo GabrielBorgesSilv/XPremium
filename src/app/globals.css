@@ -120,6 +120,15 @@ button { cursor: pointer; }
 .xp-tag.ink { background: #111; color: var(--xp-lime); }
 .xp-up { color: var(--xp-green); font-weight: 700; }
 .xp-down { color: var(--xp-red); font-weight: 700; }
+.xp-rankings { display: grid; gap: 36px; }
+.xp-rank { border-radius: 8px; padding: 12px 12px 4px; }
+.xp-rank-up { background: var(--xp-pos-bg); box-shadow: inset 4px 0 var(--xp-green); }
+.xp-rank-down { background: var(--xp-neg-bg); box-shadow: inset 4px 0 var(--xp-red); }
+.xp-rank-up caption { color: var(--xp-green); }
+.xp-rank-down caption { color: var(--xp-red); }
+.xp-rank-more { margin: 8px 9px 10px; border: 1px solid var(--xp-line); border-radius: 6px; background: #fff; padding: 8px 14px; font-size: 11px; font-weight: 700; }
+.xp-rank-up .xp-rank-more { color: var(--xp-green); }
+.xp-rank-down .xp-rank-more { color: var(--xp-red); }
 .xp-note { margin: 6px 0 0; color: var(--xp-muted); font-size: 9px; line-height: 1.5; }
 .xp-warn { margin-bottom: 15px; padding: 11px 13px; border-radius: 8px; background: #fff7e9; color: #845d2c; font-size: 10px; line-height: 1.5; }
 .xp-filters { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 15px; }
@@ -183,4 +192,34 @@ fieldset.xp-filters { margin: 0; border: 0; padding: 0; display: block; }
 .xp-task h3 { margin: 8px 0 2px; font-size: 14px; }
 .xp-task b { font-size: 12px; }
 .xp-task-meta { display: flex; flex-wrap: wrap; gap: 6px; }
-@media (max-width: 700px) { .xp-period { grid-template-columns: 1fr 1fr; } .xp-grid-day { grid-template-columns: 1fr; } .xp-task { grid-template-columns: 1fr; gap: 8px; } }
+.xp-period.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.xp-period.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xp-period.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.xp-period.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.xp-filter-label { margin: 0 0 8px; color: #555; font-size: 11px; font-weight: 700; }
+.xp-metric-nav { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 16px; }
+.xp-metric-nav .xp-filter { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; }
+.xp-metric-section { scroll-margin-top: 86px; }
+.xp-metric-section h3 { margin: 18px 0 8px; font-size: 14px; }
+.xp-metric-section p { margin: 0 0 12px; color: #444; font-size: 12px; line-height: 1.55; }
+.xp-metric-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.xp-metric-list li { padding: 8px 10px; border: 1px solid var(--xp-line); border-radius: 6px; background: #fafaf8; font-size: 11px; }
+.xp-param-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.xp-param { display: grid; gap: 6px; color: var(--xp-muted); font-size: 10px; }
+.xp-param span { display: flex; align-items: center; gap: 6px; }
+.xp-param input { width: 100%; min-height: 40px; border: 1px solid var(--xp-line); border-radius: 6px; padding: 8px 10px; background: #fff; color: #151515; font-size: 13px; font-weight: 700; }
+.xp-param small { color: #777; font-size: 9px; white-space: nowrap; }
+.xp-table.wrap, .xp-table.wrap td, .xp-table.wrap th { white-space: normal; }
+.xp-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+.xp-alloc-legend { display: flex; gap: 16px; margin: 0 0 10px; color: var(--xp-muted); font-size: 10px; }
+.xp-alloc-legend i { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%; }
+.xp-alloc-legend i.atual { background: #111; }
+.xp-alloc-legend i.proposta { background: #176b50; }
+.xp-bars { display: grid; gap: 12px; margin-bottom: 8px; }
+.xp-bar-row { display: grid; grid-template-columns: 130px minmax(0, 1fr) 72px; gap: 10px; align-items: center; }
+.xp-bar-row b { font-size: 11px; }
+.xp-bar-row small { color: var(--xp-muted); font-size: 10px; }
+.xp-bar { height: 8px; margin: 3px 0; border-radius: 99px; background: #eee; }
+.xp-bar span { display: block; height: 100%; border-radius: 99px; background: #111; }
+.xp-bar.proposta span { background: #176b50; }
+@media (max-width: 700px) { .xp-period, .xp-period.cols-3, .xp-period.cols-4, .xp-period.cols-5 { grid-template-columns: 1fr 1fr; } .xp-grid-day { grid-template-columns: 1fr; } .xp-task { grid-template-columns: 1fr; gap: 8px; } .xp-param-grid { grid-template-columns: 1fr; } .xp-bar-row { grid-template-columns: 1fr; } }
