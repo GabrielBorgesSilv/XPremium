@@ -201,6 +201,7 @@ export const marketFixtureAssetSchema = z.object({
   changes: z.object({
     "1D": finiteNumberSchema.nullable(),
     "7D": finiteNumberSchema.nullable(),
+    "15D": finiteNumberSchema.nullable(),
     "30D": finiteNumberSchema.nullable(),
   }),
   marketWindowNote: z.string().nullable(),

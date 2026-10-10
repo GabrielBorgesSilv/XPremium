@@ -1,3 +1,5 @@
+import "server-only";
+
 import { QUOTE_CACHE_MS } from "./quoteCachePolicy";
 
 export type CacheOutcome = "CACHE_REUSED" | "SIMULATED";

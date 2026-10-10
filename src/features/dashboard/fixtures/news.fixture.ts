@@ -35,7 +35,7 @@ const articles: NewsArticle[] = [
     region: "INTL",
     publishedAt: "2026-01-14T12:00:00.000Z",
     summary: {
-      text: "Ações, FIIs ou REITs, ETFs e cripto mostram até dez altas e dez baixas. O período 1D, 7D ou 30D muda a variação. Renda fixa abre outra tabela, com taxa, preço e vencimento, sem ranking.",
+      text: "Ações, FIIs ou REITs, ETFs e cripto mostram até dez altas e dez baixas. O período Hoje, 7 dias, 15 dias ou 30 dias muda a variação. Renda fixa abre outra tabela, com taxa, preço e vencimento, sem ranking.",
       whyItMatters: "A lista responde à pergunta do cliente sem misturar Brasil com exterior nem cripto com fundo imobiliário.",
       generatedByAI: false,
       status: "DEMO",
