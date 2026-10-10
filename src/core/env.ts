@@ -16,6 +16,8 @@ const schema = z.object({
   NEWS_ALERT_EMAIL: z.string().email().or(z.literal("")).default(""),
   RESEND_API_KEY: z.string().default(""),
   ALERT_EMAIL_FROM: z.string().default(""),
+  // Celular de teste (seu ou do apresentador) para o WhatsApp dos clientes de demonstração. Nunca no git.
+  WHATSAPP_DEMO: z.string().default(""),
 });
 
 export const env = schema.parse(process.env);
