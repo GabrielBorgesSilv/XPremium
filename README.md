@@ -159,7 +159,24 @@ npm run dev            # http://localhost:3000
 npm run check          # typecheck + lint + fronteiras + testes
 ```
 
-## Banco de dados (desenvolvimento)
+### Radar de noticias e alertas (M5)
+
+O dashboard do assessor le noticias persistidas pelo submodulo `integracoes/noticias`. Durante a validacao da IA, a ingestao usa exclusivamente um conjunto local de noticias simuladas: cenarios relacionados a PETR4, VALE3, ITUB4 e HGLG11, alem de controles sem correspondencia na carteira (ABEV3, NVDA, BBAS3 e uma noticia sem ticker). Todo item e identificado como simulacao e nao descreve fatos reais.
+
+Configure no `.env`:
+
+```dotenv
+NEWS_TICKERS=PETR4.SA,VALE3.SA,SPY
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-4.1-mini
+NEWS_INGEST_SECRET=uma-chave-aleatoria-longa
+```
+
+Agende ou invoque `POST /api/internal/news/ingest` enviando `Authorization: Bearer <NEWS_INGEST_SECRET>`. A rota persiste os mocks e pede a analise da OpenAI quando a chave esta configurada. Sem chave, usa uma heuristica local identificada como simulada. Noticias e alertas exibidos no dashboard ficam restritos a esse conjunto de mocks. As analises de simulacao nao enviam e-mails.
+
+Os controles sem correspondencia permitem observar noticias que citam ativos fora da carteira ou nao identificam um ticker. A IA nao recebe dados individuais de clientes; a relacao com a carteira e feita no servidor pelo ticker e a exposicao do cliente e calculada separadamente.
+
+## Banco de dados (desenvolvimento)## Banco de dados (desenvolvimento)
 
 SQLite local (`hub.db`, fora do git). A estrutura muda com frequência no hackathon, então usamos `push` (aplica os `db.ts` direto no banco) em vez de migrations.
 
