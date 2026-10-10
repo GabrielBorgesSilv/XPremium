@@ -10,6 +10,3 @@ export { buscarUsuarioPorId } from "./perfis/service";
 export { papelAtende, paginaInicialDoPapel } from "./perfis/permissoes";
 export { PapelSchema } from "./perfis/schema";
 export type { Papel, Usuario } from "./perfis/schema";
-
-// Só para desenvolvimento: chamado por scripts/db/seed.ts.
-export { semearUsuarios } from "./seed";

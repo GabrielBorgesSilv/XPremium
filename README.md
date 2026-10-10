@@ -49,7 +49,8 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 │   │       └── agents/        # banco-agent.ts, noticias-agent.ts
 │   ├── core/                  # infraestrutura: env, db (Drizzle), llm (Anthropic)
 │   └── shared/                # utilitários e UI genérica, sem regra de negócio
-├── scripts/db/                # seed.ts e apagar.ts (usados pelos comandos db:*)
+├── scripts/db/                # seed, preparar, exportar e apagar (comandos db:*)
+├── dados/seed/                # dados exportados do banco (JSON por tabela), carregados pelo seed
 ├── drizzle.config.ts
 ├── .dependency-cruiser.cjs    # regras de fronteira entre módulos
 └── package.json
@@ -108,11 +109,15 @@ npm run check          # typecheck + lint + fronteiras + testes
 
 SQLite local (`hub.db`, fora do git). A estrutura muda com frequência no hackathon, então usamos `push` (aplica os `db.ts` direto no banco) em vez de migrations.
 
+**O banco se prepara sozinho:** `npm run dev` e `npm start` rodam antes o `db:preparar`, que aplica a estrutura (`db:push`) e, se o banco estiver vazio, roda o seed. Se já houver dados, nada é apagado.
+
 ```bash
+npm run db:preparar    # push + seed só se o banco estiver vazio (roda sozinho no dev/start)
 npm run db:push        # aplica os db.ts no banco (aprova perda de dados automaticamente)
-npm run db:seed        # popula com dados sintéticos (semente 42)
+npm run db:seed        # popula: dados exportados + geradores sintéticos (semente 42)
 npm run db:seed -- 7   # popula com outra semente
 npm run db:reset       # apaga o banco, aplica o schema e roda o seed
+npm run db:exportar    # grava o banco atual em dados/seed/ para compartilhar via git
 npm run db:studio      # navega pelos dados no navegador
 npm run db:generate    # gera migrations a partir dos db.ts (quando o schema estabilizar)
 npm run db:migrate     # aplica migrations
@@ -120,8 +125,28 @@ npm run db:migrate     # aplica migrations
 
 Mudou um `db.ts`? Rode `npm run db:reset`.
 
-### Dados sintéticos
+### Dados do seed: exportados + sintéticos
 
-- Cada módulo gera os próprios dados em `src/modules/<modulo>/seed.ts` (função `semear<Modulo>`, exportada pelo `index.ts`). `scripts/db/seed.ts` chama todos em ordem: `usuarios` → `cliente` → `assessor` → `integracoes`.
-- Use o `aleatorio` recebido (de `@/shared/aleatorio`) e nunca `Math.random`: com a mesma semente, todos da equipe têm exatamente o mesmo banco.
-- Só dados fictícios (LGPD). O seed assume tabelas vazias; para recomeçar, use `db:reset`.
+O seed tem duas fontes. Para cada módulo, na ordem `usuarios` → `cliente` → `assessor` → `integracoes`:
+
+1. **Dados exportados** (`dados/seed/<tabela>.json`, no git): se existir arquivo de alguma tabela do módulo, o seed carrega esses arquivos. O exportado vence.
+2. **Gerador sintético** (`src/modules/<modulo>/seed.ts`, função `semear<Modulo>`): usado quando o módulo não tem nada exportado.
+
+**Compartilhar dados criados usando a app:**
+
+```bash
+npm run db:exportar    # grava dados/seed/*.json (retrato completo do banco)
+git add dados/seed && git commit -m "Atualiza dados do seed"
+# colegas: git pull && npm run db:reset
+```
+
+- Um registro por linha e ordenado pelo id, para reduzir conflitos de merge.
+- A tabela `usuarios_sessoes` nunca é exportada.
+- **LGPD:** a exportação é recusada se alguma coluna de e-mail tiver domínio diferente de `.test` (reservado, nunca real). Só dados fictícios no git.
+
+**Escrevendo o `seed.ts` de um módulo:**
+
+- Use o `aleatorio` recebido (de `@/shared/aleatorio`) e nunca `Math.random`: com a mesma semente, todos da equipe têm exatamente o mesmo banco. Para ids, `aleatorio.uuid()`.
+- Se precisar de dados de outro módulo (ex.: ids de usuários), **leia do banco** pelas funções públicas daquele módulo; não recalcule, porque ele pode ter sido carregado dos dados exportados.
+- O `seed.ts` não é exportado pelo `index.ts`: os scripts em `scripts/db/` importam `@/modules/<modulo>/seed` direto, porque o `index.ts` pode carregar código do Next, que não roda fora do servidor. Em `src/`, ninguém importa `seed.ts` de outro módulo.
+- O seed assume tabelas vazias; para recomeçar, use `db:reset`.

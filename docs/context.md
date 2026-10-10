@@ -55,9 +55,33 @@ APIs de notícias ──▶ agent de notícias ──▶ insights
 Perfil + patrimônio + insights ──▶ módulo assessor ──▶ gestão, métricas e prospecção
 ```
 
+## Decisões
+
+Registro das decisões tomadas, com data, alternativas consideradas e motivo.
+
+### Banco de dados
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | SQLite local com Drizzle no MVP | Supabase (Postgres + Auth); H2 | Banco gerado sinteticamente e estrutura instável: SQLite é embutido, fácil de apagar e recriar. H2 é do ecossistema Java e não tem driver para Node. |
+| 10/10/2026 | Estrutura aplicada com `drizzle-kit push`, sem migrations no hackathon | Migrations a cada mudança | Estrutura muda o tempo todo; `db:reset` recria tudo. |
+| 10/10/2026 | Banco criado e populado ao subir a app (`predev`/`prestart` → `db:preparar`) | Preparar dentro do Next (`instrumentation.ts`) | Dentro do Next exigiria migrations ou API instável do drizzle-kit. |
+| 10/10/2026 | Dados criados usando a app viram seed por comando manual (`db:exportar`) e commit | Exportar a cada alteração; exportar ao parar o servidor | Controle do que vai para o git; evita conflitos constantes entre 6 pessoas e lixo de testes. |
+| 10/10/2026 | Exportado vence por módulo; gerador sintético completa o que não foi exportado | Gerador primeiro e exportado soma | Evita ids/e-mails duplicados. |
+| 10/10/2026 | `db:exportar` recusa e-mails fora do domínio `.test` | Só avisar no README | LGPD: impede que um e-mail real cadastrado em teste vá para o GitHub. |
+| 10/10/2026 | Geradores com semente fixa (`@/shared/aleatorio`, inclusive `uuid()`) | `Math.random` / UUID aleatório | Todos da equipe têm o mesmo banco e os mesmos ids. |
+| 10/10/2026 | `seed.ts` importado direto pelos scripts, fora do `index.ts` | Import dinâmico do Next nos services | O `index.ts` carrega código do Next, que quebra fora do servidor; import dinâmico seria armadilha para a equipe. |
+
+### Processo
+
+| Data | Decisão | Motivo |
+|---|---|---|
+| 10/10/2026 | Branches `feature/`, `fix/`, `refactor/`, `docs/`, `chore/`, `test/`, `hotfix/` a partir de `develop`, integradas por PR | Fluxo comum da equipe no GitHub. |
+| 10/10/2026 | Node mínimo 22.9 | Scripts usam `--env-file-if-exists`; Node 20 fora de suporte. |
+
 ## Questões em aberto
 
-- Banco: decidido SQLite/Drizzle no MVP (10/10/2026), com dados sintéticos gerados por seed e estrutura alterada via `db:push`; Supabase/Postgres descartado por ora. Em aberto: onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
+- Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.
 - Critérios do benchmark de prospecção (quais atributos comparar).
