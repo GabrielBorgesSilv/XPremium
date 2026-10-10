@@ -1,5 +1,7 @@
+import { exigirPapel } from "@/modules/usuarios";
 import { Dashboard } from "@/shared/ui/dashboard";
 
-export default function AssessorPage() {
-  return <Dashboard role="assessor" />;
+export default async function AssessorPage() {
+  const usuario = await exigirPapel("assessor");
+  return <Dashboard role="assessor" userName={usuario.nome} />;
 }
