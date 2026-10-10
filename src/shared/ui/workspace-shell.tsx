@@ -18,7 +18,24 @@ const navigation: Record<WorkspaceRole, { group: string; links: { label: string;
   ],
 };
 
-export function WorkspaceShell({ role, children }: { role: WorkspaceRole; children: React.ReactNode }) {
+/** Iniciais do avatar: primeira letra do primeiro e do último nome ("Carla Rocha" → "CR"). */
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts.at(-1)![0] : "")).toUpperCase();
+}
+
+type WorkspaceShellProps = {
+  role: WorkspaceRole;
+  /** Usuário logado (vem do layout, via exigirPapel). */
+  user: { name: string };
+  /** Pode abrir a área do assessor (papel assessor ou admin): controla o botão "Visualizar assessor". */
+  canViewAdvisor: boolean;
+  /** Server Action de logout (sairAction), passada pelo layout: src/shared não importa src/app. */
+  signOutAction: () => Promise<void>;
+  children: React.ReactNode;
+};
+
+export function WorkspaceShell({ role, user, canViewAdvisor, signOutAction, children }: WorkspaceShellProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const isActive = (href: string) => pathname === href || (href !== `/${role}` && pathname.startsWith(href));
@@ -34,7 +51,8 @@ export function WorkspaceShell({ role, children }: { role: WorkspaceRole; childr
         </div>)}
         <div className="xp-side-bottom">
           <div className="xp-help"><b>Atendimento private</b><p>Fale com sua assessoria sempre que precisar.</p></div>
-          <div className="xp-user"><span className="xp-avatar">{role === "assessor" ? "MC" : "AM"}</span><span><b>{role === "assessor" ? "Mariana Costa" : "Ana Martins"}</b><small>{role === "assessor" ? "Assessora private" : "Cliente private"}</small></span></div>
+          <div className="xp-user"><span className="xp-avatar">{initials(user.name)}</span><span><b>{user.name}</b><small>{role === "assessor" ? "Assessora private" : "Cliente private"}</small></span></div>
+          <form action={signOutAction}><button type="submit" className="xp-link"><span className="xp-link-icon" aria-hidden="true">⎋</span>Sair</button></form>
         </div>
       </aside>
       <main className="xp-main">
@@ -44,9 +62,9 @@ export function WorkspaceShell({ role, children }: { role: WorkspaceRole; childr
             <div className="xp-crumb">XPremium&nbsp; / &nbsp;<b>{pathname.split("/").filter(Boolean).at(-1) ?? "Dashboard"}</b></div>
           </div>
           <div className="xp-top-actions">
-            <Link className="xp-role" href={destination}>Visualizar {role === "assessor" ? "cliente" : "assessor"}</Link>
+            {(role === "assessor" || canViewAdvisor) && <Link className="xp-role" href={destination}>Visualizar {role === "assessor" ? "cliente" : "assessor"}</Link>}
             <button className="xp-icon-button" aria-label="Notificações">♧</button>
-            <span className="xp-avatar">{role === "assessor" ? "MC" : "AM"}</span>
+            <span className="xp-avatar" title={user.name}>{initials(user.name)}</span>
           </div>
         </header>
         <div className="xp-content">{children}</div>
