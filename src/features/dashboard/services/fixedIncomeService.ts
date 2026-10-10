@@ -1,3 +1,5 @@
+import "server-only";
+
 import { expectedQuoteCurrency } from "../domain/selectors";
 import {
   demoReferenceStatus,

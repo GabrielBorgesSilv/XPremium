@@ -15,11 +15,7 @@ export function MarketOverview({ overview }: { overview: OverviewResponse }) {
   }));
 
   return (
-    <section aria-labelledby="panorama-titulo">
-      <h2 id="panorama-titulo" className="xp-block-title">
-        Panorama
-      </h2>
-      <p className="xp-desc">Brasil e exterior no mesmo dia. Os filtros abaixo não alteram estes cartões.</p>
+    <section aria-label="Indicadores de mercado">
       {groups.map((group) =>
         group.indicators.length === 0 ? (
           <p key={group.region} className="xp-desc">

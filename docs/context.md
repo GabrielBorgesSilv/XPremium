@@ -136,6 +136,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 |---|---|---|---|
 | 10/10/2026 | `src/features/dashboard/` (M2, PR #9) aceito como exceção ao monolito modular durante o hackathon, com regras no dependency-cruiser: só importa módulos pelo `index.ts`; `modules`, `core` e `shared` não importam `features` | Mover já para `src/modules/assessor/`; adotar `src/features` como padrão do projeto | Código autocontido (não importa nada de fora); mover 42 arquivos agora custaria tempo perto da entrega (17h30). As regras cobrem o risco de fronteira sem trabalho para a autora. |
 | 10/10/2026 | Services de `src/features` com chave ou segredo devem usar `import "server-only"` | — | Evita levar código de servidor (e chaves) para o navegador. |
+| 10/10/2026 | As APIs do dashboard chamam `autorizarApi("assessor")`. Admin passa e o painel o registra como `ASSESSOR`. `/assessor/dashboard` herda o `exigirPapel("assessor")` do layout | Guard que recusa toda chamada; papel enviado pelo navegador | O contrato do M1 já está publicado. A página não precisa de uma checagem própria. |
 
 ### Processo
 
