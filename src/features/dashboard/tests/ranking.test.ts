@@ -40,24 +40,24 @@ describe("ranking de demonstração", () => {
   it("ordena altas em ordem decrescente, baixas em ordem crescente e desempatam pelo símbolo", () => {
     const ranking = buildRanking(
       [
-        demoAsset({ assetId: "DEMO_B", symbol: "DEMO_B", changes: { "1D": 5, "7D": 5, "30D": 5 } }),
-        demoAsset({ assetId: "DEMO_A", symbol: "DEMO_A", changes: { "1D": 5, "7D": 5, "30D": 5 } }),
+        demoAsset({ assetId: "DEMO_B", symbol: "DEMO_B", changes: { "1D": 5, "7D": 5, "15D": 5, "30D": 5 } }),
+        demoAsset({ assetId: "DEMO_A", symbol: "DEMO_A", changes: { "1D": 5, "7D": 5, "15D": 5, "30D": 5 } }),
         demoAsset({
           assetId: "DEMO_C",
           symbol: "DEMO_C",
-          changes: { "1D": -4, "7D": -4, "30D": -4 },
+          changes: { "1D": -4, "7D": -4, "15D": -4, "30D": -4 },
           role: "loser",
         }),
         demoAsset({
           assetId: "DEMO_D",
           symbol: "DEMO_D",
-          changes: { "1D": -8, "7D": -8, "30D": -8 },
+          changes: { "1D": -8, "7D": -8, "15D": -8, "30D": -8 },
           role: "loser",
         }),
         demoAsset({
           assetId: "DEMO_E",
           symbol: "DEMO_E",
-          changes: { "1D": -4, "7D": -4, "30D": -4 },
+          changes: { "1D": -4, "7D": -4, "15D": -4, "30D": -4 },
           role: "loser",
         }),
       ],
@@ -72,22 +72,22 @@ describe("ranking de demonstração", () => {
   it("ignora zero, nulo, NaN e infinito e não completa a lista", () => {
     const ranking = buildRanking(
       [
-        demoAsset({ assetId: "DEMO_ZERO", symbol: "DEMO_ZERO", changes: { "1D": 0, "7D": 0, "30D": 0 }, role: "flat" }),
+        demoAsset({ assetId: "DEMO_ZERO", symbol: "DEMO_ZERO", changes: { "1D": 0, "7D": 0, "15D": 0, "30D": 0 }, role: "flat" }),
         demoAsset({
           assetId: "DEMO_NAN",
           symbol: "DEMO_NAN",
-          changes: { "1D": Number.NaN, "7D": null, "30D": Number.POSITIVE_INFINITY },
+          changes: { "1D": Number.NaN, "7D": null, "15D": null, "30D": Number.POSITIVE_INFINITY },
         }),
         demoAsset({
           assetId: "DEMO_NULL",
           symbol: "DEMO_NULL",
-          changes: { "1D": null, "7D": null, "30D": null },
+          changes: { "1D": null, "7D": null, "15D": null, "30D": null },
           role: "missing-change",
         }),
         demoAsset({
           assetId: "DEMO_OK",
           symbol: "DEMO_OK",
-          changes: { "1D": 2, "7D": 2, "30D": 2 },
+          changes: { "1D": 2, "7D": 2, "15D": 2, "30D": 2 },
         }),
       ],
       query,
@@ -103,7 +103,7 @@ describe("ranking de demonstração", () => {
     const asset = demoAsset({
       assetId: "DEMO_DUP",
       symbol: "DEMO_DUP",
-      changes: { "1D": 4, "7D": 4, "30D": 4 },
+      changes: { "1D": 4, "7D": 4, "15D": 4, "30D": 4 },
     });
     const ranking = buildRanking(Array.from({ length: 15 }, () => asset), query);
     expect(ranking.gainers).toHaveLength(1);

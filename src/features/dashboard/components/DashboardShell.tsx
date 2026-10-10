@@ -13,7 +13,6 @@ import {
   type Period,
   type Region,
 } from "../domain/types";
-import { getFixedIncome } from "../services/fixedIncomeService";
 import { FixedIncomePanel } from "./FixedIncomePanel";
 import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { MarketFilters } from "./MarketFilters";
@@ -52,7 +51,7 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
 
   const ranking =
     category === "FIXED_INCOME" ? null : buildRanking(assets, { region, category, period });
-  const income = category === "FIXED_INCOME" ? getFixedIncome(region, fixedIncome) : null;
+  const income = category === "FIXED_INCOME" ? fixedIncome[region] : null;
   const methodologyNote =
     category === "REAL_ESTATE"
       ? region === "BR"
@@ -96,9 +95,9 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
       {ranking.gainers.length === 0 && ranking.losers.length === 0 ? (
         <LoadingErrorEmpty state="empty" title="Nenhum ativo elegível neste filtro." />
       ) : (
-        <div className="xp-stack">
-          <RankingTable title="Altas" rows={ranking.gainers} />
-          <RankingTable title="Baixas" rows={ranking.losers} />
+        <div className="xp-rankings">
+          <RankingTable title="Altas" rows={ranking.gainers} tone="up" />
+          <RankingTable title="Baixas" rows={ranking.losers} tone="down" />
         </div>
       )}
     </section>
@@ -108,7 +107,6 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
     <>
       <header className="xp-head">
         <div>
-          <div className="xp-kicker">VISÃO DO ASSESSOR</div>
           <h1>Dashboard do Assessor</h1>
           <p>
             Panorama, rankings e notícias para a conversa com o cliente. Referência{" "}

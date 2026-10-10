@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { FixedIncomeResponse, MarketFixtureAsset, NewsResponse, OverviewResponse, Region } from "../domain/types";
 import { fixedIncomeFixtures } from "../fixtures/fixedIncome.fixture";
 import { marketFixtures, overviewFixture } from "../fixtures/market.fixture";

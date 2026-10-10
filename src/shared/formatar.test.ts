@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  formatarCelular,
   formatarData,
   formatarDataHora,
   formatarMoeda,
@@ -29,6 +30,11 @@ describe("formatar", () => {
     expect(formatarPercentual(0.1, { sinal: true })).toBe("+10,0%");
     expect(formatarPercentual(-0.05, { sinal: true })).toBe("-5,0%");
     expect(formatarPercentual(null)).toBe("—");
+  });
+
+  it("formata celular com DDD e devolve outros formatos como vieram", () => {
+    expect(formatarCelular("11912345678")).toBe("(11) 91234-5678");
+    expect(formatarCelular("1234")).toBe("1234");
   });
 
   it("formata números e datas no padrão brasileiro", () => {

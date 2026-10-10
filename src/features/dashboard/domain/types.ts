@@ -7,7 +7,7 @@
 export const REGIONS = ["BR", "INTL"] as const;
 export const CATEGORIES = ["STOCK", "REAL_ESTATE", "ETF", "CRYPTO", "FIXED_INCOME"] as const;
 export const RANKING_CATEGORIES = ["STOCK", "REAL_ESTATE", "ETF", "CRYPTO"] as const;
-export const PERIODS = ["1D", "7D", "30D"] as const;
+export const PERIODS = ["1D", "7D", "15D", "30D"] as const;
 export const DATA_ORIGINS = ["REAL", "SIMULATED"] as const;
 export const FRESHNESS_VALUES = ["CURRENT", "STALE", "UNAVAILABLE"] as const;
 export const PRICE_BASES = ["ADJUSTED", "UNADJUSTED", "NOT_APPLICABLE"] as const;

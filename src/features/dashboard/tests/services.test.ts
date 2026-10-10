@@ -95,7 +95,7 @@ describe("serviços de ranking e renda fixa", () => {
       demoAsset({
         assetId: `DEMO_G_${index}`,
         symbol: `DEMO_G_${String(index).padStart(2, "0")}`,
-        changes: { "1D": index + 1, "7D": index + 1, "30D": index + 1 },
+        changes: { "1D": index + 1, "7D": index + 1, "15D": index + 1, "30D": index + 1 },
       }),
     );
     const partial = getRankings(query, assets);
@@ -109,7 +109,7 @@ describe("serviços de ranking e renda fixa", () => {
     const calculated = demoAsset({
       assetId: "DEMO_PAIR",
       symbol: "DEMO_PAIR",
-      changes: { "1D": 1, "7D": 1, "30D": 1 },
+      changes: { "1D": 1, "7D": 1, "15D": 1, "30D": 1 },
       priceValue: 50,
       periodQuotes: { "1D": pair(100, 110) },
     });
@@ -124,7 +124,7 @@ describe("serviços de ranking e renda fixa", () => {
     const mixedOrigin = demoAsset({
       assetId: "DEMO_MIX",
       symbol: "DEMO_MIX",
-      changes: { "1D": 40, "7D": 40, "30D": 40 },
+      changes: { "1D": 40, "7D": 40, "15D": 40, "30D": 40 },
       periodQuotes: {
         "1D": {
           start: { value: 100, currency: "BRL", priceBasis: "ADJUSTED", origin: "SIMULATED" },
@@ -135,7 +135,7 @@ describe("serviços de ranking e renda fixa", () => {
     const mixedBasis = demoAsset({
       assetId: "DEMO_BASIS",
       symbol: "DEMO_BASIS",
-      changes: { "1D": 20, "7D": 20, "30D": 20 },
+      changes: { "1D": 20, "7D": 20, "15D": 20, "30D": 20 },
       periodQuotes: {
         "1D": {
           start: { value: 100, currency: "BRL", priceBasis: "ADJUSTED", origin: "SIMULATED" },
@@ -146,7 +146,7 @@ describe("serviços de ranking e renda fixa", () => {
     const mixedCurrency = demoAsset({
       assetId: "DEMO_FX",
       symbol: "DEMO_FX",
-      changes: { "1D": 15, "7D": 15, "30D": 15 },
+      changes: { "1D": 15, "7D": 15, "15D": 15, "30D": 15 },
       periodQuotes: {
         "1D": {
           start: { value: 100, currency: "BRL", priceBasis: "ADJUSTED", origin: "SIMULATED" },
@@ -158,12 +158,12 @@ describe("serviços de ranking e renda fixa", () => {
       assetId: "DEMO_NO_HISTORY",
       symbol: "DEMO_NO_HISTORY",
       asOf: " ",
-      changes: { "1D": 8, "7D": 8, "30D": 8 },
+      changes: { "1D": 8, "7D": 8, "15D": 8, "30D": 8 },
     });
     const flatPair = demoAsset({
       assetId: "DEMO_FLAT_PAIR",
       symbol: "DEMO_FLAT_PAIR",
-      changes: { "1D": 3, "7D": 3, "30D": 3 },
+      changes: { "1D": 3, "7D": 3, "15D": 3, "30D": 3 },
       periodQuotes: { "1D": pair(100, 100) },
     });
 
