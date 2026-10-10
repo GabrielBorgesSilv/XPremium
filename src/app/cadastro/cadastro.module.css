@@ -1,0 +1,35 @@
+/* Visual do formulário de onboarding do prototipo.html (xp-form, xp-card, xp-fields), só a etapa 1. */
+
+.pagina { min-height: 100vh; background: var(--xp-bg); padding: 40px 20px; }
+.formulario { max-width: 880px; margin: auto; }
+
+.cabecalho { margin-bottom: 21px; }
+.cabecalho small { color: #92928d; font-size: 9px; font-weight: 700; letter-spacing: 1.2px; }
+.cabecalho h1 { font-size: 26px; font-weight: 700; letter-spacing: -1px; margin: 7px 0 4px; }
+.cabecalho p { font-size: 12px; color: #737373; margin: 0; }
+
+.cartao { background: #fff; border: 1px solid var(--xp-line); border-radius: 9px; padding: 18px; box-shadow: 0 2px 10px #00000006; }
+.campos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.campo { display: flex; flex-direction: column; gap: 6px; }
+.campo label { font-size: 9px; font-weight: 700; color: #4f4f4b; }
+.campo input, .campo select { height: 39px; border: 1px solid #deded9; border-radius: 5px; background: #fff; padding: 0 10px; font-size: 11px; color: #222; outline: none; }
+.campo input:focus, .campo select:focus { border-color: #111; box-shadow: 0 0 0 2px #c8ff003c; }
+.campo [aria-invalid="true"] { border-color: #b42318; }
+.erroCampo { color: #b42318; font-size: 10px; }
+
+.termo { margin-top: 18px; background: #f8f8f5; border-radius: 7px; padding: 12px; font-size: 10px; line-height: 1.5; }
+.termo label { display: flex; gap: 8px; align-items: flex-start; }
+.termo .erroCampo { display: block; margin-top: 6px; }
+
+.erro { background: #fef3f2; color: #b42318; border-radius: 5px; padding: 9px 11px; font-size: 11px; margin: 14px 0 0; }
+.erro a { text-decoration: underline; }
+
+.rodape { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; }
+.rodape :global(.xp-btn.outline) { background: #fff; color: #111; border: 1px solid #dcdcd7; }
+.rodape button:disabled { opacity: .6; cursor: default; }
+
+@media (max-width: 700px) {
+  .campos { grid-template-columns: 1fr; }
+  .campos > div:empty { display: none; }
+}

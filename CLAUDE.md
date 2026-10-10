@@ -26,6 +26,7 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
   - Sem as duas confirmações, não execute. Uma aprovação anterior não vale para uma nova subida.
 - Nunca use `--force` em `main`/`master`.
 - Commits e PRs só quando o usuário pedir.
+- Decisões tomadas: registre em `docs/context.md` (seção "Decisões"), com data, alternativas e motivo.
 
 ## Arquitetura: monolito modular (Next.js full-stack)
 
@@ -37,10 +38,14 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
 - `src/app` e outros módulos **só** importam `@/modules/<modulo>` (o `index.ts`). Nunca importe `service.ts`, `db.ts` ou `schema.ts` de outro módulo.
 - Cada módulo é dono das suas tabelas (prefixo `<modulo>_`); não faça joins entre tabelas de módulos diferentes.
 - `src/core/` é só infraestrutura (env, db, llm); `src/shared/` não tem regra de negócio. Nenhum dos dois importa `src/modules`.
+- **Exceção (hackathon):** `src/features/dashboard/` (M2, dashboard de mercado) fica fora de `src/modules`. Regras: só importa módulos pelo `index.ts`; `src/modules`, `src/core` e `src/shared` não importam `src/features` (verificado pelo `check:modules`); services com chave ou segredo usam `import "server-only"`. **Código novo continua em `src/modules/`**; não crie outras features. Mudança de pasta e unificação dos tipos de ativo/cotação com `assessor/ativos` (M4) ficam para depois da demo.
 - Submódulos seguem o padrão `service.ts` (regra de negócio, com `import "server-only"`), `schema.ts` (Zod) e `db.ts` (tabelas Drizzle).
 - Novo submódulo: crie a pasta com esses arquivos e exporte o que for público no `index.ts` do módulo.
-- Banco de desenvolvimento: SQLite local. Mudou um `db.ts`, rode `npm run db:reset` (push + seed); não crie migrations durante o hackathon.
-- Dados sintéticos de cada módulo ficam em `src/modules/<modulo>/seed.ts` (`semear<Modulo>`, exportado no `index.ts`), usando o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`, para que o banco gerado seja igual para toda a equipe.
+- Banco de desenvolvimento: SQLite local, preparado sozinho no `npm run dev`/`start` (`db:preparar`). Mudou um `db.ts`, rode `npm run db:reset`; não crie migrations durante o hackathon.
+- Seed = dados exportados (`dados/seed/<tabela>.json`, via `npm run db:exportar`) + geradores sintéticos (`src/modules/<modulo>/seed.ts`, `semear<Modulo>`). O exportado vence por módulo.
+- `seed.ts` é a única exceção à interface pública: só `scripts/db/` o importa direto (`@/modules/<modulo>/seed`); ele não entra no `index.ts` e não pode importar código do Next. Use o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`; dados de outro módulo, leia do banco.
+- LGPD: só dados fictícios no seed; e-mails sempre no domínio `.test` (o `db:exportar` recusa outros).
+- Autorização (M1): toda página, layout, API e Server Action com dados chama `exigirPapel(papel)` ou `autorizarApi(papel)` de `@/modules/usuarios`; esconder elementos na UI não é autorização. Papéis hierárquicos: `usuario` < `assessor` < `admin`.
 - Prefira Server Components e Server Actions; use `"use client"` só quando precisar de interatividade.
 
 ## Código
@@ -60,6 +65,15 @@ npm run check   # typecheck + lint + fronteiras entre módulos + testes
 ```
 
 Se algum passo falhar, reporte a falha; não diga que a tarefa está concluída.
+
+Testes verificam o código contra as regras de negócio estabelecidas; o código segue a regra, não o teste.
+
+- **Nunca** altere o código nem a regra de negócio só para um teste passar, a menos que o usuário peça.
+- Teste falhou? Investigue a causa:
+  - erro no próprio teste ou no ambiente (comando, dados, busca de texto): corrija o teste e diga isso;
+  - o código viola a regra: corrija o código para cumprir a regra;
+  - a regra parece errada ou ambígua: pare e pergunte ao usuário.
+- Sempre relate o que falhou e o que foi mudado.
 
 ## Documentação
 
