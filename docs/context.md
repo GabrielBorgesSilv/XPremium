@@ -22,7 +22,7 @@ Análise de viabilidade e mercado: `docs/analise-negocio.md`.
 | Módulo | Público | Responsabilidade |
 |---|---|---|
 | `cliente` | Investidor | Anamnese, consolidação de ativos via Open Finance, visão do próprio patrimônio |
-| `assessor` | Assessor XP | Gestão da carteira de clientes, métricas, prospecção e insights |
+| `assessor` | Assessor XP | Gestão da carteira de clientes, métricas e insights |
 
 ### Módulos de suporte (compartilhados)
 
@@ -43,7 +43,6 @@ Análise de viabilidade e mercado: `docs/analise-negocio.md`.
 - **Meus clientes**: lista e detalhe dos clientes, com perfil (anamnese) e carteira consolidada.
 - **Meus ativos**: visão dos ativos sob gestão do assessor.
 - **Métricas**: indicadores de desempenho da carteira e do relacionamento com clientes.
-- **Prospecção com benchmark de cliente**: identificar potenciais clientes comparando-os com perfis de clientes existentes (benchmark).
 
 ## Agents de IA
 
@@ -58,7 +57,7 @@ Agents responsáveis por alimentar o hub com dados externos:
 Cliente ──anamnese──▶ módulo cliente ──▶ perfil do investidor
 Cliente ──consente Open Finance──▶ agent bancário ──▶ patrimônio consolidado
 APIs de notícias ──▶ agent de notícias ──▶ insights
-Perfil + patrimônio + insights ──▶ módulo assessor ──▶ gestão, métricas e prospecção
+Perfil + patrimônio + insights ──▶ módulo assessor ──▶ gestão, métricas e priorização
 ```
 
 ## Decisões
@@ -179,7 +178,6 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.
-- Critérios do benchmark de prospecção (quais atributos comparar).
 - Quais métricas do assessor entram no MVP.
 - Consentimento e LGPD: como o cliente autoriza o compartilhamento de dados com o assessor.
 - Escopo do MVP para o hackathon (o que é real vs. mockado).
