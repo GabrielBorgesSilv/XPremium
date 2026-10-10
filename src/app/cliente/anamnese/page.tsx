@@ -1,3 +1,5 @@
+import { ModulePage } from "@/shared/ui/dashboard";
+
 export default function AnamnesePage() {
-  return <h2 className="text-lg font-medium">Anamnese</h2>;
+  return <ModulePage title="Meu perfil" description="Revise as informações usadas para personalizar sua assessoria." />;
 }

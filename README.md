@@ -41,6 +41,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 │   ├── modules/
 │   │   ├── cliente/
 │   │   │   ├── index.ts       # interface pública do módulo
+│   │   │   ├── seed.ts        # dados sintéticos do módulo (npm run db:seed)
 │   │   │   └── anamnese/      # service.ts, schema.ts, db.ts
 │   │   ├── assessor/
 │   │   ├── usuarios/
@@ -48,6 +49,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 │   │       └── agents/        # banco-agent.ts, noticias-agent.ts
 │   ├── core/                  # infraestrutura: env, db (Drizzle), llm (Anthropic)
 │   └── shared/                # utilitários e UI genérica, sem regra de negócio
+├── scripts/db/                # seed.ts e apagar.ts (usados pelos comandos db:*)
 ├── drizzle.config.ts
 ├── .dependency-cruiser.cjs    # regras de fronteira entre módulos
 └── package.json
@@ -84,20 +86,42 @@ Versões fixadas (`.npmrc` com `save-exact=true`).
 | `typescript`, `@types/*` | tipagem |
 | `eslint`, `eslint-config-next` | lint |
 | `tailwindcss`, `@tailwindcss/postcss` | estilos |
-| `drizzle-kit` | migrations |
+| `drizzle-kit` | push do schema e migrations |
+| `tsx` | roda os scripts TypeScript de `scripts/` |
 | `vitest`, `@vitejs/plugin-react`, `vite-tsconfig-paths`, `@testing-library/*`, `jsdom` | testes |
 | `dependency-cruiser` | fronteiras entre módulos |
 
 ## Como rodar
 
-Requer Node.js 20.9+.
+Requer Node.js 22.9+.
 
 ```bash
 npm install
 cp .env.example .env
+npm run db:reset       # cria o banco local e popula com dados sintéticos
 
 npm run dev            # http://localhost:3000
 npm run check          # typecheck + lint + fronteiras + testes
-npm run db:generate    # gera migrations a partir dos db.ts
+```
+
+## Banco de dados (desenvolvimento)
+
+SQLite local (`hub.db`, fora do git). A estrutura muda com frequência no hackathon, então usamos `push` (aplica os `db.ts` direto no banco) em vez de migrations.
+
+```bash
+npm run db:push        # aplica os db.ts no banco (aprova perda de dados automaticamente)
+npm run db:seed        # popula com dados sintéticos (semente 42)
+npm run db:seed -- 7   # popula com outra semente
+npm run db:reset       # apaga o banco, aplica o schema e roda o seed
+npm run db:studio      # navega pelos dados no navegador
+npm run db:generate    # gera migrations a partir dos db.ts (quando o schema estabilizar)
 npm run db:migrate     # aplica migrations
 ```
+
+Mudou um `db.ts`? Rode `npm run db:reset`.
+
+### Dados sintéticos
+
+- Cada módulo gera os próprios dados em `src/modules/<modulo>/seed.ts` (função `semear<Modulo>`, exportada pelo `index.ts`). `scripts/db/seed.ts` chama todos em ordem: `usuarios` → `cliente` → `assessor` → `integracoes`.
+- Use o `aleatorio` recebido (de `@/shared/aleatorio`) e nunca `Math.random`: com a mesma semente, todos da equipe têm exatamente o mesmo banco.
+- Só dados fictícios (LGPD). O seed assume tabelas vazias; para recomeçar, use `db:reset`.

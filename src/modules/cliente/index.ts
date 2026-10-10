@@ -9,3 +9,6 @@ export { listarOpenFinance } from "./open-finance/service";
 export type { OpenFinance } from "./open-finance/schema";
 export { listarPatrimonio } from "./patrimonio/service";
 export type { Patrimonio } from "./patrimonio/schema";
+
+// Só para desenvolvimento: chamado por scripts/db/seed.ts.
+export { semearCliente } from "./seed";
