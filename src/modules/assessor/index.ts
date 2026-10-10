@@ -6,7 +6,9 @@
 export {
   listarClientes,
   obterDashCliente,
+  obterResumoAssessor,
   type DashCliente,
+  type ResumoAssessor,
   type LinhaCliente,
   type ListaClientes,
 } from "./clientes/service";

@@ -180,3 +180,12 @@ fieldset.xp-filters { margin: 0; border: 0; padding: 0; display: block; }
 .xp-bar i { display: block; height: 100%; background: #111; border-radius: 4px; }
 .xp-table td a:not(.xp-row-link):hover { text-decoration: underline; }
 @media (max-width: 700px) { .xp-grid-2 { grid-template-columns: 1fr 1fr; } .xp-search input { min-width: 0; width: 100%; } .xp-search { flex: 1 1 100%; } .xp-points li { grid-template-columns: 48px minmax(0, 1fr); } .xp-points li .xp-filter { grid-column: 2; justify-self: start; } .xp-bar-row { grid-template-columns: 70px minmax(0, 1fr) 44px; } .xp-bar-row small { display: none; } }
+/* ===== Perfil do assessor (/assessor/perfil) ===== */
+.xp-profile { display: flex; align-items: center; gap: 14px; }
+.xp-avatar-lg { width: 56px; height: 56px; font-size: 18px; border-radius: 12px; background: #111; color: var(--xp-lime); }
+.xp-metrics-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.xp-mini-link { display: inline-block; margin-top: 7px; color: var(--xp-muted); font-size: 9px; }
+.xp-mini-link:hover { color: #111; text-decoration: underline; }
+.xp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+@media (max-width: 1050px) { .xp-metrics-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 700px) { .xp-metrics-5 { grid-template-columns: 1fr 1fr; } }
