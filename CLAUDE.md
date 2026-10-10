@@ -4,8 +4,22 @@ Hub XP: produto que conecta **cliente** (anamnese + Open Finance para consolidar
 
 ## Git e branches (OBRIGATÓRIO)
 
-- **Nunca** faça commit direto em `main`/`master`. Todo commit vai para `develop` (ou para uma branch criada a partir de `develop`).
-- Antes de commitar, verifique a branch atual com `git branch --show-current`. Se estiver em `main`/`master`, mude para `develop` antes (`git switch develop`).
+Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem sua própria branch, criada a partir de `develop` e integrada de volta em `develop` por Pull Request para os testes da equipe. `main` recebe só o que já foi validado em `develop`.
+
+- Prefixos de branch (kebab-case, a partir de `develop` atualizada):
+  - `feature/<nome>`: nova funcionalidade (ex.: `feature/m1-login`).
+  - `fix/<nome>`: correção de bug.
+  - `refactor/<nome>`: mudança de código sem alterar comportamento.
+  - `docs/<nome>`: só documentação.
+  - `chore/<nome>`: configuração, dependências, build, CI.
+  - `test/<nome>`: só testes.
+  - `hotfix/<nome>`: correção urgente que precisa ir para `main` (sai de `main`, volta para `main` e `develop`; segue a dupla confirmação abaixo).
+- Para começar: `git switch develop && git pull` e então `git switch -c feature/<nome>`.
+- **Nunca** faça commit direto em `main`/`master`, e evite commit direto em `develop`: trabalhe na branch da funcionalidade.
+- Antes de commitar, verifique a branch atual com `git branch --show-current`. Se estiver em `main`/`master` ou `develop`, crie/mude para a branch da funcionalidade antes.
+- Integração: abra PR da branch → `develop` com `npm run check` passando. Antes do PR, traga as novidades de `develop` (`git merge develop`) e resolva conflitos na própria branch.
+- Branch já enviada ao GitHub: não reescreva histórico (rebase/`--force`) sem pedir ao usuário.
+- Mensagens de commit em português, no imperativo e curtas (ex.: "Adiciona login por perfil").
 - Subir algo para `main`/`master` (merge, push, PR com merge, rebase, cherry-pick ou reset) exige **dupla confirmação** do usuário:
   1. Pergunte uma vez, mostrando o que vai entrar (commits e diff resumido de `develop` → `main`).
   2. Depois do "sim", peça uma **segunda confirmação explícita** antes de executar o comando.
@@ -49,3 +63,13 @@ Se algum passo falhar, reporte a falha; não diga que a tarefa está concluída.
 
 - Decisões de produto e questões em aberto: atualize `docs/context.md`.
 - Mudanças de estrutura, comandos ou stack: atualize `README.md`.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
