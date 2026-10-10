@@ -105,6 +105,8 @@ const usuario = await obterUsuarioAtual();
 
 **Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
 
+**WhatsApp no painel do cliente:** o assessor marca os blocos (resumo, pontos de atenção, notícias, convite), vê a prévia e abre o WhatsApp com o texto pronto (`wa.me`). Só temas, sem valores. Para testar com os clientes de demonstração, coloque um celular de teste seu em `WHATSAPP_DEMO` no `.env`; vazio, o WhatsApp abre sem número. Cada abertura fica registrada em `assessor_contatos` (sem o texto).
+
 **Botão de sair**, em qualquer componente:
 
 ```tsx

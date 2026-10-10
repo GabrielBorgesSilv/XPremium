@@ -10,6 +10,8 @@ const schema = z.object({
   SENHA_DEMO: z.string().default(""),
   // Endereço público da app, usado para montar links (ex.: redefinir senha). Nunca use o Host da requisição.
   APP_URL: z.url().default("http://localhost:3000"),
+  // Celular de teste (seu ou do apresentador) para o WhatsApp dos clientes de demonstração. Nunca no git.
+  WHATSAPP_DEMO: z.string().default(""),
 });
 
 export const env = schema.parse(process.env);
