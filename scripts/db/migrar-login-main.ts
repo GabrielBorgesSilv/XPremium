@@ -7,13 +7,17 @@ type ContaLegada = {
   nome: string;
   email: string;
   senha_hash: string;
-  perfil: "usuario" | "assessor" | "admin";
+  perfil: "cliente" | "usuario" | "assessor" | "admin";
   ativo: number;
   criado_em: string;
   id_externo: string | null;
   assessor_externo_id: string | null;
   cargo: string | null;
 };
+
+function converterPapel(perfil: ContaLegada["perfil"]): "usuario" | "assessor" | "admin" {
+  return perfil === "cliente" ? "usuario" : perfil;
+}
 
 const tabelasCliente = [
   {
@@ -186,7 +190,7 @@ async function main(): Promise<void> {
           conta.nome,
           conta.email.trim().toLowerCase(),
           converterHashSenha(conta.senha_hash),
-          conta.perfil,
+          converterPapel(conta.perfil),
           conta.criado_em,
           conta.id_externo,
           conta.assessor_externo_id,

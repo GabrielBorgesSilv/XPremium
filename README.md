@@ -171,6 +171,7 @@ npm run db:push        # aplica os db.ts no banco (aprova perda de dados automat
 npm run db:seed        # popula: dados exportados + geradores sintéticos (semente 42)
 npm run db:seed -- 7   # popula com outra semente
 npm run db:migrar-login-main # migra uma vez contas existentes do esquema antigo de login
+npm run db:corrigir-papeis-login # normaliza papéis cliente/usuario após migração anterior
 npm run db:reset       # apaga o banco, aplica o schema e roda o seed
 npm run db:exportar    # grava o banco atual em dados/seed/ para compartilhar via git
 npm run db:studio      # navega pelos dados no navegador
