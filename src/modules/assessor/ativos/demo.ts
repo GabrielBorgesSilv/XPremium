@@ -8,12 +8,6 @@ import type { DadosCarteiras } from "./calculos";
 /** Data de referência fixa: a demo mostra sempre os mesmos números. */
 export const DEMO_AS_OF = "2026-10-09T18:00:00-03:00";
 
-export const CLIENTES_DEMO: { id: string; nome: string }[] = [
-  { id: "cli-1", nome: "Ana Martins" },
-  { id: "cli-2", nome: "Bruno Lima" },
-  { id: "cli-3", nome: "Carla Souza" },
-  { id: "cli-4", nome: "Diego Rocha" },
-];
 
 const cotacao = (ticker: string, preco: number) => ({ ticker, preco, origem: "SIMULADO" as const, asOf: DEMO_AS_OF });
 
