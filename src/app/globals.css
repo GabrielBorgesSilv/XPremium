@@ -43,6 +43,22 @@ button { cursor: pointer; }
 .xp-head h1 { margin: 7px 0 5px; font-size: 26px; letter-spacing: -1px; }
 .xp-head p { margin: 0; color: var(--xp-muted); font-size: 12px; }
 .xp-btn { border: 0; border-radius: 6px; padding: 11px 15px; background: #111; color: white; font-size: 11px; font-weight: 700; }
+.xp-cta { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 14px 22px; font-size: 14px; }
+.xp-perfil-aviso { margin-bottom: 18px; }
+.xp-perfil-aviso h2 { margin: 4px 0 6px; font-size: 22px; letter-spacing: -.4px; }
+.xp-perfil-aviso .xp-bar { height: 10px; margin: 12px 0 14px; }
+.xp-fatias { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 8px 0 0; padding: 0; list-style: none; }
+.xp-fatia { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.xp-fatia-icone { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 14px; background: #111; color: var(--xp-lime); font-size: 20px; font-weight: 700; }
+.xp-fatia b { font-size: 12px; }
+.xp-fatia small { color: var(--xp-muted); font-size: 11px; }
+@media (max-width: 700px) { .xp-fatias { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.xp-cenarios { display: grid; gap: 16px; }
+.xp-cenario { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 6px 12px; align-items: center; font-size: 12px; }
+.xp-cenario small { grid-column: 2 / -1; color: var(--xp-muted); font-size: 11px; }
+.xp-cenario .xp-bar { margin: 0; }
+ul.xp-reunioes { margin: 0; padding: 0; list-style: none; }
+@media (max-width: 700px) { .xp-cta { width: 100%; } .xp-cenario { grid-template-columns: 1fr auto; } .xp-cenario b { grid-column: 1 / -1; } }
 .xp-btn.lime { background: var(--xp-lime); color: #111; }
 .xp-grid-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 16px; }
 .xp-card { min-width: 0; padding: 18px; background: #fff; border: 1px solid var(--xp-line); border-radius: 10px; box-shadow: 0 3px 14px #00000008; }
