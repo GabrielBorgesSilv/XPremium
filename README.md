@@ -70,6 +70,59 @@ Cada submódulo segue o mesmo padrão:
 4. Regras verificadas com `npm run check:modules` (dependency-cruiser).
 5. Exceção do hackathon: `src/features/dashboard/` (M2) fica fora de `src/modules`, mas só importa módulos pelo `index.ts`, e nada em `modules`, `core` ou `shared` importa `features`. Código novo vai para `src/modules/`.
 
+## Autenticação e permissões (M1)
+
+Cada conta tem **um papel**, em hierarquia: `usuario` < `assessor` < `admin` (cada papel herda o acesso dos anteriores).
+
+| Área | Quem acessa |
+|---|---|
+| `/cliente` | qualquer usuário logado |
+| `/assessor` | `assessor` e `admin` |
+
+Tudo vem de `@/modules/usuarios`:
+
+```ts
+// Páginas, layouts e Server Actions: sem login → /login; sem permissão → área do próprio usuário
+const usuario = await exigirPapel("assessor");
+
+// Route Handlers: 401 sem login, 403 sem permissão
+const acesso = await autorizarApi("assessor");
+if (acesso instanceof Response) return acesso;
+
+// Só consultar (pode ser null)
+const usuario = await obterUsuarioAtual();
+```
+
+- **A UI não é autorização:** esconder um link não protege nada. Toda página, API e Server Action com dados chama `exigirPapel` ou `autorizarApi`.
+- Sessão no banco (`usuarios_sessoes`), cookie `hub_sessao` (httpOnly), válida por 7 dias; logout invalida no servidor. Senhas com scrypt.
+- `entrar(dados)` e `sair()` só funcionam em Server Action ou Route Handler (escrevem cookie).
+
+**Tela de login:** `/login` (visual do `prototipo.html`). Login só por e-mail (espaços nas pontas e maiúsculas são ignorados). "Sou assessor"/"Sou cliente" escolhem a área de destino; a permissão vem sempre do papel da conta. Quem abre uma página protegida sem login vai para `/login?voltar=<página>` e volta para ela depois de entrar (só caminhos internos).
+
+**Cadastro:** `/cadastro` (etapa 1 do onboarding do protótipo). Cria a conta sempre com papel `usuario` e já entra (vai para `/cliente`). Campos obrigatórios: nome, e-mail, senha (8 a 200 caracteres) e confirmação, data de nascimento (18 anos ou mais), celular com DDD, profissão, estado civil, renda mensal e consentimento LGPD (gravado com data e versão do termo). As etapas 2–4 (anamnese) são do módulo `cliente`.
+
+**Recuperar senha:** `/recuperar-senha` pede o e-mail e sempre responde "se o e-mail estiver cadastrado, enviamos um link" (não revela se a conta existe). Sem serviço de e-mail ainda: **em desenvolvimento o link aparece no terminal do `npm run dev`** (só o link, sem o e-mail). O link (`/redefinir-senha?token=...`) vale 30 minutos, é de uso único e só o último pedido vale. Ao salvar a nova senha (mesma regra do cadastro), todas as sessões da conta são encerradas e a pessoa entra de novo pelo `/login`. Links usam `APP_URL` do `.env`.
+
+**Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
+
+**Botão de sair**, em qualquer componente:
+
+```tsx
+import { sairAction } from "@/app/login/actions";
+
+<form action={sairAction}><button type="submit">Sair</button></form>
+```
+
+`src/proxy.ts` só repassa o caminho da requisição (cabeçalho interno `x-hub-caminho`) para o `exigirPapel` montar o `voltar`; não faz autorização.
+
+**Logins da demo** (criados pelo seed; senha = `SENHA_DEMO` do `.env`, ou `demo-hubxp` em desenvolvimento se ela não estiver definida):
+
+| E-mail | Papel |
+|---|---|
+| `assessor@hubxp.test` | assessor |
+| `usuario1@hubxp.test` | usuario |
+| `usuario2@hubxp.test` | usuario |
+
 ## Dependências
 
 Versões fixadas (`.npmrc` com `save-exact=true`).
@@ -126,6 +179,8 @@ npm run db:migrate     # aplica migrations
 
 Mudou um `db.ts`? Rode `npm run db:reset`.
 
+**Testes com banco:** use SQLite em memória (`DATABASE_URL=:memory:`) e aplique a estrutura real com `pushSQLiteSchema` do `drizzle-kit/api`. Exemplo em `src/modules/usuarios/auth/service.test.ts` (inclui como simular cookies e `redirect` do Next).
+
 ### Dados do seed: exportados + sintéticos
 
 O seed tem duas fontes. Para cada módulo, na ordem `usuarios` → `cliente` → `assessor` → `integracoes`:
@@ -142,7 +197,7 @@ git add dados/seed && git commit -m "Atualiza dados do seed"
 ```
 
 - Um registro por linha e ordenado pelo id, para reduzir conflitos de merge.
-- A tabela `usuarios_sessoes` nunca é exportada.
+- As tabelas `usuarios_sessoes` e `usuarios_recuperacoes_senha` nunca são exportadas, e o celular de `usuarios_dados_pessoais` vai vazio.
 - **LGPD:** a exportação é recusada se alguma coluna de e-mail tiver domínio diferente de `.test` (reservado, nunca real). Só dados fictícios no git.
 
 **Escrevendo o `seed.ts` de um módulo:**

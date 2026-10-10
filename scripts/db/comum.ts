@@ -21,7 +21,12 @@ export const SEMENTE_PADRAO = 42;
 export const PASTA_DADOS = path.join(process.cwd(), "dados", "seed");
 
 /** Tabelas que nunca vão para o seed exportado (dados transitórios ou sensíveis). */
-export const TABELAS_NAO_EXPORTADAS = new Set(["usuarios_sessoes"]);
+export const TABELAS_NAO_EXPORTADAS = new Set(["usuarios_sessoes", "usuarios_recuperacoes_senha"]);
+
+/** Colunas exportadas vazias (null): dados pessoais que nunca vão para o git (LGPD). */
+export const COLUNAS_APAGADAS_NA_EXPORTACAO: Record<string, readonly string[]> = {
+  usuarios_dados_pessoais: ["celular"],
+};
 
 // Ordem importa: módulos que referenciam dados de outros vêm depois.
 const MODULOS: readonly { nome: string; semear: (aleatorio: Aleatorio) => Promise<void> }[] = [
