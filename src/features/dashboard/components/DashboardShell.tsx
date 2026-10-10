@@ -19,6 +19,7 @@ import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { MarketFilters } from "./MarketFilters";
 import { MarketOverview } from "./MarketOverview";
 import { NewsPreview } from "./NewsPreview";
+import { MarketAttentionPreview } from "./MarketAttentionPreview";
 import { RankingTable } from "./RankingTable";
 import { formatTimestamp } from "./format";
 import { decideQuoteRefresh, type QuoteRefreshDecision } from "./refresh";
@@ -32,10 +33,12 @@ type DashboardShellProps = {
   assets: readonly MarketFixtureAsset[];
   fixedIncome: Record<Region, FixedIncomeResponse>;
   news: NewsResponse;
+  attentionNews?: Parameters<typeof MarketAttentionPreview>[0]["news"];
+  attentionAlerts?: Parameters<typeof MarketAttentionPreview>[0]["alerts"];
   sectionErrors?: SectionErrors;
 };
 
-export function DashboardShell({ overview, assets, fixedIncome, news, sectionErrors }: DashboardShellProps) {
+export function DashboardShell({ overview, assets, fixedIncome, news, attentionNews, attentionAlerts, sectionErrors }: DashboardShellProps) {
   const [region, setRegion] = useState<Region>("BR");
   const [category, setCategory] = useState<Category>("STOCK");
   const [period, setPeriod] = useState<Period>("1D");
@@ -142,7 +145,9 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
 
       <div className="xp-columns">
         <div className="xp-stack">{marketPanel}</div>
-        {sectionErrors?.news ? (
+        {attentionNews && attentionAlerts ? (
+          <MarketAttentionPreview news={attentionNews} alerts={attentionAlerts} />
+        ) : sectionErrors?.news ? (
           <LoadingErrorEmpty state="error" title="Notícias indisponíveis." />
         ) : (
           <NewsPreview news={news} />
