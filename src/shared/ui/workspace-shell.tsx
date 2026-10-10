@@ -8,7 +8,7 @@ type WorkspaceRole = "assessor" | "cliente";
 
 const navigation: Record<WorkspaceRole, { group: string; links: { label: string; href: string; icon: string }[] }[]> = {
   assessor: [
-    { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Carteira", href: "/assessor/ativos", icon: "◈" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
+    { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Mercado", href: "/assessor/dashboard", icon: "▤" }, { label: "Carteira", href: "/assessor/ativos", icon: "◈" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
     { group: "Relacionamento", links: [{ label: "Clientes", href: "/assessor/clientes", icon: "♙" }, { label: "Agenda", href: "/assessor", icon: "▦" }, { label: "Perfil", href: "/assessor", icon: "◉" }] },
     { group: "Expansão", links: [{ label: "Prospecção", href: "/assessor/prospeccao", icon: "⌕" }] },
   ],
@@ -58,7 +58,7 @@ export function WorkspaceShell({ role, user, canViewAdvisor, signOutAction, chil
       <main className="xp-main">
         <header className="xp-top">
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button className="xp-icon-button xp-mobile-menu" aria-label="Abrir menu" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>☰</button>
+            <button className="xp-icon-button xp-mobile-menu" aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>☰</button>
             <div className="xp-crumb">XPremium&nbsp; / &nbsp;<b>{pathname.split("/").filter(Boolean).at(-1) ?? "Dashboard"}</b></div>
           </div>
           <div className="xp-top-actions">
