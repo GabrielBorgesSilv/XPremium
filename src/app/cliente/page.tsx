@@ -1,3 +1,5 @@
+import { Dashboard } from "@/shared/ui/dashboard";
+
 export default function ClientePage() {
-  return <p>Bem-vindo à área do cliente.</p>;
+  return <Dashboard role="cliente" />;
 }
