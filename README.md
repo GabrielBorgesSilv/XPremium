@@ -69,6 +69,41 @@ Cada submódulo segue o mesmo padrão:
 3. `src/core` e `src/shared` não importam nada de `src/modules`.
 4. Regras verificadas com `npm run check:modules` (dependency-cruiser).
 
+## Autenticação e permissões (M1)
+
+Cada conta tem **um papel**, em hierarquia: `usuario` < `assessor` < `admin` (cada papel herda o acesso dos anteriores).
+
+| Área | Quem acessa |
+|---|---|
+| `/cliente` | qualquer usuário logado |
+| `/assessor` | `assessor` e `admin` |
+
+Tudo vem de `@/modules/usuarios`:
+
+```ts
+// Páginas, layouts e Server Actions: sem login → /login; sem permissão → área do próprio usuário
+const usuario = await exigirPapel("assessor");
+
+// Route Handlers: 401 sem login, 403 sem permissão
+const acesso = await autorizarApi("assessor");
+if (acesso instanceof Response) return acesso;
+
+// Só consultar (pode ser null)
+const usuario = await obterUsuarioAtual();
+```
+
+- **A UI não é autorização:** esconder um link não protege nada. Toda página, API e Server Action com dados chama `exigirPapel` ou `autorizarApi`.
+- Sessão no banco (`usuarios_sessoes`), cookie `hub_sessao` (httpOnly), válida por 7 dias; logout invalida no servidor. Senhas com scrypt.
+- `entrar(dados)` e `sair()` só funcionam em Server Action ou Route Handler (escrevem cookie).
+
+**Logins da demo** (criados pelo seed; senha = `SENHA_DEMO` do `.env`):
+
+| E-mail | Papel |
+|---|---|
+| `assessor@hubxp.test` | assessor |
+| `usuario1@hubxp.test` | usuario |
+| `usuario2@hubxp.test` | usuario |
+
 ## Dependências
 
 Versões fixadas (`.npmrc` com `save-exact=true`).

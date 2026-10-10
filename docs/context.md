@@ -72,6 +72,20 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Geradores com semente fixa (`@/shared/aleatorio`, inclusive `uuid()`) | `Math.random` / UUID aleatório | Todos da equipe têm o mesmo banco e os mesmos ids. |
 | 10/10/2026 | `seed.ts` importado direto pelos scripts, fora do `index.ts` | Import dinâmico do Next nos services | O `index.ts` carrega código do Next, que quebra fora do servidor; import dinâmico seria armadilha para a equipe. |
 
+### Autenticação e permissões (M1)
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | Autenticação própria (Next + SQLite), sem provedor externo | Supabase Auth | Decorre da escolha do SQLite; sem dependência externa nem conta compartilhada. |
+| 10/10/2026 | Um papel por conta, hierárquico: `usuario` < `assessor` < `admin` | Vários papéis por conta; flag de assessor | "Role geral" pedida pelo produto; hierarquia simples de checar. |
+| 10/10/2026 | `/cliente` para qualquer usuário logado; `/assessor` para `assessor`+ | Perfis exclusivos (cliente não-assessor) | A área de usuário aparece para todos; a de assessor, por permissão. |
+| 10/10/2026 | Sem permissão: página redireciona para a área do usuário; API responde 403. Sem login: `/login` e 401 | Página de acesso negado | Fluxo mais simples; `forbidden()` do Next 16 ainda é experimental. |
+| 10/10/2026 | Sessão no banco (`usuarios_sessoes`), cookie com token aleatório e só o hash SHA-256 no banco | Cookie criptografado sem tabela (stateless) | Logout invalida de verdade (cookie copiado deixa de valer); sem dependência nova. |
+| 10/10/2026 | Sessão válida por 7 dias | 8 horas; até fechar o navegador | Ninguém precisa relogar durante o hackathon; padrão do guia do Next. |
+| 10/10/2026 | Senha com scrypt (`node:crypto`) | bcrypt/argon2 (dependência nova) | Seguro e nativo do Node. |
+| 10/10/2026 | Seed: 1 assessor + 2 usuários (`@hubxp.test`), senha em `SENHA_DEMO`, ids determinísticos; sem admin por ora | Senha fixa no README; criar admin | Dois usuários permitem testar que um não vê o outro; senha trocável se a app for publicada. |
+| 10/10/2026 | Branch `feature/m1-contrato-auth` só com o contrato; tela de login na `feature/m1-login` | Contrato + tela juntos | PR menor; a equipe já programa contra a interface. |
+
 ### Processo
 
 | Data | Decisão | Motivo |
