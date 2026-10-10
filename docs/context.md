@@ -113,6 +113,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Todos os campos do cadastro obrigatórios | Pessoais opcionais | Decisão de produto. |
 | 10/10/2026 | Senha do cadastro: 8 a 200 caracteres, com confirmação | Exigir letra e número; 12+ | Tamanho importa mais que símbolos; menos atrito. |
 | 10/10/2026 | Nascimento: 18 anos ou mais; recusa datas futuras, impossíveis ou acima de 130 anos | Não validar idade | Conta de investimento para menor exige responsável legal. |
+| 10/10/2026 | Nome no cadastro: pelo menos nome e sobrenome (duas palavras), até 120 caracteres | Mínimo de 2 caracteres | "Nome completo" identifica a pessoa numa conta de investimento; nomes curtos como "Ana Li" seguem aceitos. |
 | 10/10/2026 | Estado civil: Solteiro(a), Casado(a), União estável, Separado(a), Divorciado(a), Viúvo(a) | Só as 4 opções do protótipo | O protótipo não tinha viúvo nem separado. |
 | 10/10/2026 | Celular brasileiro: DDD (sem zero) + 9 + 8 dígitos; guarda só dígitos | — | Formato do protótipo "(11) 90000-0000". |
 | 10/10/2026 | E-mail já cadastrado: avisa "E-mail já cadastrado" com links para entrar ou recuperar a senha | Mensagem genérica | Sem serviço de e-mail não há outra forma de avisar; aceito no MVP (revela que o e-mail tem conta). |
