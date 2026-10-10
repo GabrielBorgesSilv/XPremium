@@ -1,16 +1,10 @@
 import "server-only";
 
+import { assessorAtual, listarClientesDoAssessor } from "../clientes/vinculo";
 import { clientesDoAtivo, resumirCarteiras } from "./calculos";
-import {
-  CARTEIRAS_DEMO,
-  CLIENTES_DEMO,
-  DEMO_AS_OF,
-  NOTICIAS_DEMO,
-  REFERENCIA_SERIE_DEMO,
-  RESPOSTA_IA_DEMO,
-} from "./demo";
-import { avaliarFGC, type ExposicaoFGC, LIMITE_FGC, type SituacaoFGC } from "./fgc";
-import { type AlertaAtivo, filtrarImpactos, ordenarComAlertas, resumirAlertas } from "./impactos";
+import { carregarDadosCarteiras, type DadosCarregados } from "./carregar";
+import { type ExposicaoFGC, LIMITE_FGC, type SituacaoFGC } from "./fgc";
+import { type AlertaAtivo, ordenarComAlertas } from "./impactos";
 import {
   type ClienteDoAtivo,
   type Cotacao,
@@ -23,7 +17,7 @@ import {
   type ResumoCarteiras,
   type SeriePrecos,
 } from "./schema";
-import { calcularVariacao, gerarSerieSimulada, type Variacao } from "./serie";
+import { calcularVariacao, type Variacao } from "./serie";
 
 export type LinhaAtivo = ResumoAtivo & {
   alerta: AlertaAtivo | null;
@@ -55,17 +49,6 @@ export type DetalheAtivo = {
   marcadores: { data: string; direcao: ImpactoNoticia["direcao"]; titulo: string }[];
 };
 
-/** Data (AAAA-MM-DD) de um instante no fuso de Brasília. */
-function diaEmBrasilia(iso: string): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date(iso));
-}
-
-/** Último dia da série que não passa de `dia` (ex.: notícia de sábado cai na sexta). */
-function encaixarNaSerie(dia: string, serie: SeriePrecos): string | null {
-  const anteriores = serie.pontos.filter((p) => p.data <= dia);
-  return anteriores.at(-1)?.data ?? null;
-}
-
 export type VisaoAtivos = {
   /** Origem dos dados da tela inteira; hoje sempre SIMULADO (dados de demonstração). */
   origem: OrigemDado;
@@ -82,10 +65,18 @@ export type VisaoAtivos = {
   detalhe: DetalheAtivo | null;
 };
 
-const NOMES_CLIENTES = new Map(CLIENTES_DEMO.map((c) => [c.id, c.nome]));
-const nomeDoCliente = (id: string) => NOMES_CLIENTES.get(id) ?? id;
+/** Data (AAAA-MM-DD) de um instante no fuso de Brasília. */
+function diaEmBrasilia(iso: string): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date(iso));
+}
 
-function resumirFGC(exposicoes: ExposicaoFGC[]): ResumoFGC {
+/** Último dia da série que não passa de `dia` (ex.: notícia de sábado cai na sexta). */
+function encaixarNaSerie(dia: string, serie: SeriePrecos): string | null {
+  const anteriores = serie.pontos.filter((p) => p.data <= dia);
+  return anteriores.at(-1)?.data ?? null;
+}
+
+function resumirFGC(exposicoes: ExposicaoFGC[], nomeDoCliente: (id: string) => string): ResumoFGC {
   const clientes = (situacao: SituacaoFGC) =>
     new Set(exposicoes.filter((e) => e.situacao === situacao).map((e) => e.clienteId)).size;
   return {
@@ -109,16 +100,14 @@ function situacaoFGCDoTitulo(ticker: string, exposicoes: ExposicaoFGC[]): Situac
  * Recebe os parâmetros crus da URL e devolve a tela pronta.
  */
 export async function obterVisaoAtivos(parametros: Record<string, string | string[] | undefined>): Promise<VisaoAtivos> {
-  // TODO(M1/M3): só assessor autenticado, e só os clientes vinculados a ele. Hoje usa dados de demonstração.
   const filtros = FiltrosVisaoSchema.parse(parametros);
-  const dados = CARTEIRAS_DEMO;
+  const clientes = listarClientesDoAssessor(assessorAtual());
+  const nomes = new Map(clientes.map((c) => [c.id, c.nome]));
+  const nomeDoCliente = (id: string) => nomes.get(id) ?? id;
 
+  const carregado = carregarDadosCarteiras(new Set(nomes.keys()));
+  const { dados, alertas, exposicoesFGC } = carregado;
   const resumo = resumirCarteiras(dados);
-  const tickersDaCarteira = new Set(resumo.ativos.map((a) => a.ativo.ticker));
-  // TODO(M5): trocar a resposta fixa pela chamada ao agente de notícias.
-  const { validos, descartados } = filtrarImpactos(RESPOSTA_IA_DEMO, tickersDaCarteira);
-  const alertas = resumirAlertas(validos);
-  const exposicoesFGC = avaliarFGC(dados);
 
   const todas: LinhaAtivo[] = resumo.ativos.map((a) => ({
     ...a,
@@ -135,26 +124,23 @@ export async function obterVisaoAtivos(parametros: Record<string, string | strin
   const selecionada = filtros.ativo ? todas.find((l) => l.ativo.ticker === filtros.ativo) : undefined;
 
   return {
-    origem: "SIMULADO",
-    asOf: DEMO_AS_OF,
+    origem: carregado.origem,
+    asOf: carregado.asOf,
     filtros,
     resumo,
     linhas,
     numAtivosComAlerta: alertas.size,
-    impactosDescartados: descartados,
-    fgc: resumirFGC(exposicoesFGC),
-    detalhe: selecionada ? montarDetalhe(selecionada, exposicoesFGC) : null,
+    impactosDescartados: carregado.impactosDescartados,
+    fgc: resumirFGC(exposicoesFGC, nomeDoCliente),
+    detalhe: selecionada ? montarDetalhe(selecionada, carregado, nomeDoCliente) : null,
   };
 }
 
-function montarDetalhe(linha: LinhaAtivo, exposicoesFGC: ExposicaoFGC[]): DetalheAtivo {
+function montarDetalhe(linha: LinhaAtivo, carregado: DadosCarregados, nomeDoCliente: (id: string) => string): DetalheAtivo {
   const { ticker } = linha.ativo;
-  const cotacao = CARTEIRAS_DEMO.cotacoes.find((c) => c.ticker === ticker) ?? null;
-  const noticias = new Map(NOTICIAS_DEMO.map((n) => [n.id, n]));
-
-  // TODO(M2): buscar o histórico real; a série simulada é o fallback rotulado.
-  const referencia = REFERENCIA_SERIE_DEMO[ticker] ?? cotacao?.preco;
-  const serie = referencia === undefined ? null : gerarSerieSimulada(linha.ativo, referencia, DEMO_AS_OF.slice(0, 10));
+  const { dados, exposicoesFGC, noticias } = carregado;
+  const cotacao = dados.cotacoes.find((c) => c.ticker === ticker) ?? null;
+  const serie = carregado.serieDe(linha.ativo);
 
   const noticiasDoAtivo: NoticiaDoAtivo[] = (linha.alerta?.impactos ?? []).map((impacto) => {
     const noticia = noticias.get(impacto.noticiaId);
@@ -171,7 +157,7 @@ function montarDetalhe(linha: LinhaAtivo, exposicoesFGC: ExposicaoFGC[]): Detalh
   return {
     linha,
     cotacao,
-clientes: clientesDoAtivo(ticker, CARTEIRAS_DEMO).map((c) => ({
+    clientes: clientesDoAtivo(ticker, dados).map((c) => ({
       ...c,
       nome: nomeDoCliente(c.clienteId),
       // Situação do cliente no emissor deste título (a regra do FGC é por instituição).

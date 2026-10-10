@@ -22,6 +22,7 @@ import { castName } from "./cast";
 const PERIOD_FACTOR: Record<Period, number> = {
   "1D": 1,
   "7D": 3,
+  "15D": 4,
   "30D": 5,
 };
 
@@ -41,15 +42,16 @@ function symbolToken(region: Region, category: RankingCategory): AssetType {
 
 function changesFor(role: FixtureRole, magnitude: number): Record<Period, number | null> {
   if (role === "missing-change") {
-    return { "1D": null, "7D": null, "30D": null };
+    return { "1D": null, "7D": null, "15D": null, "30D": null };
   }
   if (role === "flat") {
-    return { "1D": 0, "7D": 0, "30D": 0 };
+    return { "1D": 0, "7D": 0, "15D": 0, "30D": 0 };
   }
   const sign = role === "loser" ? -1 : 1;
   return {
     "1D": sign * magnitude * PERIOD_FACTOR["1D"],
     "7D": sign * magnitude * PERIOD_FACTOR["7D"],
+    "15D": sign * magnitude * PERIOD_FACTOR["15D"],
     "30D": sign * magnitude * PERIOD_FACTOR["30D"],
   };
 }

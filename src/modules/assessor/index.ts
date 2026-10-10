@@ -3,8 +3,27 @@
  *
  * Interface pública do módulo: src/app e outros módulos só importam daqui.
  */
-export { listarClientes } from "./clientes/service";
-export type { Clientes } from "./clientes/schema";
+export {
+  listarClientes,
+  obterDashCliente,
+  obterResumoAssessor,
+  type DashCliente,
+  type ResumoAssessor,
+  type LinhaCliente,
+  type ListaClientes,
+} from "./clientes/service";
+export { chaveDosBlocos, obterContatoWhatsApp, registrarContatoWhatsApp } from "./clientes/contato";
+export type { ContatoWhatsApp, OrigemCelular } from "./clientes/contato";
+export { BLOCOS_MENSAGEM, ROTULO_BLOCO } from "./clientes/mensagem";
+export type { BlocoMensagem } from "./clientes/mensagem";
+export {
+  ESTADOS_CIVIS,
+  FAIXAS_RENDA,
+  type CadastroCliente,
+  type ClienteVinculado,
+  type FiltrosClientes,
+} from "./clientes/schema";
+export type { CarteiraCliente, EvolucaoCarteira, PontoDeAtencao, PosicaoCliente, Severidade } from "./ativos/carteira-cliente";
 export {
   obterVisaoAtivos,
   type DetalheAtivo,
@@ -42,5 +61,3 @@ export type {
 } from "./ativos/schema";
 export { listarMetricas } from "./metricas/service";
 export type { Metricas } from "./metricas/schema";
-export { listarProspeccao } from "./prospeccao/service";
-export type { Prospeccao } from "./prospeccao/schema";

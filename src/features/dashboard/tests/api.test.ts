@@ -1,6 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { pendingAssessorGuard, type AssessorGuard } from "../auth/assessorGuard";
+const sessao = vi.hoisted(() => ({
+  acesso: new Response(null, { status: 401 }) as Response | { id: string },
+}));
+
+vi.mock("@/modules/usuarios", () => ({
+  autorizarApi: async () => sessao.acesso,
+}));
+
+import { assessorGuard, pendingAssessorGuard, type AssessorGuard } from "../auth/assessorGuard";
 import { handleFixedIncome, handleOverview, handleRankings, handleRefresh, type DashboardDeps } from "../api/handlers";
 import { DEMO_AS_OF } from "../domain/types";
 import { loadDashboardNews } from "../services/newsService";
@@ -20,7 +28,7 @@ import { POST as postRefreshRoute } from "../../../app/api/dashboard/refresh/rou
 
 const NOW = Date.parse("2026-10-10T15:00:00.000Z");
 
-function assessorGuard(): AssessorGuard {
+function acessoDeAssessor(): AssessorGuard {
   return async () => ({ ok: true, principal: { userId: "assessor-demo", role: "ASSESSOR" } });
 }
 
@@ -33,7 +41,7 @@ function clientGuard(): AssessorGuard {
 }
 
 function deps(now = NOW): DashboardDeps {
-  return { guard: assessorGuard(), now, cache: createQuoteCache() };
+  return { guard: acessoDeAssessor(), now, cache: createQuoteCache() };
 }
 
 function rankingsUrl(query: string) {
@@ -41,6 +49,10 @@ function rankingsUrl(query: string) {
 }
 
 describe("API interna do dashboard", () => {
+  beforeEach(() => {
+    sessao.acesso = new Response(null, { status: 401 });
+  });
+
   it("recusa a rota publicada mesmo com papel vindo do cliente", async () => {
     const response = await getOverviewRoute();
     const body = apiErrorSchema.parse(await response.json());
@@ -62,10 +74,33 @@ describe("API interna do dashboard", () => {
       }),
     );
     expect(refresh.status).toBe(401);
-    expect(await pendingAssessorGuard()).toMatchObject({ ok: false, status: 401 });
+    expect(await assessorGuard()).toMatchObject({
+      ok: false,
+      status: 401,
+      error: { code: "UNAUTHENTICATED" },
+    });
   });
 
-  it("registra o bloqueio real: sem requireAssessor não há 403 nem 200", async () => {
+  it("nega o cliente e deixa o admin entrar como assessor", async () => {
+    sessao.acesso = new Response(null, { status: 403 });
+    const client = await getRankingsRoute(
+      new Request("http://localhost/api/dashboard/rankings?region=BR&category=STOCK&period=1D"),
+    );
+    const body = apiErrorSchema.parse(await client.json());
+    expect(client.status).toBe(403);
+    expect(body.error.code).toBe("FORBIDDEN");
+    expect(body).not.toHaveProperty("gainers");
+
+    sessao.acesso = { id: "admin-1" };
+    const decision = await assessorGuard();
+    expect(decision).toEqual({ ok: true, principal: { userId: "admin-1", role: "ASSESSOR" } });
+
+    const overview = await getOverviewRoute();
+    expect(overview.status).toBe(200);
+    expect(overviewResponseSchema.parse(await overview.json()).dataStatus.origin).toBe("SIMULATED");
+  });
+
+  it("ignora o papel enviado pelo cliente quando não há sessão", async () => {
     const anonymous = await getOverviewRoute();
     expect(anonymous.status).toBe(401);
 

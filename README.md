@@ -3,7 +3,7 @@
 Hub centralizado que conecta **cliente** e **assessor** de investimentos da XP.
 
 - **Cliente**: faz a anamnese e conecta suas contas via Open Finance para administrar todos os seus ativos e investimentos em um só lugar.
-- **Assessor**: gerencia e se relaciona com seus clientes, acompanha métricas e prospecta novos clientes com base em benchmark, apoiado por agents de IA que trazem dados bancários e notícias de mercado.
+- **Assessor**: gerencia e se relaciona com seus clientes, acompanha métricas e o mercado ligado às carteiras, apoiado por agents de IA que trazem dados bancários e notícias de mercado.
 
 Contexto completo do produto: [`docs/context.md`](docs/context.md).
 
@@ -23,7 +23,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 | Módulo | Tipo | Submódulos |
 |---|---|---|
 | `cliente` | primordial | `anamnese`, `open-finance`, `patrimonio` |
-| `assessor` | primordial | `clientes`, `ativos`, `metricas`, `prospeccao` |
+| `assessor` | primordial | `clientes`, `ativos`, `metricas` |
 | `usuarios` | suporte | `auth`, `perfis` |
 | `integracoes` | suporte | `bancos`, `noticias`, `agents` |
 
@@ -36,7 +36,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 ├── src/
 │   ├── app/                   # rotas Next: UI e API (camada fina, sem regra de negócio)
 │   │   ├── cliente/           # anamnese, open-finance, patrimonio
-│   │   ├── assessor/          # clientes, ativos, metricas, prospeccao
+│   │   ├── assessor/          # clientes, ativos, metricas
 │   │   └── api/               # route handlers (ex.: /api/health)
 │   ├── modules/
 │   │   ├── cliente/
@@ -105,6 +105,8 @@ const usuario = await obterUsuarioAtual();
 
 **Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
 
+**WhatsApp no painel do cliente:** o assessor marca os blocos (resumo, pontos de atenção, notícias, convite), vê a prévia e abre o WhatsApp com o texto pronto (`wa.me`). Só temas, sem valores. Para testar com os clientes de demonstração, coloque um celular de teste seu em `WHATSAPP_DEMO` no `.env`; vazio, o WhatsApp abre sem número. Cada abertura fica registrada em `assessor_contatos` (sem o texto).
+
 **Botão de sair**, em qualquer componente:
 
 ```tsx
@@ -159,7 +161,24 @@ npm run dev            # http://localhost:3000
 npm run check          # typecheck + lint + fronteiras + testes
 ```
 
-## Banco de dados (desenvolvimento)
+### Radar de noticias e alertas (M5)
+
+O dashboard do assessor le noticias persistidas pelo submodulo `integracoes/noticias`. Durante a validacao da IA, a ingestao usa exclusivamente um conjunto local de noticias simuladas: cenarios relacionados a PETR4, VALE3, ITUB4 e HGLG11, alem de controles sem correspondencia na carteira (ABEV3, NVDA, BBAS3 e uma noticia sem ticker). Todo item e identificado como simulacao e nao descreve fatos reais.
+
+Configure no `.env`:
+
+```dotenv
+NEWS_TICKERS=PETR4.SA,VALE3.SA,SPY
+OPENAI_API_KEY=...
+OPENAI_MODEL=gpt-4.1-mini
+NEWS_INGEST_SECRET=uma-chave-aleatoria-longa
+```
+
+Agende ou invoque `POST /api/internal/news/ingest` enviando `Authorization: Bearer <NEWS_INGEST_SECRET>`. A rota persiste os mocks e pede a analise da OpenAI quando a chave esta configurada. Sem chave, usa uma heuristica local identificada como simulada. Noticias e alertas exibidos no dashboard ficam restritos a esse conjunto de mocks. As analises de simulacao nao enviam e-mails.
+
+Os controles sem correspondencia permitem observar noticias que citam ativos fora da carteira ou nao identificam um ticker. A IA nao recebe dados individuais de clientes; a relacao com a carteira e feita no servidor pelo ticker e a exposicao do cliente e calculada separadamente.
+
+## Banco de dados (desenvolvimento)## Banco de dados (desenvolvimento)
 
 SQLite local (`hub.db`, fora do git). A estrutura muda com frequência no hackathon, então usamos `push` (aplica os `db.ts` direto no banco) em vez de migrations.
 

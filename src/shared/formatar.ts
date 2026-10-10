@@ -34,6 +34,12 @@ export function formatarNumero(valor: number, casas = 0): string {
   return new Intl.NumberFormat("pt-BR", { maximumFractionDigits: casas }).format(valor);
 }
 
+/** "11912345678" → "(11) 91234-5678". Outros formatos voltam como vieram. */
+export function formatarCelular(digitos: string): string {
+  const m = /^(\d{2})(\d{5})(\d{4})$/.exec(digitos);
+  return m ? `(${m[1]}) ${m[2]}-${m[3]}` : digitos;
+}
+
 /** "2026-10-09T18:00:00-03:00" → "09/10/2026" (no fuso de Brasília). */
 export function formatarData(iso: string): string {
   return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo" }).format(new Date(iso));

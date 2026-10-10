@@ -1,7 +1,11 @@
+import "server-only";
+
+import { autorizarApi } from "@/modules/usuarios";
+
 /**
- * Porta do módulo 1. O repositório ainda não exporta sessão nem papel ASSESSOR.
- * Este adapter de produção não lê header, cookie, query nem body.
- * Enquanto o módulo 1 não publicar `requireAssessor()`, as rotas recusam a chamada.
+ * Sessão e papel vêm de autorizarApi("assessor").
+ * Este adapter não lê header, cookie, query nem body da rota.
+ * Admin também passa nessa checagem e segue neste painel como ASSESSOR.
  */
 
 export type AssessorPrincipal = {
@@ -22,6 +26,21 @@ export type AuthDecision =
 
 export type AssessorGuard = () => Promise<AuthDecision>;
 
+export const assessorGuard: AssessorGuard = async () => {
+  const acesso = await autorizarApi("assessor");
+  if (acesso instanceof Response) {
+    return acesso.status === 401
+      ? {
+          ok: false,
+          status: 401,
+          error: { code: "UNAUTHENTICATED", message: "Sessão não comprovada no servidor." },
+        }
+      : { ok: false, status: 403, error: { code: "FORBIDDEN", message: "Sem permissão." } };
+  }
+  return { ok: true, principal: { userId: acesso.id, role: "ASSESSOR" } };
+};
+
+/** Porta fechada, usada só em teste para simular a rota sem sessão. */
 export const pendingAssessorGuard: AssessorGuard = async () => ({
   ok: false,
   status: 401,

@@ -13,12 +13,12 @@ import {
   type Period,
   type Region,
 } from "../domain/types";
-import { getFixedIncome } from "../services/fixedIncomeService";
 import { FixedIncomePanel } from "./FixedIncomePanel";
 import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { MarketFilters } from "./MarketFilters";
 import { MarketOverview } from "./MarketOverview";
 import { NewsPreview } from "./NewsPreview";
+import { MarketAttentionPreview } from "./MarketAttentionPreview";
 import { RankingTable } from "./RankingTable";
 import { formatTimestamp } from "./format";
 import { decideQuoteRefresh, type QuoteRefreshDecision } from "./refresh";
@@ -32,10 +32,12 @@ type DashboardShellProps = {
   assets: readonly MarketFixtureAsset[];
   fixedIncome: Record<Region, FixedIncomeResponse>;
   news: NewsResponse;
+  attentionNews?: Parameters<typeof MarketAttentionPreview>[0]["news"];
+  attentionAlerts?: Parameters<typeof MarketAttentionPreview>[0]["alerts"];
   sectionErrors?: SectionErrors;
 };
 
-export function DashboardShell({ overview, assets, fixedIncome, news, sectionErrors }: DashboardShellProps) {
+export function DashboardShell({ overview, assets, fixedIncome, news, attentionNews, attentionAlerts, sectionErrors }: DashboardShellProps) {
   const [region, setRegion] = useState<Region>("BR");
   const [category, setCategory] = useState<Category>("STOCK");
   const [period, setPeriod] = useState<Period>("1D");
@@ -52,7 +54,7 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
 
   const ranking =
     category === "FIXED_INCOME" ? null : buildRanking(assets, { region, category, period });
-  const income = category === "FIXED_INCOME" ? getFixedIncome(region, fixedIncome) : null;
+  const income = category === "FIXED_INCOME" ? fixedIncome[region] : null;
   const methodologyNote =
     category === "REAL_ESTATE"
       ? region === "BR"
@@ -96,9 +98,9 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
       {ranking.gainers.length === 0 && ranking.losers.length === 0 ? (
         <LoadingErrorEmpty state="empty" title="Nenhum ativo elegível neste filtro." />
       ) : (
-        <div className="xp-stack">
-          <RankingTable title="Altas" rows={ranking.gainers} />
-          <RankingTable title="Baixas" rows={ranking.losers} />
+        <div className="xp-rankings">
+          <RankingTable title="Altas" rows={ranking.gainers} tone="up" />
+          <RankingTable title="Baixas" rows={ranking.losers} tone="down" />
         </div>
       )}
     </section>
@@ -108,7 +110,6 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
     <>
       <header className="xp-head">
         <div>
-          <div className="xp-kicker">VISÃO DO ASSESSOR</div>
           <h1>Dashboard do Assessor</h1>
           <p>
             Panorama, rankings e notícias para a conversa com o cliente. Referência{" "}
@@ -142,7 +143,9 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
 
       <div className="xp-columns">
         <div className="xp-stack">{marketPanel}</div>
-        {sectionErrors?.news ? (
+        {attentionNews && attentionAlerts ? (
+          <MarketAttentionPreview news={attentionNews} alerts={attentionAlerts} />
+        ) : sectionErrors?.news ? (
           <LoadingErrorEmpty state="error" title="Notícias indisponíveis." />
         ) : (
           <NewsPreview news={news} />
