@@ -158,3 +158,29 @@ button { cursor: pointer; }
 .xp-note-inline { color: var(--xp-muted); font-size: 9px; }
 .xp-cell-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
 fieldset.xp-filters { margin: 0; border: 0; padding: 0; display: block; }
+.xp-period { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+.xp-period button { min-height: 44px; border: 1px solid var(--xp-line); border-radius: 6px; background: #fff; color: #333; font-size: 11px; font-weight: 700; }
+.xp-period button.active { border-color: #111; background: #111; color: #fff; }
+.xp-grid-day { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xp-task-stat { width: 100%; text-align: left; }
+.xp-task-stat small::before { content: none; }
+.xp-task-stat.active { box-shadow: inset 0 0 0 2px #111; }
+.xp-task-kicker { display: flex; justify-content: space-between; gap: 6px; color: var(--xp-muted); font-size: 10px; }
+.xp-dot { width: 8px; height: 8px; border-radius: 50%; }
+.xp-dot.critico { background: #b4362e; }
+.xp-dot.atencao { background: #e0a100; }
+.xp-dot.menor { background: #176b50; }
+.xp-tag.critico { background: #fbe5e3; color: #8a2a2a; font-weight: 700; }
+.xp-tag.atencao { background: #fff4cc; color: #6b5200; font-weight: 700; }
+.xp-tag.menor { background: #e3f3ea; color: #176b50; font-weight: 700; }
+.xp-task-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.xp-task { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 14px; padding: 12px; border: 1px solid var(--xp-line); border-left-width: 4px; border-radius: 8px; background: #fff; }
+.xp-task.critico { border-left-color: #b4362e; background: #fff8f7; }
+.xp-task.atencao { border-left-color: #e0a100; background: #fffdf5; }
+.xp-task.menor { border-left-color: #176b50; background: #f7fbf8; }
+.xp-task-time b { display: block; font-size: 13px; }
+.xp-task-time span, .xp-task p { margin: 4px 0 0; color: var(--xp-muted); font-size: 10px; line-height: 1.5; }
+.xp-task h3 { margin: 8px 0 2px; font-size: 14px; }
+.xp-task b { font-size: 12px; }
+.xp-task-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 700px) { .xp-period { grid-template-columns: 1fr 1fr; } .xp-grid-day { grid-template-columns: 1fr; } .xp-task { grid-template-columns: 1fr; gap: 8px; } }

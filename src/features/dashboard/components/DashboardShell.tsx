@@ -13,7 +13,6 @@ import {
   type Period,
   type Region,
 } from "../domain/types";
-import { getFixedIncome } from "../services/fixedIncomeService";
 import { FixedIncomePanel } from "./FixedIncomePanel";
 import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { MarketFilters } from "./MarketFilters";
@@ -52,7 +51,7 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
 
   const ranking =
     category === "FIXED_INCOME" ? null : buildRanking(assets, { region, category, period });
-  const income = category === "FIXED_INCOME" ? getFixedIncome(region, fixedIncome) : null;
+  const income = category === "FIXED_INCOME" ? fixedIncome[region] : null;
   const methodologyNote =
     category === "REAL_ESTATE"
       ? region === "BR"
