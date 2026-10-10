@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ESTADOS_CIVIS, FAIXAS_RENDA, obterContatoWhatsApp, obterDashCliente, ROTULO_BLOCO, type Severidade } from "@/modules/assessor";
-import { exigirPapel } from "@/modules/usuarios";
+import { obterContatoWhatsApp, obterDashCliente, ROTULO_BLOCO, type Severidade } from "@/modules/assessor";
+import { ESTADOS_CIVIS, exigirPapel, FAIXAS_RENDA } from "@/modules/usuarios";
 import { formatarData, formatarMoeda, formatarMoedaCompacta, formatarNumero, formatarPercentual } from "@/shared/formatar";
 
 import { GraficoLinha } from "../../_components/grafico-linha";
@@ -39,9 +39,7 @@ export default async function DashClientePage({ params }: Props) {
         <div>
           <div className="xp-kicker">CLIENTE</div>
           <h1>{cliente.nome}</h1>
-          <p>
-            {cadastro.idade} anos · {cadastro.profissao}
-          </p>
+          <p>{cadastro ? `${cadastro.idade} anos · ${cadastro.profissao}` : "Cliente"}</p>
         </div>
         <span className="xp-tag mix">
           {ROTULO_ORIGEM[dash.origem]} · ref. {formatarData(dash.asOf)}
@@ -129,13 +127,17 @@ export default async function DashClientePage({ params }: Props) {
 
         <section className="xp-card">
           <h2>Cadastro</h2>
-          <p className="xp-desc">Dados de cadastro fictícios (virão do cadastro do M1)</p>
-          <div className="xp-metrics xp-metrics-2">
-            <div><span>Idade</span><b>{cadastro.idade} anos</b></div>
-            <div><span>Profissão</span><b>{cadastro.profissao}</b></div>
-            <div><span>Estado civil</span><b>{ESTADOS_CIVIS[cadastro.estadoCivil]}</b></div>
-            <div><span>Renda mensal</span><b>{FAIXAS_RENDA[cadastro.rendaFaixa]}</b></div>
-          </div>
+          <p className="xp-desc">Informado pelo cliente no cadastro</p>
+          {cadastro ? (
+            <div className="xp-metrics xp-metrics-2">
+              <div><span>Idade</span><b>{cadastro.idade} anos</b></div>
+              <div><span>Profissão</span><b>{cadastro.profissao}</b></div>
+              <div><span>Estado civil</span><b>{ESTADOS_CIVIS[cadastro.estadoCivil]}</b></div>
+              <div><span>Renda mensal</span><b>{FAIXAS_RENDA[cadastro.rendaFaixa]}</b></div>
+            </div>
+          ) : (
+            <div className="xp-placeholder">Cadastro pessoal não preenchido por este cliente.</div>
+          )}
         </section>
       </div>
 

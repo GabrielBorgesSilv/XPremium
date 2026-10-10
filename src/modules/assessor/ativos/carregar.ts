@@ -2,7 +2,14 @@
  * Carrega os dados das carteiras de UM assessor, usados pela tela de ativos e pelo dash do cliente.
  * Ponto único para: restringir aos clientes vinculados, validar os impactos da IA e avaliar o FGC.
  */
+import "server-only";
+
+import { inArray } from "drizzle-orm";
+
+import { db } from "@/core/db";
+
 import type { DadosCarteiras } from "./calculos";
+import { assessorPosicoes } from "./db";
 import {
   CARTEIRAS_DEMO,
   DEMO_AS_OF,
@@ -29,12 +36,12 @@ export type DadosCarregados = {
   serieDe: (ativo: Ativo) => SeriePrecos | null;
 };
 
-export function carregarDadosCarteiras(clientesPermitidos: ReadonlySet<string>): DadosCarregados {
-  // TODO(banco): ler posições do banco; TODO(M2): cotações e histórico reais.
-  const dados: DadosCarteiras = {
-    ...CARTEIRAS_DEMO,
-    posicoes: CARTEIRAS_DEMO.posicoes.filter((p) => clientesPermitidos.has(p.clienteId)),
-  };
+export async function carregarDadosCarteiras(clientesPermitidos: ReadonlySet<string>): Promise<DadosCarregados> {
+  // Posições do banco, só dos clientes permitidos. TODO(M2): cadastro de ativos, cotações e histórico reais.
+  const ids = [...clientesPermitidos];
+  const posicoes =
+    ids.length === 0 ? [] : await db.select().from(assessorPosicoes).where(inArray(assessorPosicoes.clienteId, ids));
+  const dados: DadosCarteiras = { ...CARTEIRAS_DEMO, posicoes };
 
   // A IA só pode alertar ativos que estes clientes têm.
   const tickersDosClientes = new Set(dados.posicoes.map((p) => p.ticker));

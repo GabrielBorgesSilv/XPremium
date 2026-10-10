@@ -42,10 +42,10 @@ async function celularDoCliente(clienteId: string): Promise<{ celular: string | 
  * (mesma resposta de "não existe", para não revelar quem existe).
  */
 export async function obterContatoWhatsApp(clienteId: string, nomeAssessor: string): Promise<ContatoWhatsApp | null> {
-  const cliente = buscarClienteDoAssessor(assessorAtual(), clienteId);
+  const cliente = await buscarClienteDoAssessor(await assessorAtual(), clienteId);
   if (!cliente) return null;
 
-  const carregado = carregarDadosCarteiras(new Set([cliente.id]));
+  const carregado = await carregarDadosCarteiras(new Set([cliente.id]));
   const carteira = resumirCarteiraCliente(cliente.id, carregado.dados);
   const titulo = (id: string) => carregado.noticias.get(id)?.titulo ?? "Notícia sem título";
   const blocos = montarBlocos(carteira, pontosDeAtencao(cliente.id, carteira, carregado.alertas, carregado.exposicoesFGC, titulo));
@@ -67,7 +67,7 @@ export async function registrarContatoWhatsApp(
   clienteId: string,
   blocos: readonly BlocoMensagem[],
 ): Promise<"ok" | "nao-encontrado"> {
-  if (!buscarClienteDoAssessor(assessorAtual(), clienteId)) return "nao-encontrado";
+  if (!(await buscarClienteDoAssessor(await assessorAtual(), clienteId))) return "nao-encontrado";
   await db.insert(assessorContatos).values({
     id: randomUUID(),
     assessorId,

@@ -12,17 +12,16 @@ export {
   type LinhaCliente,
   type ListaClientes,
 } from "./clientes/service";
+export type { ClienteVinculado, FiltrosClientes } from "./clientes/schema";
 export { chaveDosBlocos, obterContatoWhatsApp, registrarContatoWhatsApp } from "./clientes/contato";
 export type { ContatoWhatsApp, OrigemCelular } from "./clientes/contato";
 export { BLOCOS_MENSAGEM, ROTULO_BLOCO } from "./clientes/mensagem";
 export type { BlocoMensagem } from "./clientes/mensagem";
 export {
-  ESTADOS_CIVIS,
-  FAIXAS_RENDA,
-  type CadastroCliente,
-  type ClienteVinculado,
-  type FiltrosClientes,
-} from "./clientes/schema";
+  buscarAssessorDoCliente,
+  listarClientesDoAssessor,
+  saoVinculados,
+} from "./clientes/vinculo";
 export type { CarteiraCliente, EvolucaoCarteira, PontoDeAtencao, PosicaoCliente, Severidade } from "./ativos/carteira-cliente";
 export {
   obterVisaoAtivos,

@@ -25,13 +25,16 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("semearUsuarios", () => {
-  it("cria 1 assessor e 2 usuários com e-mails .test", async () => {
+// Cada conta roda o scrypt (lento de propósito); com 5 contas o padrão de 5 s não basta.
+describe("semearUsuarios", { timeout: 30_000 }, () => {
+  it("cria 1 assessor e 4 usuários com e-mails .test", async () => {
     const contas = await semearComAmbiente({ SENHA_DEMO: "senha-ficticia" });
     expect(contas.map((c) => [c.email, c.papel])).toEqual([
       ["assessor@hubxp.test", "assessor"],
       ["usuario1@hubxp.test", "usuario"],
       ["usuario2@hubxp.test", "usuario"],
+      ["usuario3@hubxp.test", "usuario"],
+      ["usuario4@hubxp.test", "usuario"],
     ]);
   });
 

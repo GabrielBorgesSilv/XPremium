@@ -9,11 +9,13 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { db } from "@/core/db";
+import { semearAgenda } from "@/modules/agenda/seed";
 import { semearAssessor } from "@/modules/assessor/seed";
 import { semearCliente } from "@/modules/cliente/seed";
 import { semearIntegracoes } from "@/modules/integracoes/seed";
 import { semearUsuarios } from "@/modules/usuarios/seed";
 import { type Aleatorio, criarAleatorio } from "@/shared/aleatorio";
+import type { ContextoSeed } from "@/shared/contexto-seed";
 
 export const SEMENTE_PADRAO = 42;
 
@@ -29,10 +31,11 @@ export const COLUNAS_APAGADAS_NA_EXPORTACAO: Record<string, readonly string[]> =
 };
 
 // Ordem importa: módulos que referenciam dados de outros vêm depois.
-const MODULOS: readonly { nome: string; semear: (aleatorio: Aleatorio) => Promise<void> }[] = [
+const MODULOS: readonly { nome: string; semear: (aleatorio: Aleatorio, contexto: ContextoSeed) => Promise<void> }[] = [
   { nome: "usuarios", semear: semearUsuarios },
   { nome: "cliente", semear: semearCliente },
   { nome: "assessor", semear: semearAssessor },
+  { nome: "agenda", semear: semearAgenda },
   { nome: "integracoes", semear: semearIntegracoes },
 ];
 
@@ -88,6 +91,13 @@ async function carregarTabela(tabela: string): Promise<number> {
   return registros.length;
 }
 
+/** Contas já gravadas (geradas ou carregadas de dados/seed), para os seeds seguintes se ligarem a elas. */
+async function contextoSeed(tabelas: readonly string[]): Promise<ContextoSeed> {
+  if (!tabelas.includes("usuarios_contas")) return { contas: [] };
+  const r = await cliente.execute("SELECT id, email, papel FROM usuarios_contas ORDER BY email");
+  return { contas: r.rows.map((l) => ({ id: String(l.id), email: String(l.email), papel: String(l.papel) })) };
+}
+
 /**
  * Popula o banco (assume tabelas vazias). Para cada módulo: se houver dados
  * exportados de alguma tabela dele em dados/seed/, carrega o exportado; senão,
@@ -107,7 +117,7 @@ export async function semearBanco(semente: number): Promise<void> {
       const exportadas = doModulo.filter((t) => existsSync(arquivoDaTabela(t)));
 
       if (exportadas.length === 0) {
-        await semear(aleatorio);
+        await semear(aleatorio, await contextoSeed(tabelas));
         console.log(`✔ ${nome}: gerado (sintético)`);
         continue;
       }

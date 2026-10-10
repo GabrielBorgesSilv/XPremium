@@ -28,6 +28,7 @@ Análise de viabilidade e mercado: `docs/analise-negocio.md`.
 
 - **Usuários / identidade**: autenticação, perfis (cliente, assessor) e permissões. O assessor tem acesso a todos os módulos de usuário.
 - **Integrações / agents**: ingestão de dados externos (bancos via Open Finance, notícias via API), consumidos pelos dois módulos primordiais.
+- **Agenda**: reuniões entre assessor e cliente vinculados, marcadas por qualquer um dos dois e aceitas por quem foi convidado.
 
 ## Funcionalidades
 
@@ -163,6 +164,21 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Services de `src/features` com chave ou segredo devem usar `import "server-only"` | — | Evita levar código de servidor (e chaves) para o navegador. |
 | 10/10/2026 | As APIs do dashboard chamam `autorizarApi("assessor")`. Admin passa e o painel o registra como `ASSESSOR`. `/assessor/dashboard` herda o `exigirPapel("assessor")` do layout | Guard que recusa toda chamada; papel enviado pelo navegador | O contrato do M1 já está publicado. A página não precisa de uma checagem própria. |
 
+### Vínculo, carteiras e agenda (M4)
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | Vínculo assessor ↔ cliente na tabela `assessor_vinculos` (um assessor por cliente), com ids das contas do M1 | Vínculo de demonstração no código | Agenda e telas do assessor precisam saber "meus clientes" / "meu assessor" a partir do login real. |
+| 10/10/2026 | Posições das carteiras no banco (`assessor_posicoes`); ativos, cotações e notícias continuam de demonstração no código | Carteiras fixas no código com ids inventados | Os ids das contas só existem depois do seed do M1; o seed do assessor entrega as 4 carteiras-modelo aos clientes de demo em ordem de e-mail. |
+| 10/10/2026 | Seed do M1 com `usuario3` e `usuario4` (4 clientes de demo) | Usar só 2 clientes | Mantém os casos da demo do M4 (FGC acima e perto, cripto, carteira concentrada). |
+| 10/10/2026 | `scripts/db/comum.ts` passa às funções de seed um contexto com as contas já gravadas (id, e-mail, papel) | Seed de um módulo importar o de outro; função pública nova no M1 | O seed não pode importar o `index.ts` (código do Next) nem o interior de outro módulo; o script já pode ler o banco. |
+| 10/10/2026 | Agenda de reuniões assessor ↔ cliente (módulo `agenda`): qualquer um dos dois convida; quem convidou não aceita, quem foi convidado aceita ou recusa | Só o assessor marca; aceite dos dois lados | Decisão de produto. **Amplia o escopo do calendário (M6)**, que o documento de escopo mantinha mínimo e sem compartilhamento até validação: avisar o dono do M6. |
+| 10/10/2026 | Motivo obrigatório (categoria + descrição de 10 a 500 caracteres); online ou presencial, com local obrigatório no presencial; durações de 30, 45, 60, 90 ou 120 min; horário de Brasília | Motivo em texto livre opcional | Decisão de produto: explicar o motivo da reunião. |
+| 10/10/2026 | Conflito de horário bloqueado: reunião pendente ou confirmada ocupa o horário do assessor e do cliente; checado ao criar e ao aceitar | Só avisar; ignorar | Evita duas reuniões no mesmo horário para a mesma pessoa. |
+| 10/10/2026 | Pendente: só quem convidou cancela (o convidado recusa). Confirmada: qualquer participante cancela. Motivo de recusa/cancelamento opcional | Cancelamento só por quem convidou | Imprevistos acontecem dos dois lados depois de confirmada. |
+| 10/10/2026 | Visualização em calendário mensal, com convites pendentes em destaque | Lista por dia; calendário semanal | Decisão de produto. |
+| 10/10/2026 | Seed da agenda com datas relativas ao dia do seed | Datas fixas | Com datas fixas, os convites de demo virariam passado e não poderiam ser aceitos na apresentação. |
+
 ### Processo
 
 | Data | Decisão | Motivo |
@@ -171,6 +187,9 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Node mínimo 22.9 | Scripts usam `--env-file-if-exists`; Node 20 fora de suporte. |
 
 ## Questões em aberto
+
+- Agenda: notificação de convite (hoje só aparece ao abrir a agenda), reagendar sem cancelar e criar de novo, link de videochamada para reunião online, e como fica com o calendário do M6.
+- Vínculo assessor ↔ cliente: quem cria o vínculo para contas novas do cadastro (hoje só o seed vincula).
 
 - Negócio (ver `docs/analise-negocio.md`, seção 12): receita por real sob custódia e patrimônio externo médio, tempo atual de preparação de reunião, consentimento com o jurídico (incluindo escritórios credenciados), proposta do BC (1x1x1), relação com as ferramentas da XP e o nome "HUB", metas do piloto.
 - Limite de tentativas de login e de pedidos de recuperação de senha (sem limite no MVP).

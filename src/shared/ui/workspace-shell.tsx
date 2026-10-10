@@ -9,11 +9,11 @@ type WorkspaceRole = "assessor" | "cliente";
 const navigation: Record<WorkspaceRole, { group: string; links: { label: string; href: string; icon: string }[] }[]> = {
   assessor: [
     { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Mercado", href: "/assessor/dashboard", icon: "▤" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
-    { group: "Relacionamento", links: [{ label: "Clientes", href: "/assessor/clientes", icon: "♙" }, { label: "Agenda", href: "/assessor", icon: "▦" }, { label: "Perfil", href: "/assessor/perfil", icon: "◉" }] },
+    { group: "Relacionamento", links: [{ label: "Clientes", href: "/assessor/clientes", icon: "♙" }, { label: "Agenda", href: "/assessor/agenda", icon: "▦" }, { label: "Perfil", href: "/assessor/perfil", icon: "◉" }] },
   ],
   cliente: [
     { group: "Visão geral", links: [{ label: "Dashboard", href: "/cliente", icon: "▦" }, { label: "Patrimônio", href: "/cliente/patrimonio", icon: "◈" }, { label: "Investimentos", href: "/cliente/patrimonio", icon: "↗" }] },
-    { group: "Relacionamento", links: [{ label: "Reuniões", href: "/cliente/reunioes", icon: "▦" }, { label: "Meu perfil", href: "/cliente/perfil", icon: "◉" }, { label: "Open Finance", href: "/cliente/open-finance", icon: "⌁" }] },
+    { group: "Relacionamento", links: [{ label: "Agenda", href: "/cliente/agenda", icon: "▦" }, { label: "Meu perfil", href: "/cliente/perfil", icon: "◉" }, { label: "Open Finance", href: "/cliente/open-finance", icon: "⌁" }] },
   ],
 };
 

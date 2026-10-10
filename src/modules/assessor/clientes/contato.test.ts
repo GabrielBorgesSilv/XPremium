@@ -5,8 +5,10 @@ const cadastro = vi.hoisted(() => {
   return { celular: null as string | null };
 });
 
-// Isola o módulo assessor: o celular do cadastro vem da interface pública do M1, simulada aqui.
+// Isola o módulo assessor: sessão, conta e cadastro vêm da interface pública do M1, simulada aqui.
 vi.mock("@/modules/usuarios", () => ({
+  exigirPapel: async () => ({ id: "assessor-logado", nome: "Assessor Fictício", email: "a@hubxp.test", papel: "assessor" }),
+  buscarUsuarioPorId: async (id: string) => ({ id, nome: "Cliente Fictício", email: "c@hubxp.test", papel: "usuario" }),
   buscarDadosPessoais: async () => (cadastro.celular ? { celular: cadastro.celular } : null),
 }));
 
@@ -18,7 +20,16 @@ async function carregar(whatsappDemo: string) {
   const { db } = await import("@/core/db");
   const { pushSQLiteSchema } = await import("drizzle-kit/api");
   const assessorDb = await import("./db");
-  await (await pushSQLiteSchema({ ...assessorDb }, db)).apply();
+  const ativosDb = await import("../ativos/db");
+  await (await pushSQLiteSchema({ ...assessorDb, ...ativosDb }, db)).apply();
+
+  // cli-1 é cliente do assessor logado, com a carteira-1 de demonstração.
+  const { CARTEIRAS_DEMO } = await import("../ativos/demo");
+  await db.insert(assessorDb.assessorVinculos).values({ clienteId: "cli-1", assessorId: "assessor-logado", criadoEm: "2026-10-10T00:00:00.000Z" });
+  await db.insert(ativosDb.assessorPosicoes).values(
+    CARTEIRAS_DEMO.posicoes.filter((p) => p.clienteId === "carteira-1").map((p) => ({ ...p, clienteId: "cli-1" })),
+  );
+
   const contato = await import("./contato");
   return { db, assessorDb, ...contato };
 }
@@ -29,7 +40,8 @@ beforeEach(() => {
   cadastro.celular = null;
 });
 
-describe("obterContatoWhatsApp", () => {
+// Cada teste recria o banco em memória; com a suíte inteira rodando em paralelo, 5 s não bastam.
+describe("obterContatoWhatsApp", { timeout: 30_000 }, () => {
   it("cliente de outro assessor (ou inexistente) → null", async () => {
     const { obterContatoWhatsApp } = await carregar("");
     expect(await obterContatoWhatsApp("cliente-que-nao-existe", "Assessor Fictício")).toBeNull();
@@ -68,7 +80,7 @@ describe("obterContatoWhatsApp", () => {
   });
 });
 
-describe("registrarContatoWhatsApp", () => {
+describe("registrarContatoWhatsApp", { timeout: 30_000 }, () => {
   it("guarda só os blocos (na ordem fixa), nunca o texto", async () => {
     const { db, assessorDb, registrarContatoWhatsApp } = await carregar("");
     expect(await registrarContatoWhatsApp("assessor-logado", "cli-1", ["convite", "resumo"])).toBe("ok");

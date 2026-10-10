@@ -101,11 +101,11 @@ function situacaoFGCDoTitulo(ticker: string, exposicoes: ExposicaoFGC[]): Situac
  */
 export async function obterVisaoAtivos(parametros: Record<string, string | string[] | undefined>): Promise<VisaoAtivos> {
   const filtros = FiltrosVisaoSchema.parse(parametros);
-  const clientes = listarClientesDoAssessor(assessorAtual());
+  const clientes = await listarClientesDoAssessor(await assessorAtual());
   const nomes = new Map(clientes.map((c) => [c.id, c.nome]));
   const nomeDoCliente = (id: string) => nomes.get(id) ?? id;
 
-  const carregado = carregarDadosCarteiras(new Set(nomes.keys()));
+  const carregado = await carregarDadosCarteiras(new Set(nomes.keys()));
   const { dados, alertas, exposicoesFGC } = carregado;
   const resumo = resumirCarteiras(dados);
 
