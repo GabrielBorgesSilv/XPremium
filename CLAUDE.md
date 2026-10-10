@@ -61,6 +61,15 @@ npm run check   # typecheck + lint + fronteiras entre módulos + testes
 
 Se algum passo falhar, reporte a falha; não diga que a tarefa está concluída.
 
+Testes verificam o código contra as regras de negócio estabelecidas; o código segue a regra, não o teste.
+
+- **Nunca** altere o código nem a regra de negócio só para um teste passar, a menos que o usuário peça.
+- Teste falhou? Investigue a causa:
+  - erro no próprio teste ou no ambiente (comando, dados, busca de texto): corrija o teste e diga isso;
+  - o código viola a regra: corrija o código para cumprir a regra;
+  - a regra parece errada ou ambígua: pare e pergunte ao usuário.
+- Sempre relate o que falhou e o que foi mudado.
+
 ## Documentação
 
 - Decisões de produto e questões em aberto: atualize `docs/context.md`.
