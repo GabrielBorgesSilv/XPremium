@@ -38,6 +38,7 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
 - `src/app` e outros módulos **só** importam `@/modules/<modulo>` (o `index.ts`). Nunca importe `service.ts`, `db.ts` ou `schema.ts` de outro módulo.
 - Cada módulo é dono das suas tabelas (prefixo `<modulo>_`); não faça joins entre tabelas de módulos diferentes.
 - `src/core/` é só infraestrutura (env, db, llm); `src/shared/` não tem regra de negócio. Nenhum dos dois importa `src/modules`.
+- **Exceção (hackathon):** `src/features/dashboard/` (M2, dashboard de mercado) fica fora de `src/modules`. Regras: só importa módulos pelo `index.ts`; `src/modules`, `src/core` e `src/shared` não importam `src/features` (verificado pelo `check:modules`); services com chave ou segredo usam `import "server-only"`. **Código novo continua em `src/modules/`**; não crie outras features. Mudança de pasta e unificação dos tipos de ativo/cotação com `assessor/ativos` (M4) ficam para depois da demo.
 - Submódulos seguem o padrão `service.ts` (regra de negócio, com `import "server-only"`), `schema.ts` (Zod) e `db.ts` (tabelas Drizzle).
 - Novo submódulo: crie a pasta com esses arquivos e exporte o que for público no `index.ts` do módulo.
 - Banco de desenvolvimento: SQLite local, preparado sozinho no `npm run dev`/`start` (`db:preparar`). Mudou um `db.ts`, rode `npm run db:reset`; não crie migrations durante o hackathon.

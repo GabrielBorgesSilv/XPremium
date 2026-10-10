@@ -121,6 +121,13 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Visual do cadastro: formulário do onboarding do protótipo, só a etapa 1, sem a barra de 4 etapas | Barra de etapas; layout do login | Etapas 2–4 ainda não existem. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
+### Arquitetura
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | `src/features/dashboard/` (M2, PR #9) aceito como exceção ao monolito modular durante o hackathon, com regras no dependency-cruiser: só importa módulos pelo `index.ts`; `modules`, `core` e `shared` não importam `features` | Mover já para `src/modules/assessor/`; adotar `src/features` como padrão do projeto | Código autocontido (não importa nada de fora); mover 42 arquivos agora custaria tempo perto da entrega (17h30). As regras cobrem o risco de fronteira sem trabalho para a autora. |
+| 10/10/2026 | Services de `src/features` com chave ou segredo devem usar `import "server-only"` | — | Evita levar código de servidor (e chaves) para o navegador. |
+
 ### Processo
 
 | Data | Decisão | Motivo |
@@ -131,6 +138,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 ## Questões em aberto
 
 - Limite de tentativas de login (sem limite no MVP).
+- Depois da demo: mover `src/features/dashboard` para `src/modules` (nomes em kebab-case/português) e unificar os tipos de ativo/cotação do M2 (`Category`, `Period`, `DataOrigin`, `Money`, `QuotePoint`) com os do M4 (`Categoria`, `Periodo`, `OrigemDado`, `Moeda`, `Cotacao`).
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.
