@@ -15,7 +15,9 @@ export const ESTADOS_CIVIS = {
   solteiro: "Solteiro(a)",
   casado: "Casado(a)",
   "uniao-estavel": "União estável",
+  separado: "Separado(a)",
   divorciado: "Divorciado(a)",
+  viuvo: "Viúvo(a)",
 } as const;
 
 export const FAIXAS_RENDA = {
