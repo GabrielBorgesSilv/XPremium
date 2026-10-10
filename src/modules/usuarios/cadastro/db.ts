@@ -14,7 +14,7 @@ export const usuariosDadosPessoais = sqliteTable("usuarios_dados_pessoais", {
   celular: text("celular"),
   profissao: text("profissao").notNull(),
   estadoCivil: text("estado_civil", {
-    enum: ["solteiro", "casado", "uniao-estavel", "divorciado"],
+    enum: ["solteiro", "casado", "uniao-estavel", "separado", "divorciado", "viuvo"],
   }).notNull(),
   rendaFaixa: text("renda_faixa", { enum: ["ate-5k", "5k-15k", "15k-50k", "acima-50k"] }).notNull(),
   /** Quando aceitou o termo e qual versão (evidência de consentimento, LGPD). */

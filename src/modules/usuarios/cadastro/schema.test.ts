@@ -81,6 +81,12 @@ describe("CadastroSchema", () => {
     }
   });
 
+  it("estado civil aceita as seis opções, incluindo separado e viúvo", () => {
+    for (const estadoCivil of ["solteiro", "casado", "uniao-estavel", "separado", "divorciado", "viuvo"]) {
+      expect(errosDe({ ...valido, estadoCivil }), estadoCivil).toEqual({});
+    }
+  });
+
   it("estado civil e renda só aceitam as opções do formulário", () => {
     expect(errosDe({ ...valido, estadoCivil: "outro" })).toHaveProperty("estadoCivil");
     expect(errosDe({ ...valido, rendaFaixa: "1-milhao" })).toHaveProperty("rendaFaixa");
