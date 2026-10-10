@@ -1,3 +1,5 @@
+import { ModulePage } from "@/shared/ui/dashboard";
+
 export default function OpenFinancePage() {
-  return <h2 className="text-lg font-medium">Open Finance</h2>;
+  return <ModulePage title="Open Finance" description="Conexões financeiras e visão consolidada das suas contas." />;
 }

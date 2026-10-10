@@ -1,3 +1,5 @@
+import { ModulePage } from "@/shared/ui/dashboard";
+
 export default function MetricasPage() {
-  return <h2 className="text-lg font-medium">Métricas</h2>;
+  return <ModulePage title="Métricas" description="Indicadores da carteira e do relacionamento com clientes." />;
 }

@@ -1,3 +1,5 @@
+import { ModulePage } from "@/shared/ui/dashboard";
+
 export default function ProspeccaoPage() {
-  return <h2 className="text-lg font-medium">Prospecção</h2>;
+  return <ModulePage title="Prospecção" description="Oportunidades e acompanhamento de novos relacionamentos." />;
 }
