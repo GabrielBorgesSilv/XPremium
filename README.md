@@ -25,6 +25,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 | `cliente` | primordial | `anamnese`, `open-finance`, `patrimonio` |
 | `assessor` | primordial | `clientes`, `ativos`, `metricas`, `prospeccao` |
 | `usuarios` | suporte | `auth`, `perfis` |
+| `agenda` | suporte | `reunioes` (reuniões assessor ↔ cliente; usado pelas duas áreas) |
 | `integracoes` | suporte | `bancos`, `noticias`, `agents` |
 
 ## Estrutura de pastas
@@ -122,6 +123,10 @@ import { sairAction } from "@/app/login/actions";
 | `assessor@hubxp.test` | assessor |
 | `usuario1@hubxp.test` | usuario |
 | `usuario2@hubxp.test` | usuario |
+| `usuario3@hubxp.test` | usuario |
+| `usuario4@hubxp.test` | usuario |
+
+Os quatro usuários são clientes vinculados ao assessor de demo (tabela `assessor_vinculos`), cada um com uma carteira de demonstração (`assessor_posicoes`). A agenda já vem com convites pendentes e reuniões confirmadas entre eles.
 
 ## Dependências
 
@@ -183,7 +188,7 @@ Mudou um `db.ts`? Rode `npm run db:reset`.
 
 ### Dados do seed: exportados + sintéticos
 
-O seed tem duas fontes. Para cada módulo, na ordem `usuarios` → `cliente` → `assessor` → `integracoes`:
+O seed tem duas fontes. Para cada módulo, na ordem `usuarios` → `cliente` → `assessor` → `agenda` → `integracoes`:
 
 1. **Dados exportados** (`dados/seed/<tabela>.json`, no git): se existir arquivo de alguma tabela do módulo, o seed carrega esses arquivos. O exportado vence.
 2. **Gerador sintético** (`src/modules/<modulo>/seed.ts`, função `semear<Modulo>`): usado quando o módulo não tem nada exportado.
@@ -203,6 +208,7 @@ git add dados/seed && git commit -m "Atualiza dados do seed"
 **Escrevendo o `seed.ts` de um módulo:**
 
 - Use o `aleatorio` recebido (de `@/shared/aleatorio`) e nunca `Math.random`: com a mesma semente, todos da equipe têm exatamente o mesmo banco. Para ids, `aleatorio.uuid()`.
-- Se precisar de dados de outro módulo (ex.: ids de usuários), **leia do banco** pelas funções públicas daquele módulo; não recalcule, porque ele pode ter sido carregado dos dados exportados.
+- Se precisar das contas de usuário (ex.: ligar dados a clientes), use o segundo parâmetro do `semear<Modulo>(aleatorio, contexto)`: `contexto.contas` traz id, e-mail e papel das contas já gravadas, lidas do banco pelo script (funciona também quando os usuários vieram dos dados exportados). Não recalcule ids e não importe o `index.ts` de outro módulo no seed.
+- Datas relativas: o seed da `agenda` usa datas relativas ao dia do seed (exceção à regra do banco idêntico), para os convites de demo continuarem no futuro.
 - O `seed.ts` não é exportado pelo `index.ts`: os scripts em `scripts/db/` importam `@/modules/<modulo>/seed` direto, porque o `index.ts` pode carregar código do Next, que não roda fora do servidor. Em `src/`, ninguém importa `seed.ts` de outro módulo.
 - O seed assume tabelas vazias; para recomeçar, use `db:reset`.
