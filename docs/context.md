@@ -65,6 +65,18 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 |---|---|---|
 | 10/10/2026 | Slogan: **"Estratégias exclusivas, resultados de alto nível."** | "Seu patrimônio. Suas escolhas." (protótipo de UI) |
 
+### WhatsApp no painel do cliente
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | Botão "Enviar pelo WhatsApp" no painel de cada cliente (`/assessor/clientes/[id]`), para o próprio cliente | Na lista; número digitado | O assessor envia com o contexto do cliente à vista |
+| 10/10/2026 | Envio por link `wa.me` com texto pronto, aberto no WhatsApp do assessor | WhatsApp Business API | Sem custo, sem conta na Meta nem templates; funciona no hackathon |
+| 10/10/2026 | Blocos: resumo do patrimônio, pontos de atenção, notícias que afetam a carteira, convite para reunião; o assessor marca os blocos e vê a prévia | Mensagem fixa | Controle do que sai |
+| 10/10/2026 | **Só temas, sem valores** (nem R$ nem percentuais); a regra fica no servidor | Valores na mensagem | LGPD (minimização): a mensagem sai do sistema e passa pelo WhatsApp |
+| 10/10/2026 | Registro de cada abertura em `assessor_contatos` (data, assessor, cliente, blocos; nunca o texto) | Não registrar | Histórico de relacionamento; não dá para saber se foi enviada |
+| 10/10/2026 | Celular: do cadastro (M1); para clientes de demonstração, o número de teste `WHATSAPP_DEMO` do `.env`; sem nenhum, abre o WhatsApp sem número | Números inventados no código | Número inventado pode ser de uma pessoa real e receber a mensagem; o número de teste não vai para o git |
+| 10/10/2026 | Feito pelo M1 nos arquivos do M3/M4 (Gabriel), com revisão dele | Gabriel fazer | Pedido do Márcio |
+
 ### Banco de dados
 
 | Data | Decisão | Alternativas descartadas | Motivo |
