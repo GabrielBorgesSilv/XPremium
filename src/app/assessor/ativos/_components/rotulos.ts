@@ -1,4 +1,4 @@
-import type { AlertaAtivo, Categoria, FiltrosVisao, ImpactoNoticia, OrigemDado } from "@/modules/assessor";
+import type { AlertaAtivo, Categoria, FiltrosVisao, ImpactoNoticia, OrigemDado, SituacaoFGC } from "@/modules/assessor";
 
 export const ROTULO_CATEGORIA: Record<Categoria, string> = {
   ACOES: "Ações",
@@ -21,6 +21,11 @@ export const SELO_DIRECAO: Record<Direcao, { texto: string; classe: string }> = 
   NEGATIVO: { texto: "Possível impacto negativo", classe: "neg" },
   MISTA: { texto: "Impactos mistos", classe: "mix" },
   INDEFINIDO: { texto: "Impacto indefinido", classe: "ind" },
+};
+
+export const SELO_FGC: Record<SituacaoFGC, { texto: string; classe: string }> = {
+  ACIMA: { texto: "Acima do FGC", classe: "neg" },
+  PERTO: { texto: "Perto do limite do FGC", classe: "mix" },
 };
 
 /** Monta a URL da tela mantendo os filtros atuais e aplicando `mudancas` (undefined remove). */

@@ -130,4 +130,7 @@ button { cursor: pointer; }
 .xp-chart-box { width: 100%; height: 200px; }
 .xp-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; color: var(--xp-muted); font-size: 9px; }
 .xp-legend i { display: inline-block; width: 8px; height: 8px; margin-right: 5px; border-radius: 50%; }
-@media (max-width: 700px) { .xp-metrics { grid-template-columns: 1fr 1fr; } .xp-drawer-head, .xp-drawer-body { padding-left: 14px; padding-right: 14px; } }
+@media (max-width: 700px) { .xp-metrics { grid-template-columns: 1fr 1fr; } .xp-drawer-head, .xp-drawer-body { padding-left: 14px; padding-right: 14px; } }.xp-warn.danger { background: var(--xp-neg-bg); color: var(--xp-red); }
+.xp-warn-list { display: grid; gap: 6px; margin: 9px 0 4px; padding: 0; list-style: none; color: #3b3b38; }
+.xp-note-inline { color: var(--xp-muted); font-size: 9px; }
+.xp-cell-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }

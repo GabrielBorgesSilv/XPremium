@@ -4,7 +4,7 @@ import { type DetalheAtivo, type FiltrosVisao, LIMITE_CONCENTRACAO_PADRAO, type 
 import { formatarData, formatarDataHora, formatarMoeda, formatarNumero, formatarPercentual } from "@/shared/formatar";
 
 import { GraficoAtivo } from "./grafico-ativo";
-import { hrefAtivos, ROTULO_CATEGORIA, ROTULO_ORIGEM, SELO_DIRECAO } from "./rotulos";
+import { hrefAtivos, ROTULO_CATEGORIA, ROTULO_ORIGEM, SELO_DIRECAO, SELO_FGC } from "./rotulos";
 
 function TextoVariacao({ variacao }: { variacao: Variacao | null }) {
   if (!variacao) return <span className="xp-note">sem dados</span>;
@@ -33,6 +33,11 @@ export function PainelAtivo({ detalhe, filtros }: Props) {
             <span className="xp-tag">{ROTULO_CATEGORIA[ativo.categoria]}</span>
             <h2>{ativo.ticker}</h2>
             <p>{ativo.nome}</p>
+            {ativo.emissor && (
+              <p>
+                Emissor: {ativo.emissor} · {ativo.coberturaFGC ? "coberto pelo FGC" : "sem cobertura do FGC"}
+              </p>
+            )}
           </div>
           <Link className="xp-close" href={hrefFechar} scroll={false} aria-label="Fechar">
             ✕
@@ -110,8 +115,22 @@ export function PainelAtivo({ detalhe, filtros }: Props) {
                       <td>{formatarNumero(c.quantidade, 4)}</td>
                       <td>{formatarMoeda(c.valor)}</td>
                       <td>
-                        {formatarPercentual(c.pesoNaCarteira)}{" "}
-                        {c.acimaDoLimite && <span className="xp-tag mix">Concentrado</span>}
+                        {formatarPercentual(c.pesoNaCarteira)}
+                        {(c.acimaDoLimite || c.fgc) && (
+                          <div className="xp-cell-tags">
+                            {c.acimaDoLimite && <span className="xp-tag mix">Concentrado</span>}
+                            {c.fgc && (
+                              <span
+                                className={`xp-tag ${SELO_FGC[c.fgc.situacao].classe}`}
+                                title={`${formatarMoeda(c.fgc.valorCoberto)} em títulos cobertos de ${c.fgc.emissor}`}
+                              >
+                                {c.fgc.situacao === "ACIMA"
+                                  ? `Acima do FGC · ${formatarMoeda(c.fgc.descoberto)} descobertos`
+                                  : `Perto do FGC · ${formatarMoeda(c.fgc.valorCoberto)} no emissor`}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}

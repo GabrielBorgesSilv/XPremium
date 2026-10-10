@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { FiltrosVisao, LinhaAtivo } from "@/modules/assessor";
 import { formatarMoeda, formatarPercentual } from "@/shared/formatar";
 
-import { hrefAtivos, ROTULO_CATEGORIA, SELO_DIRECAO } from "./rotulos";
+import { hrefAtivos, ROTULO_CATEGORIA, SELO_DIRECAO, SELO_FGC } from "./rotulos";
 
 type Props = { linhas: LinhaAtivo[]; filtros: FiltrosVisao };
 
@@ -36,6 +36,11 @@ export function TabelaAtivos({ linhas, filtros }: Props) {
                     {ativo.ticker}
                     <small>{ativo.nome}</small>
                   </Link>
+                  {linha.fgc && (
+                    <div className="xp-cell-tags">
+                      <span className={`xp-tag ${SELO_FGC[linha.fgc].classe}`}>{SELO_FGC[linha.fgc].texto}</span>
+                    </div>
+                  )}
                 </td>
                 <td>{ROTULO_CATEGORIA[ativo.categoria]}</td>
                 <td>{linha.numClientes}</td>

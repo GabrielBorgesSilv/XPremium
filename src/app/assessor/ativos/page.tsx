@@ -1,6 +1,7 @@
 import { obterVisaoAtivos } from "@/modules/assessor";
 import { formatarData } from "@/shared/formatar";
 
+import { AvisoFGC } from "./_components/aviso-fgc";
 import { Filtros } from "./_components/filtros";
 import { PainelAtivo } from "./_components/painel-ativo";
 import { Resumo } from "./_components/resumo";
@@ -27,6 +28,8 @@ export default async function AtivosPage({ searchParams }: Props) {
       </div>
 
       <Resumo visao={visao} />
+
+      <AvisoFGC fgc={visao.fgc} />
 
       {resumo.semCotacao.length > 0 && (
         <div className="xp-warn">
