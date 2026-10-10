@@ -6,6 +6,8 @@ const schema = z.object({
   OPEN_FINANCE_API_KEY: z.string().default(""),
   NEWS_API_KEY: z.string().default(""),
   ANTHROPIC_API_KEY: z.string().default(""),
+  // Senha dos usuários fictícios criados pelo seed (só desenvolvimento/demo).
+  SENHA_DEMO: z.string().default(""),
 });
 
 export const env = schema.parse(process.env);
