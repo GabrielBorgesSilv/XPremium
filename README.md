@@ -108,7 +108,7 @@ import { sairAction } from "@/app/login/actions";
 
 `src/proxy.ts` só repassa o caminho da requisição (cabeçalho interno `x-hub-caminho`) para o `exigirPapel` montar o `voltar`; não faz autorização.
 
-**Logins da demo** (criados pelo seed; senha = `SENHA_DEMO` do `.env`):
+**Logins da demo** (criados pelo seed; senha = `SENHA_DEMO` do `.env`, ou `demo-hubxp` em desenvolvimento se ela não estiver definida):
 
 | E-mail | Papel |
 |---|---|
@@ -171,6 +171,8 @@ npm run db:migrate     # aplica migrations
 ```
 
 Mudou um `db.ts`? Rode `npm run db:reset`.
+
+**Testes com banco:** use SQLite em memória (`DATABASE_URL=:memory:`) e aplique a estrutura real com `pushSQLiteSchema` do `drizzle-kit/api`. Exemplo em `src/modules/usuarios/auth/service.test.ts` (inclui como simular cookies e `redirect` do Next).
 
 ### Dados do seed: exportados + sintéticos
 

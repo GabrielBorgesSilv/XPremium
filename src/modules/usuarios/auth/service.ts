@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
 
-import { eq } from "drizzle-orm";
+import { eq, lte } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
@@ -16,7 +16,7 @@ import { buscarContaPorEmail, buscarUsuarioPorId } from "../perfis/service";
 import { usuariosSessoes } from "./db";
 import { caminhoInternoSeguro } from "./redirecionamento";
 import type { Login } from "./schema";
-import { verificarSenha } from "./senha";
+import { gerarHashSenha, verificarSenha } from "./senha";
 
 /** Regras de negócio: autenticação e sessão. */
 
@@ -27,6 +27,14 @@ function hashDoToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
+// Hash de uma senha aleatória, para conferir quando o e-mail não existe: o login
+// leva o mesmo tempo nos dois casos e não revela quais e-mails têm conta.
+let hashFicticio: Promise<string> | undefined;
+function obterHashFicticio(): Promise<string> {
+  hashFicticio ??= gerarHashSenha(randomBytes(32).toString("hex"));
+  return hashFicticio;
+}
+
 /**
  * Valida as credenciais, cria a sessão e grava o cookie.
  * Só pode ser chamada em Server Action ou Route Handler (escreve cookie).
@@ -34,7 +42,16 @@ function hashDoToken(token: string): string {
  */
 export async function entrar(dados: Login): Promise<Usuario | null> {
   const conta = await buscarContaPorEmail(dados.email);
-  if (!conta || !(await verificarSenha(dados.senha, conta.senhaHash))) return null;
+  const senhaConfere = await verificarSenha(dados.senha, conta?.senhaHash ?? (await obterHashFicticio()));
+  if (!conta || !senhaConfere) return null;
+
+  const loja = await cookies();
+  // Novo login encerra a sessão anterior deste navegador e limpa as expiradas.
+  const tokenAnterior = loja.get(COOKIE_SESSAO)?.value;
+  if (tokenAnterior) {
+    await db.delete(usuariosSessoes).where(eq(usuariosSessoes.tokenHash, hashDoToken(tokenAnterior)));
+  }
+  await db.delete(usuariosSessoes).where(lte(usuariosSessoes.expiraEm, new Date().toISOString()));
 
   const token = randomBytes(32).toString("base64url");
   const expiraEm = new Date(Date.now() + DURACAO_SESSAO_MS);
@@ -45,7 +62,7 @@ export async function entrar(dados: Login): Promise<Usuario | null> {
     criadoEm: new Date().toISOString(),
   });
 
-  (await cookies()).set(COOKIE_SESSAO, token, {
+  loja.set(COOKIE_SESSAO, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

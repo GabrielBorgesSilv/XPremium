@@ -53,6 +53,7 @@ export function FormularioLogin({ voltar }: { voltar: string | null }) {
           type="email"
           autoComplete="username"
           placeholder="Digite seu e-mail"
+          defaultValue={estado.email}
           aria-invalid={Boolean(estado.erros?.email)}
           aria-describedby={estado.erros?.email ? "erro-email" : undefined}
         />

@@ -6,6 +6,8 @@ import { z } from "zod";
 import { destinoAposLogin, entrar, LoginSchema, sair } from "@/modules/usuarios";
 
 export type EstadoLogin = {
+  /** E-mail digitado, devolvido para o campo não ficar vazio após um erro (o React limpa o formulário). */
+  email?: string;
   erro?: string;
   erros?: { email?: string; senha?: string };
   /** Login feito, mas "Sou assessor" sem o papel: mostra o aviso e segue para `destino`. */
@@ -25,13 +27,14 @@ export async function entrarAction(_anterior: EstadoLogin, dados: FormData): Pro
     escolha: dados.get("escolha"),
     voltar: dados.get("voltar"),
   });
+  const emailDigitado = String(dados.get("email") ?? "");
   if (!entrada.success) {
     const campos = z.flattenError(entrada.error).fieldErrors;
-    return { erros: { email: campos.email?.[0], senha: campos.senha?.[0] } };
+    return { email: emailDigitado, erros: { email: campos.email?.[0], senha: campos.senha?.[0] } };
   }
 
   const usuario = await entrar(entrada.data);
-  if (!usuario) return { erro: "E-mail ou senha inválidos." };
+  if (!usuario) return { email: emailDigitado, erro: "E-mail ou senha inválidos." };
 
   const { destino, semAcessoAssessor } = destinoAposLogin(
     usuario,

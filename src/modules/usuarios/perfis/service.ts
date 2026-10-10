@@ -33,8 +33,10 @@ export async function buscarContaPorEmail(email: string): Promise<Conta | null> 
 }
 
 export async function criarUsuario(dados: {
-  /** Opcional: o seed passa ids determinísticos. */
+  /** Só o seed passa id, data e sal fixos, para o banco gerado ser igual a cada reset. */
   id?: string;
+  criadoEm?: string;
+  salSenha?: Buffer;
   nome: string;
   email: string;
   senha: string;
@@ -44,9 +46,9 @@ export async function criarUsuario(dados: {
     id: dados.id ?? randomUUID(),
     nome: dados.nome,
     email: dados.email.trim().toLowerCase(),
-    senhaHash: await gerarHashSenha(dados.senha),
+    senhaHash: await gerarHashSenha(dados.senha, dados.salSenha),
     papel: dados.papel,
-    criadoEm: new Date().toISOString(),
+    criadoEm: dados.criadoEm ?? new Date().toISOString(),
   };
   await db.insert(usuariosContas).values(conta);
   return paraUsuario(conta);

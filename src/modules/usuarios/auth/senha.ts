@@ -9,9 +9,11 @@ const scryptAsync = promisify(scrypt) as (
 
 const TAMANHO_CHAVE = 64;
 
-/** Gera o hash da senha no formato `scrypt$<sal hex>$<hash hex>`. */
-export async function gerarHashSenha(senha: string): Promise<string> {
-  const sal = randomBytes(16);
+/**
+ * Gera o hash da senha no formato `scrypt$<sal hex>$<hash hex>`.
+ * `sal` só é passado pelo seed, para o hash ser igual a cada reset; senão é aleatório.
+ */
+export async function gerarHashSenha(senha: string, sal: Buffer = randomBytes(16)): Promise<string> {
   const hash = await scryptAsync(senha, sal, TAMANHO_CHAVE);
   return `scrypt$${sal.toString("hex")}$${hash.toString("hex")}`;
 }

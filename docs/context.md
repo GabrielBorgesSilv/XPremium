@@ -95,6 +95,13 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | `src/proxy.ts` repassa o caminho pedido num cabeçalho interno para o `exigirPapel` | Parâmetro no `exigirPapel` | Ninguém da equipe precisa passar o caminho; layouts não conhecem a subpágina. |
 | 10/10/2026 | Logout como Server Action (`sairAction`); botão no `WorkspaceShell` fica para a branch de menus, combinando com o dono do protótipo | Botão agora | O frontend de sair não existe e o shell é de outra pessoa. |
 | 10/10/2026 | Cadastro (só a conta: etapa 1) e "Esqueci minha senha" (link no console em dev) em branches próprias: `feature/m1-cadastro`, `feature/m1-recuperar-senha` | Tudo na `feature/m1-login`; 4 etapas do cadastro | Etapas 2–4 são a anamnese (módulo cliente); PRs menores. |
+| 10/10/2026 | E-mail inexistente também roda o scrypt (contra um hash fictício) | Responder direto | Mesmo tempo de resposta nos dois casos; medido: 31 ms de mediana em ambos. |
+| 10/10/2026 | Senha com no máximo 200 caracteres | Sem limite | Evita gastar o scrypt com senhas enormes. |
+| 10/10/2026 | Novo login encerra a sessão anterior do navegador e apaga sessões expiradas | Manter até expirar | Banco não acumula sessões mortas. |
+| 10/10/2026 | O formulário mantém o e-mail digitado após erro | — | O React 19 limpa o formulário a cada envio. |
+| 10/10/2026 | Sem `SENHA_DEMO` no `.env`, o seed usa `demo-hubxp` em desenvolvimento (com aviso); com `NODE_ENV=production` é obrigatória | Sempre exigir | `.env` antigos da equipe não travam o `npm run dev`. |
+| 10/10/2026 | Seed de usuários estável: `criado_em` fixo e sal da senha vindo do gerador com semente | Sal aleatório | `db:exportar` não gera diferença em todos os usuários a cada reset. |
+| 10/10/2026 | Testes automáticos de sessão e seed com SQLite em memória (`pushSQLiteSchema` com os `db.ts` reais) | Só testes manuais | Regressões aparecem no `npm run check`. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
 ### Processo
