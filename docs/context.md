@@ -7,6 +7,12 @@ Hub centralizado para a XP que conecta **cliente** e **assessor** de investiment
 - **Cliente**: principal benefício é **administrar seus investimentos** em um só lugar, consolidando ativos de diferentes instituições.
 - **Assessor**: principal benefício é **gerenciar e se relacionar com seus clientes**, com dados e insights para embasar recomendações.
 
+### Objetivo maior
+
+O Hub XP é a **ferramenta de trabalho do assessor** que atende **clientes XP** (assessor da XP ou de escritório credenciado). Foco na dor do assessor: menos tempo preparando reuniões, visão do patrimônio que o cliente tem **fora da XP via Open Finance** (com consentimento), priorização de quem contatar e mercado relacionado às carteiras. Resultado para a XP: captação do patrimônio que está fora, cross-sell e produtividade da rede de assessores. Para o cliente: visão consolidada e atendimento mais personalizado, sem custo. Não há prospects nem clientes de fora da XP.
+
+Análise de viabilidade e mercado: `docs/analise-negocio.md`.
+
 ## Arquitetura
 
 **Modular monolith**: uma única aplicação/deploy, dividida em módulos com fronteiras bem definidas (cada módulo é dono dos seus dados e expõe uma interface pública; módulos não acessam o interior uns dos outros).
@@ -65,6 +71,25 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | Data | Decisão | Substitui |
 |---|---|---|
 | 10/10/2026 | Slogan: **"Estratégias exclusivas, resultados de alto nível."** | "Seu patrimônio. Suas escolhas." (protótipo de UI) |
+| 10/10/2026 | **Mudança de foco:** o produto atende só **clientes XP** (de assessores da XP ou de escritórios credenciados) e o foco é a **dor do assessor** | Trazer prospects (não clientes XP) para a base; prospecção com benchmark; métrica de conversão de leads |
+| 10/10/2026 | Dores do assessor atendidas: tempo preparando reuniões; não enxergar o patrimônio fora da XP; não saber quem priorizar; acompanhar o mercado contra as carteiras | — |
+| 10/10/2026 | Open Finance continua: o cliente XP consente e o assessor vê o patrimônio externo (investimentos, contas, cartão, crédito, cadastro, com minimização por finalidade) | Só dados da custódia XP |
+| 10/10/2026 | Gratuito para cliente e assessor; retorno via captação do patrimônio externo, cross-sell e produtividade | Plano premium |
+| 10/10/2026 | Consentimento único e claro ("consolidar e permitir que meu assessor me atenda com base nisso"); escritórios credenciados usam os dados dentro da plataforma XP, sem exportar; validar com o jurídico | Dois consentimentos separados |
+| 10/10/2026 | Diferencial: assessor humano + dados, dentro do ecossistema XP | Prospecção com benchmark (removida) |
+| 10/10/2026 | Métricas: captação líquida do patrimônio externo, produtividade do assessor, tempo de preparação de reunião, adesão ao Open Finance, cross-sell e ticket médio | Conversão de leads |
+
+### WhatsApp no painel do cliente
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | Botão "Enviar pelo WhatsApp" no painel de cada cliente (`/assessor/clientes/[id]`), para o próprio cliente | Na lista; número digitado | O assessor envia com o contexto do cliente à vista |
+| 10/10/2026 | Envio por link `wa.me` com texto pronto, aberto no WhatsApp do assessor | WhatsApp Business API | Sem custo, sem conta na Meta nem templates; funciona no hackathon |
+| 10/10/2026 | Blocos: resumo do patrimônio, pontos de atenção, notícias que afetam a carteira, convite para reunião; o assessor marca os blocos e vê a prévia | Mensagem fixa | Controle do que sai |
+| 10/10/2026 | **Só temas, sem valores** (nem R$ nem percentuais); a regra fica no servidor | Valores na mensagem | LGPD (minimização): a mensagem sai do sistema e passa pelo WhatsApp |
+| 10/10/2026 | Registro de cada abertura em `assessor_contatos` (data, assessor, cliente, blocos; nunca o texto) | Não registrar | Histórico de relacionamento; não dá para saber se foi enviada |
+| 10/10/2026 | Celular: do cadastro (M1); para clientes de demonstração, o número de teste `WHATSAPP_DEMO` do `.env`; sem nenhum, abre o WhatsApp sem número | Números inventados no código | Número inventado pode ser de uma pessoa real e receber a mensagem; o número de teste não vai para o git |
+| 10/10/2026 | Feito pelo M1 nos arquivos do M3/M4 (Gabriel), com revisão dele | Gabriel fazer | Pedido do Márcio |
 
 ### Banco de dados
 
@@ -137,6 +162,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 |---|---|---|---|
 | 10/10/2026 | `src/features/dashboard/` (M2, PR #9) aceito como exceção ao monolito modular durante o hackathon, com regras no dependency-cruiser: só importa módulos pelo `index.ts`; `modules`, `core` e `shared` não importam `features` | Mover já para `src/modules/assessor/`; adotar `src/features` como padrão do projeto | Código autocontido (não importa nada de fora); mover 42 arquivos agora custaria tempo perto da entrega (17h30). As regras cobrem o risco de fronteira sem trabalho para a autora. |
 | 10/10/2026 | Services de `src/features` com chave ou segredo devem usar `import "server-only"` | — | Evita levar código de servidor (e chaves) para o navegador. |
+| 10/10/2026 | As APIs do dashboard chamam `autorizarApi("assessor")`. Admin passa e o painel o registra como `ASSESSOR`. `/assessor/dashboard` herda o `exigirPapel("assessor")` do layout | Guard que recusa toda chamada; papel enviado pelo navegador | O contrato do M1 já está publicado. A página não precisa de uma checagem própria. |
 
 ### Vínculo, carteiras e agenda (M4)
 
@@ -165,6 +191,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 - Agenda: notificação de convite (hoje só aparece ao abrir a agenda), reagendar sem cancelar e criar de novo, link de videochamada para reunião online, e como fica com o calendário do M6.
 - Vínculo assessor ↔ cliente: quem cria o vínculo para contas novas do cadastro (hoje só o seed vincula).
 
+- Negócio (ver `docs/analise-negocio.md`, seção 12): receita por real sob custódia e patrimônio externo médio, tempo atual de preparação de reunião, consentimento com o jurídico (incluindo escritórios credenciados), proposta do BC (1x1x1), relação com as ferramentas da XP e o nome "HUB", metas do piloto.
 - Limite de tentativas de login e de pedidos de recuperação de senha (sem limite no MVP).
 - Serviço de envio de e-mail (hoje o link de redefinição só aparece no terminal em desenvolvimento).
 - Depois da demo: mover `src/features/dashboard` para `src/modules` (nomes em kebab-case/português) e unificar os tipos de ativo/cotação do M2 (`Category`, `Period`, `DataOrigin`, `Money`, `QuotePoint`) com os do M4 (`Categoria`, `Periodo`, `OrigemDado`, `Moeda`, `Cotacao`).

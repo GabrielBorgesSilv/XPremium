@@ -13,6 +13,10 @@ export {
   type ListaClientes,
 } from "./clientes/service";
 export type { ClienteVinculado, FiltrosClientes } from "./clientes/schema";
+export { chaveDosBlocos, obterContatoWhatsApp, registrarContatoWhatsApp } from "./clientes/contato";
+export type { ContatoWhatsApp, OrigemCelular } from "./clientes/contato";
+export { BLOCOS_MENSAGEM, ROTULO_BLOCO } from "./clientes/mensagem";
+export type { BlocoMensagem } from "./clientes/mensagem";
 export {
   buscarAssessorDoCliente,
   listarClientesDoAssessor,

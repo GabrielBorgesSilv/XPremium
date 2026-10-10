@@ -1,3 +1,5 @@
+import "server-only";
+
 import { buildRanking } from "../domain/ranking";
 import { RANKING_CATEGORIES, type MarketFixtureAsset, type RankingQuery, type RankingResponse } from "../domain/types";
 import { marketFixtures } from "../fixtures/market.fixture";

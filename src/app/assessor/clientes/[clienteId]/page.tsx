@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { obterDashCliente, type Severidade } from "@/modules/assessor";
-import { ESTADOS_CIVIS, FAIXAS_RENDA } from "@/modules/usuarios";
+import { obterContatoWhatsApp, obterDashCliente, ROTULO_BLOCO, type Severidade } from "@/modules/assessor";
+import { ESTADOS_CIVIS, exigirPapel, FAIXAS_RENDA } from "@/modules/usuarios";
 import { formatarData, formatarMoeda, formatarMoedaCompacta, formatarNumero, formatarPercentual } from "@/shared/formatar";
 
 import { GraficoLinha } from "../../_components/grafico-linha";
 import { hrefAtivo } from "../../_components/rotas";
 import { ROTULO_CATEGORIA, ROTULO_ORIGEM } from "../../ativos/_components/rotulos";
+import { EnviarWhatsApp } from "./enviar-whatsapp";
 
 type Props = { params: Promise<{ clienteId: string }> };
 
@@ -19,9 +20,12 @@ const SELO_SEVERIDADE: Record<Severidade, { texto: string; classe: string }> = {
 
 export default async function DashClientePage({ params }: Props) {
   const { clienteId } = await params;
-  const dash = await obterDashCliente(decodeURIComponent(clienteId));
+  const usuario = await exigirPapel("assessor");
+  const id = decodeURIComponent(clienteId);
+  const dash = await obterDashCliente(id);
   // Cliente inexistente ou de outro assessor: a mesma resposta, para não revelar quem existe.
   if (!dash) notFound();
+  const whatsapp = await obterContatoWhatsApp(id, usuario.nome);
 
   const { cliente, cadastro, carteira, evolucao, pontos } = dash;
   const maior = carteira.posicoes.find((p) => p.valor !== null);
@@ -64,6 +68,16 @@ export default async function DashClientePage({ params }: Props) {
           <p className="xp-note">De severidade alta ou média</p>
         </section>
       </div>
+
+      {whatsapp && (
+        <EnviarWhatsApp
+          clienteId={id}
+          celular={whatsapp.celular}
+          origemCelular={whatsapp.origemCelular}
+          disponiveis={whatsapp.disponiveis.map((bloco) => ({ bloco, rotulo: ROTULO_BLOCO[bloco] }))}
+          mensagens={whatsapp.mensagens}
+        />
+      )}
 
       <section className="xp-card xp-section">
         <h2>Pontos de atenção</h2>

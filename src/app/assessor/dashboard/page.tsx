@@ -1,12 +1,16 @@
 import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
 import { loadDashboardView } from "@/features/dashboard/services/dashboardService";
+import { listarAlertas, listarNoticias } from "@/modules/integracoes";
 
-/**
- * A página pede a visão aos provedores locais.
- * requireAssessor e GET /api/dashboard/news ainda não existem nos módulos 1 e 5.
- */
+export const dynamic = "force-dynamic";
+
+/** Loads market data and the persisted radar from the integrations module. */
 export default async function AssessorDashboardPage() {
-  const view = await loadDashboardView();
+  const [view, attentionNews, attentionAlerts] = await Promise.all([
+    loadDashboardView(),
+    listarNoticias(),
+    listarAlertas(),
+  ]);
 
   return (
     <DashboardShell
@@ -14,6 +18,8 @@ export default async function AssessorDashboardPage() {
       assets={view.assets}
       fixedIncome={view.fixedIncome}
       news={view.news}
+      attentionNews={attentionNews}
+      attentionAlerts={attentionAlerts}
     />
   );
 }

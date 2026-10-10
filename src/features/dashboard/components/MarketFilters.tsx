@@ -14,9 +14,10 @@ const CATEGORIES: { value: Category; label: string }[] = [
 ];
 
 const PERIODS: { value: Period; label: string }[] = [
-  { value: "1D", label: "1D" },
-  { value: "7D", label: "7D" },
-  { value: "30D", label: "30D" },
+  { value: "1D", label: "Hoje" },
+  { value: "7D", label: "7 dias" },
+  { value: "15D", label: "15 dias" },
+  { value: "30D", label: "30 dias" },
 ];
 
 type MarketFiltersProps = {
@@ -28,24 +29,38 @@ type MarketFiltersProps = {
   onPeriod: (period: Period) => void;
 };
 
-function Choice({
-  name,
-  value,
+function FilterBar({
   label,
-  checked,
+  columns,
+  children,
+}: {
+  label: string;
+  columns: 2 | 3 | 4 | 5;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <p className="xp-filter-label">{label}</p>
+      <div className={`xp-period cols-${columns}`} role="group" aria-label={label}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function Option({
+  label,
+  pressed,
   onSelect,
 }: {
-  name: string;
-  value: string;
   label: string;
-  checked: boolean;
+  pressed: boolean;
   onSelect: () => void;
 }) {
   return (
-    <label className={`xp-segment${checked ? " active" : ""}`}>
-      <input type="radio" name={name} value={value} checked={checked} onChange={onSelect} />
+    <button type="button" className={pressed ? "active" : undefined} aria-pressed={pressed} onClick={onSelect}>
       {label}
-    </label>
+    </button>
   );
 }
 
@@ -56,57 +71,40 @@ export function MarketFilters({ region, category, period, onRegion, onCategory, 
     <section className="xp-card xp-band" aria-labelledby="filtros-titulo">
       <h2 id="filtros-titulo">Filtros</h2>
       <p className="xp-desc">Região, categoria e período das listas abaixo.</p>
-      <div className="xp-filter-bar">
-        <fieldset className="xp-filters">
-          <legend className="xp-group">Região</legend>
-          <div className="xp-choice-row">
-            {REGIONS.map((option) => (
-              <Choice
-                key={option.value}
-                name="dashboard-region"
-                value={option.value}
-                label={option.label}
-                checked={region === option.value}
-                onSelect={() => onRegion(option.value)}
-              />
-            ))}
-          </div>
-        </fieldset>
-        <fieldset className="xp-filters">
-          <legend className="xp-group">Categoria</legend>
-          <div className="xp-choice-row">
-            {CATEGORIES.map((option) => (
-              <Choice
-                key={option.value}
-                name="dashboard-category"
-                value={option.value}
-                label={option.label}
-                checked={category === option.value}
-                onSelect={() => onCategory(option.value)}
-              />
-            ))}
-          </div>
-        </fieldset>
-        {ranking ? (
-          <fieldset className="xp-filters">
-            <legend className="xp-group">Período</legend>
-            <div className="xp-choice-row">
-              {PERIODS.map((option) => (
-                <Choice
-                  key={option.value}
-                  name="dashboard-period"
-                  value={option.value}
-                  label={option.label}
-                  checked={period === option.value}
-                  onSelect={() => onPeriod(option.value)}
-                />
-              ))}
-            </div>
-          </fieldset>
-        ) : (
-          <p className="xp-desc">Renda fixa não usa o ranking por período.</p>
-        )}
-      </div>
+      <FilterBar label="Região" columns={2}>
+        {REGIONS.map((option) => (
+          <Option
+            key={option.value}
+            label={option.label}
+            pressed={region === option.value}
+            onSelect={() => onRegion(option.value)}
+          />
+        ))}
+      </FilterBar>
+      <FilterBar label="Categoria" columns={5}>
+        {CATEGORIES.map((option) => (
+          <Option
+            key={option.value}
+            label={option.label}
+            pressed={category === option.value}
+            onSelect={() => onCategory(option.value)}
+          />
+        ))}
+      </FilterBar>
+      {ranking ? (
+        <FilterBar label="Período" columns={4}>
+          {PERIODS.map((option) => (
+            <Option
+              key={option.value}
+              label={option.label}
+              pressed={period === option.value}
+              onSelect={() => onPeriod(option.value)}
+            />
+          ))}
+        </FilterBar>
+      ) : (
+        <p className="xp-desc">Renda fixa não usa o ranking por período.</p>
+      )}
     </section>
   );
 }
