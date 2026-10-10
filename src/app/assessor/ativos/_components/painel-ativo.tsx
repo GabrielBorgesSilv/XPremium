@@ -3,7 +3,8 @@ import Link from "next/link";
 import { type DetalheAtivo, type FiltrosVisao, LIMITE_CONCENTRACAO_PADRAO, type Variacao } from "@/modules/assessor";
 import { formatarData, formatarDataHora, formatarMoeda, formatarNumero, formatarPercentual } from "@/shared/formatar";
 
-import { GraficoAtivo } from "./grafico-ativo";
+import { GraficoLinha } from "../../_components/grafico-linha";
+import { hrefCliente } from "../../_components/rotas";
 import { hrefAtivos, ROTULO_CATEGORIA, ROTULO_ORIGEM, SELO_DIRECAO, SELO_FGC } from "./rotulos";
 
 function TextoVariacao({ variacao }: { variacao: Variacao | null }) {
@@ -60,7 +61,14 @@ export function PainelAtivo({ detalhe, filtros }: Props) {
               <>
                 <h2 style={{ marginTop: 14 }}>{serie.medida === "TAXA" ? "Taxa nos últimos 30 dias" : "Preço nos últimos 30 dias"}</h2>
                 <p className="xp-desc">{ROTULO_ORIGEM[serie.origem]} · linhas tracejadas marcam as notícias</p>
-                <GraficoAtivo serie={serie} marcadores={marcadores} />
+                <GraficoLinha
+                  pontos={serie.pontos}
+                  medida={serie.medida}
+                  moeda={serie.moeda}
+                  nome={serie.medida === "TAXA" ? "Taxa" : "Preço"}
+                  descricao={`Evolução ${serie.medida === "TAXA" ? "da taxa" : "do preço"} de ${ativo.ticker} em 30 dias`}
+                  marcadores={marcadores}
+                />
               </>
             ) : (
               <div className="xp-placeholder">Histórico indisponível para este ativo.</div>
@@ -111,7 +119,7 @@ export function PainelAtivo({ detalhe, filtros }: Props) {
                 <tbody>
                   {clientes.map((c) => (
                     <tr key={c.clienteId}>
-                      <td>{c.nome}</td>
+                      <td><Link href={hrefCliente(c.clienteId)}>{c.nome}</Link></td>
                       <td>{formatarNumero(c.quantidade, 4)}</td>
                       <td>{formatarMoeda(c.valor)}</td>
                       <td>

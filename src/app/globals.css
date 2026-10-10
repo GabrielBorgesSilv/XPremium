@@ -158,3 +158,25 @@ button { cursor: pointer; }
 .xp-note-inline { color: var(--xp-muted); font-size: 9px; }
 .xp-cell-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
 fieldset.xp-filters { margin: 0; border: 0; padding: 0; display: block; }
+
+/* ===== Clientes (/assessor/clientes) ===== */
+.xp-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.xp-section { margin-bottom: 15px; }
+.xp-search { display: flex; gap: 6px; }
+.xp-search input { min-width: 220px; border: 1px solid var(--xp-line); border-radius: 6px; padding: 7px 10px; background: #fff; font: inherit; font-size: 11px; }
+.xp-back { display: inline-block; margin-bottom: 14px; color: var(--xp-muted); font-size: 11px; }
+.xp-back:hover { color: #111; }
+.xp-points { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.xp-points li { display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: start; gap: 12px; padding: 11px 0; border-bottom: 1px solid #eee; }
+.xp-points li:last-child { border-bottom: 0; }
+.xp-points li .xp-tag { text-align: center; }
+.xp-points b { font-size: 11px; }
+.xp-points p { margin: 3px 0 0; color: #555; font-size: 10px; line-height: 1.5; }
+.xp-metrics-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.xp-bars { display: grid; gap: 10px; }
+.xp-bar-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 48px 110px; align-items: center; gap: 10px; font-size: 10px; }
+.xp-bar-row small { color: var(--xp-muted); text-align: right; }
+.xp-bar { height: 8px; border-radius: 4px; background: #efefea; overflow: hidden; }
+.xp-bar i { display: block; height: 100%; background: #111; border-radius: 4px; }
+.xp-table td a:not(.xp-row-link):hover { text-decoration: underline; }
+@media (max-width: 700px) { .xp-grid-2 { grid-template-columns: 1fr 1fr; } .xp-search input { min-width: 0; width: 100%; } .xp-search { flex: 1 1 100%; } .xp-points li { grid-template-columns: 48px minmax(0, 1fr); } .xp-points li .xp-filter { grid-column: 2; justify-self: start; } .xp-bar-row { grid-template-columns: 70px minmax(0, 1fr) 44px; } .xp-bar-row small { display: none; } }
