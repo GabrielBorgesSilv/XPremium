@@ -10,7 +10,6 @@ const navigation: Record<WorkspaceRole, { group: string; links: { label: string;
   assessor: [
     { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Mercado", href: "/assessor/dashboard", icon: "▤" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
     { group: "Relacionamento", links: [{ label: "Clientes", href: "/assessor/clientes", icon: "♙" }, { label: "Agenda", href: "/assessor", icon: "▦" }, { label: "Perfil", href: "/assessor/perfil", icon: "◉" }] },
-    { group: "Expansão", links: [{ label: "Prospecção", href: "/assessor/prospeccao", icon: "⌕" }] },
   ],
   cliente: [
     { group: "Visão geral", links: [{ label: "Dashboard", href: "/cliente", icon: "▦" }, { label: "Patrimônio", href: "/cliente/patrimonio", icon: "◈" }, { label: "Investimentos", href: "/cliente/patrimonio", icon: "↗" }] },
