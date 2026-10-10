@@ -105,6 +105,9 @@ const usuario = await obterUsuarioAtual();
 
 **Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
 
+
+**WhatsApp no painel do cliente:** o assessor marca os blocos (resumo, pontos de atenção, notícias, convite), vê a prévia e abre o WhatsApp com o texto pronto (`wa.me`). Só temas, sem valores. Para testar com os clientes de demonstração, coloque um celular de teste seu em `WHATSAPP_DEMO` no `.env`; vazio, o WhatsApp abre sem número. Cada abertura fica registrada em `assessor_contatos` (sem o texto).
+
 **Botão de sair**, em qualquer componente:
 
 ```tsx
@@ -185,6 +188,9 @@ Para migrar um banco existente de `usuarios_auth` para o login da `main`, faça 
 e rode `npm run db:migrar-login-main`. A migração mantém a tabela antiga, converte os hashes
 de senha sem alterá-los, e preserva os IDs dos registros de anamnese, Open Finance e patrimônio.
 Não use `db:reset` nesse caso.
+
+**Testes com banco:** use SQLite em memória (`DATABASE_URL=:memory:`) e aplique a estrutura real com `pushSQLiteSchema` do `drizzle-kit/api`. Exemplo em `src/modules/usuarios/auth/service.test.ts` (inclui como simular cookies e `redirect` do Next).
+
 
 **Testes com banco:** use SQLite em memória (`DATABASE_URL=:memory:`) e aplique a estrutura real com `pushSQLiteSchema` do `drizzle-kit/api`. Exemplo em `src/modules/usuarios/auth/service.test.ts` (inclui como simular cookies e `redirect` do Next).
 

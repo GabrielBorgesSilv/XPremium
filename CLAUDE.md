@@ -45,6 +45,7 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
 - Seed = dados exportados (`dados/seed/<tabela>.json`, via `npm run db:exportar`) + geradores sintéticos (`src/modules/<modulo>/seed.ts`, `semear<Modulo>`). O exportado vence por módulo.
 - `seed.ts` é a única exceção à interface pública: só `scripts/db/` o importa direto (`@/modules/<modulo>/seed`); ele não entra no `index.ts` e não pode importar código do Next. Use o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`; dados de outro módulo, leia do banco.
 - LGPD: só dados fictícios no seed; e-mails sempre no domínio `.test` (o `db:exportar` recusa outros).
+- Vínculo cliente → assessor (M1): **fonte única** é `usuarios_contas.assessor_id`, lido por `buscarAssessorDoUsuario` e gravado por `vincularAssessor` (`@/modules/usuarios`). Não crie outro vínculo; `assessor/clientes/vinculo.ts` (dados de demonstração) deve passar a usar este.
 - Autorização (M1): toda página, layout, API e Server Action com dados chama `exigirPapel(papel)` ou `autorizarApi(papel)` de `@/modules/usuarios`; esconder elementos na UI não é autorização. Papéis hierárquicos: `usuario` < `assessor` < `admin`.
 - Prefira Server Components e Server Actions; use `"use client"` só quando precisar de interatividade.
 

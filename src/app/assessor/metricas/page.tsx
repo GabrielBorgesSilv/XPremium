@@ -1,5 +1,5 @@
-import { ModulePage } from "@/shared/ui/dashboard";
+import { PainelMetricas } from "./_components/painel-metricas";
 
 export default function MetricasPage() {
-  return <ModulePage title="Métricas" description="Indicadores da carteira e do relacionamento com clientes." />;
+  return <PainelMetricas />;
 }

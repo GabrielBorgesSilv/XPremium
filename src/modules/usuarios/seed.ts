@@ -4,7 +4,7 @@ import { env } from "@/core/env";
 import type { Aleatorio } from "@/shared/aleatorio";
 
 import type { Papel } from "./perfis/schema";
-import { criarUsuario } from "./perfis/service";
+import { criarUsuario, vincularAssessor } from "./perfis/service";
 
 // Valor do .env.example: usado em desenvolvimento quando o .env não tem SENHA_DEMO.
 const SENHA_DEMO_PADRAO = "demo-hubxp";
@@ -28,8 +28,9 @@ const CONTAS: readonly { email: string; papel: Papel }[] = [
  */
 export async function semearUsuarios(aleatorio: Aleatorio): Promise<void> {
   const senha = senhaDemo();
+  const criados: { id: string; papel: Papel }[] = [];
   for (const { email, papel } of CONTAS) {
-    await criarUsuario({
+    const usuario = await criarUsuario({
       id: aleatorio.uuid(),
       nome: `${aleatorio.escolher(NOMES)} ${aleatorio.escolher(SOBRENOMES)}`,
       email,
@@ -39,7 +40,14 @@ export async function semearUsuarios(aleatorio: Aleatorio): Promise<void> {
       // Sal vindo do gerador com semente: mesmo hash a cada reset.
       salSenha: Buffer.from(aleatorio.uuid().replaceAll("-", ""), "hex"),
     });
+    criados.push({ id: usuario.id, papel });
   }
+  // Vínculo cliente → assessor (fonte única: usuarios_contas.assessor_id): os usuários da demo são do assessor da demo.
+  const assessor = criados.find((c) => c.papel === "assessor");
+  if (assessor) {
+    for (const c of criados.filter((c) => c.papel === "usuario")) await vincularAssessor(c.id, assessor.id);
+  }
+
 }
 
 /** SENHA_DEMO do .env; em desenvolvimento, sem ela, usa o valor do .env.example e avisa. */
