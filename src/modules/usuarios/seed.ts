@@ -19,6 +19,9 @@ const CONTAS: readonly { email: string; papel: Papel }[] = [
   { email: "assessor@hubxp.test", papel: "assessor" },
   { email: "usuario1@hubxp.test", papel: "usuario" },
   { email: "usuario2@hubxp.test", papel: "usuario" },
+  // usuario3 e usuario4: completam as 4 carteiras de demonstração do M4 (clientes do assessor).
+  { email: "usuario3@hubxp.test", papel: "usuario" },
+  { email: "usuario4@hubxp.test", papel: "usuario" },
 ];
 
 /**

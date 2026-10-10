@@ -12,13 +12,12 @@ export {
   type LinhaCliente,
   type ListaClientes,
 } from "./clientes/service";
+export type { ClienteVinculado, FiltrosClientes } from "./clientes/schema";
 export {
-  ESTADOS_CIVIS,
-  FAIXAS_RENDA,
-  type CadastroCliente,
-  type ClienteVinculado,
-  type FiltrosClientes,
-} from "./clientes/schema";
+  buscarAssessorDoCliente,
+  listarClientesDoAssessor,
+  saoVinculados,
+} from "./clientes/vinculo";
 export type { CarteiraCliente, EvolucaoCarteira, PontoDeAtencao, PosicaoCliente, Severidade } from "./ativos/carteira-cliente";
 export {
   obterVisaoAtivos,

@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { DadosPessoais } from "@/modules/usuarios";
+
 import { carregarDadosCarteiras } from "../ativos/carregar";
 import {
   type CarteiraCliente,
@@ -10,12 +12,7 @@ import {
   resumirCarteiraCliente,
 } from "../ativos/carteira-cliente";
 import type { OrigemDado } from "../ativos/schema";
-import {
-  type CadastroCliente,
-  type ClienteVinculado,
-  type FiltrosClientes,
-  FiltrosClientesSchema,
-} from "./schema";
+import { type ClienteVinculado, type FiltrosClientes, FiltrosClientesSchema } from "./schema";
 import { assessorAtual, buscarClienteDoAssessor, listarClientesDoAssessor } from "./vinculo";
 
 export type LinhaCliente = ClienteVinculado & {
@@ -41,7 +38,8 @@ export type DashCliente = {
   origem: OrigemDado;
   asOf: string;
   cliente: ClienteVinculado;
-  cadastro: CadastroCliente & { idade: number };
+  /** Cadastro pessoal do M1; null quando o cliente não preencheu. */
+  cadastro: (DadosPessoais & { idade: number }) | null;
   carteira: CarteiraCliente;
   evolucao: EvolucaoCarteira;
   pontos: PontoDeAtencao[];
@@ -51,11 +49,12 @@ export type DashCliente = {
 const normalizar = (texto: string) =>
   texto.normalize("NFD").replace(/[̀-ͯ]/g, "").toLocaleLowerCase("pt-BR");
 
-/** Idade completa na data de referência (não "hoje"), para o resultado ser reproduzível. */
-function idadeEm(nascimento: string, referencia: string): number {
-  const [an, mn, dn] = nascimento.split("-").map(Number);
-  const [ar, mr, dr] = referencia.slice(0, 10).split("-").map(Number);
-  return ar - an - (mr < mn || (mr === mn && dr < dn) ? 1 : 0);
+/** Idade completa hoje (dado real do cadastro). */
+function idade(nascimento: string): number {
+  const [a, m, d] = nascimento.split("-").map(Number);
+  const hoje = new Date();
+  const aniversarioPassou = hoje.getMonth() + 1 > m || (hoje.getMonth() + 1 === m && hoje.getDate() >= d);
+  return hoje.getFullYear() - a - (aniversarioPassou ? 0 : 1);
 }
 
 function contarPontos(pontos: PontoDeAtencao[]) {
@@ -69,8 +68,8 @@ function contarPontos(pontos: PontoDeAtencao[]) {
 /** Lista dos clientes vinculados ao assessor, em ordem alfabética, com os pontos de atenção resumidos. */
 export async function listarClientes(parametros: Record<string, string | string[] | undefined>): Promise<ListaClientes> {
   const filtros = FiltrosClientesSchema.parse(parametros);
-  const clientes = listarClientesDoAssessor(assessorAtual());
-  const carregado = carregarDadosCarteiras(new Set(clientes.map((c) => c.id)));
+  const clientes = await listarClientesDoAssessor(await assessorAtual());
+  const carregado = await carregarDadosCarteiras(new Set(clientes.map((c) => c.id)));
   const titulo = (id: string) => carregado.noticias.get(id)?.titulo ?? "Notícia sem título";
 
   const todas: LinhaCliente[] = clientes.map((cliente) => {
@@ -114,7 +113,7 @@ export type ResumoAssessor = {
 /** Números da carteira do assessor para o perfil, a partir dos mesmos cálculos das outras telas. */
 export async function obterResumoAssessor(): Promise<ResumoAssessor> {
   const lista = await listarClientes({});
-  const carregado = carregarDadosCarteiras(new Set(lista.linhas.map((c) => c.id)));
+  const carregado = await carregarDadosCarteiras(new Set(lista.linhas.map((c) => c.id)));
   return {
     origem: lista.origem,
     asOf: lista.asOf,
@@ -128,10 +127,10 @@ export async function obterResumoAssessor(): Promise<ResumoAssessor> {
 
 /** Dash de um cliente; null se o cliente não existe ou não é vinculado a este assessor. */
 export async function obterDashCliente(clienteId: string): Promise<DashCliente | null> {
-  const cliente = buscarClienteDoAssessor(assessorAtual(), clienteId);
+  const cliente = await buscarClienteDoAssessor(await assessorAtual(), clienteId);
   if (!cliente) return null;
 
-  const carregado = carregarDadosCarteiras(new Set([cliente.id]));
+  const carregado = await carregarDadosCarteiras(new Set([cliente.id]));
   const carteira = resumirCarteiraCliente(cliente.id, carregado.dados);
   const titulo = (id: string) => carregado.noticias.get(id)?.titulo ?? "Notícia sem título";
 
@@ -139,7 +138,7 @@ export async function obterDashCliente(clienteId: string): Promise<DashCliente |
     origem: carregado.origem,
     asOf: carregado.asOf,
     cliente: { id: cliente.id, nome: cliente.nome },
-    cadastro: { ...cliente.cadastro, idade: idadeEm(cliente.cadastro.nascimento, carregado.asOf) },
+    cadastro: cliente.cadastro ? { ...cliente.cadastro, idade: idade(cliente.cadastro.nascimento) } : null,
     carteira,
     evolucao: evolucaoCarteira(carteira.posicoes, carregado.serieDe, carregado.dados.cambio),
     pontos: pontosDeAtencao(cliente.id, carteira, carregado.alertas, carregado.exposicoesFGC, titulo),

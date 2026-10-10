@@ -16,13 +16,13 @@ describe("dados de demonstração", () => {
     const fgc = avaliarFGC(CARTEIRAS_DEMO);
     expect(fgc).toHaveLength(2);
     expect(fgc[0]).toMatchObject({
-      clienteId: "cli-1",
+      clienteId: "carteira-1",
       emissor: "Banco Alfa",
       situacao: "ACIMA",
       tickers: ["CDB-ALFA-2027", "LCI-ALFA-2026"],
     });
     expect(fgc[0].descoberto).toBeCloseTo(17_020);
-    expect(fgc[1]).toMatchObject({ clienteId: "cli-2", emissor: "Banco Beta", situacao: "PERTO", descoberto: 0 });
+    expect(fgc[1]).toMatchObject({ clienteId: "carteira-2", emissor: "Banco Beta", situacao: "PERTO", descoberto: 0 });
     expect(fgc[1].valorCoberto).toBeCloseTo(229_792.5);
   });
 });

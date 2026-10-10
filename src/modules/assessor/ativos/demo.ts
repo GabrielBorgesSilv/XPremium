@@ -29,34 +29,36 @@ export const CARTEIRAS_DEMO: DadosCarteiras = {
     { ticker: "LCI-ALFA-2026", nome: "LCI Banco Alfa 2026", categoria: "RENDA_FIXA", moeda: "BRL", emissor: "Banco Alfa", coberturaFGC: true },
     { ticker: "LCA-BETA-2028", nome: "LCA Banco Beta 2028", categoria: "RENDA_FIXA", moeda: "BRL", emissor: "Banco Beta", coberturaFGC: true },
   ],
+  // Carteiras-MODELO: o seed do assessor entrega a carteira-1 ao 1º cliente de demo, a carteira-2 ao 2º...
+  // (assessor/seed.ts). As telas leem as posições do banco (assessor_posicoes), não daqui.
   posicoes: [
-    // Ana: concentrada em renda fixa.
-    { clienteId: "cli-1", ticker: "IPCA-2035", quantidade: 60 },
-    { clienteId: "cli-1", ticker: "ITUB4", quantidade: 800 },
-    { clienteId: "cli-1", ticker: "HGLG11", quantidade: 120 },
-    // Ana passa do FGC no Banco Alfa só somando os dois títulos (R$ 162.810 + R$ 104.210).
-    { clienteId: "cli-1", ticker: "CDB-ALFA-2027", quantidade: 150 },
-    { clienteId: "cli-1", ticker: "LCI-ALFA-2026", quantidade: 100 },
-    // Bruno: diversificado.
-    { clienteId: "cli-2", ticker: "PETR4", quantidade: 1500 },
-    { clienteId: "cli-2", ticker: "VALE3", quantidade: 600 },
-    { clienteId: "cli-2", ticker: "IVVB11", quantidade: 90 },
-    { clienteId: "cli-2", ticker: "KNRI11", quantidade: 150 },
-    { clienteId: "cli-2", ticker: "IPCA-2035", quantidade: 15 },
-    { clienteId: "cli-2", ticker: "O", quantidade: 200 },
-    // Bruno fica perto do limite no Banco Beta (R$ 229.792,50, 92%).
-    { clienteId: "cli-2", ticker: "LCA-BETA-2028", quantidade: 225 },
-    // Carla: com cripto e exterior.
-    { clienteId: "cli-3", ticker: "BTC", quantidade: 0.35 },
-    { clienteId: "cli-3", ticker: "IVVB11", quantidade: 140 },
-    { clienteId: "cli-3", ticker: "PETR4", quantidade: 400 },
-    { clienteId: "cli-3", ticker: "O", quantidade: 120 },
-    { clienteId: "cli-3", ticker: "CDB-ALFA-2027", quantidade: 50 },
-    // Diego: concentrado em ações; XPML11 está sem cotação (mostra cobertura parcial).
-    { clienteId: "cli-4", ticker: "PETR4", quantidade: 5000 },
-    { clienteId: "cli-4", ticker: "VALE3", quantidade: 900 },
-    { clienteId: "cli-4", ticker: "BOVA11", quantidade: 300 },
-    { clienteId: "cli-4", ticker: "XPML11", quantidade: 200 },
+    // carteira-1: concentrada em renda fixa.
+    { clienteId: "carteira-1", ticker: "IPCA-2035", quantidade: 60 },
+    { clienteId: "carteira-1", ticker: "ITUB4", quantidade: 800 },
+    { clienteId: "carteira-1", ticker: "HGLG11", quantidade: 120 },
+    // carteira-1 passa do FGC no Banco Alfa só somando os dois títulos (R$ 162.810 + R$ 104.210).
+    { clienteId: "carteira-1", ticker: "CDB-ALFA-2027", quantidade: 150 },
+    { clienteId: "carteira-1", ticker: "LCI-ALFA-2026", quantidade: 100 },
+    // carteira-2: diversificada.
+    { clienteId: "carteira-2", ticker: "PETR4", quantidade: 1500 },
+    { clienteId: "carteira-2", ticker: "VALE3", quantidade: 600 },
+    { clienteId: "carteira-2", ticker: "IVVB11", quantidade: 90 },
+    { clienteId: "carteira-2", ticker: "KNRI11", quantidade: 150 },
+    { clienteId: "carteira-2", ticker: "IPCA-2035", quantidade: 15 },
+    { clienteId: "carteira-2", ticker: "O", quantidade: 200 },
+    // carteira-2 fica perto do limite no Banco Beta (R$ 229.792,50, 92%).
+    { clienteId: "carteira-2", ticker: "LCA-BETA-2028", quantidade: 225 },
+    // carteira-3: com cripto e exterior.
+    { clienteId: "carteira-3", ticker: "BTC", quantidade: 0.35 },
+    { clienteId: "carteira-3", ticker: "IVVB11", quantidade: 140 },
+    { clienteId: "carteira-3", ticker: "PETR4", quantidade: 400 },
+    { clienteId: "carteira-3", ticker: "O", quantidade: 120 },
+    { clienteId: "carteira-3", ticker: "CDB-ALFA-2027", quantidade: 50 },
+    // carteira-4: concentrada em ações; XPML11 está sem cotação (mostra cobertura parcial).
+    { clienteId: "carteira-4", ticker: "PETR4", quantidade: 5000 },
+    { clienteId: "carteira-4", ticker: "VALE3", quantidade: 900 },
+    { clienteId: "carteira-4", ticker: "BOVA11", quantidade: 300 },
+    { clienteId: "carteira-4", ticker: "XPML11", quantidade: 200 },
   ],
   cotacoes: [
     cotacao("PETR4", 38.5),
