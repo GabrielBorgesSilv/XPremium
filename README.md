@@ -68,6 +68,7 @@ Cada submódulo segue o mesmo padrão:
 2. Cada módulo é dono das suas tabelas; nada de joins entre tabelas de módulos diferentes.
 3. `src/core` e `src/shared` não importam nada de `src/modules`.
 4. Regras verificadas com `npm run check:modules` (dependency-cruiser).
+5. Exceção do hackathon: `src/features/dashboard/` (M2) fica fora de `src/modules`, mas só importa módulos pelo `index.ts`, e nada em `modules`, `core` ou `shared` importa `features`. Código novo vai para `src/modules/`.
 
 ## Autenticação e permissões (M1)
 
