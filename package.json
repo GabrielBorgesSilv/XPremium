@@ -24,8 +24,6 @@
     "db:preparar": "npm run db:push && node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/db/preparar.ts",
     "db:exportar": "node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/db/exportar.ts",
     "db:apagar": "node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/db/apagar.ts",
-    "db:migrar-login-main": "node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/db/migrar-login-main.ts",
-    "db:corrigir-papeis-login": "node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/db/corrigir-papeis-login.ts",
     "db:reset": "npm run db:apagar && npm run db:push && npm run db:seed",
     "db:studio": "drizzle-kit studio"
   },

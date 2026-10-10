@@ -23,31 +23,6 @@ export async function buscarUsuarioPorId(id: string): Promise<Usuario | null> {
   return conta ? paraUsuario(conta) : null;
 }
 
-export async function buscarUsuarioPorEmail(email: string): Promise<Usuario | null> {
-  const conta = await buscarContaPorEmail(email);
-  return conta ? paraUsuario(conta) : null;
-}
-
-export async function buscarUsuarioPorIdExterno(idExterno: string): Promise<Usuario | null> {
-  const [conta] = await db
-    .select()
-    .from(usuariosContas)
-    .where(eq(usuariosContas.idExterno, idExterno));
-  return conta ? paraUsuario(conta) : null;
-}
-
-export async function buscarAssessorDoUsuario(usuarioId: string): Promise<Usuario | null> {
-  const usuario = await db
-    .select({ assessorExternoId: usuariosContas.assessorExternoId })
-    .from(usuariosContas)
-    .where(eq(usuariosContas.id, usuarioId))
-    .get();
-  if (!usuario?.assessorExternoId) {
-    return null;
-  }
-  return buscarUsuarioPorIdExterno(usuario.assessorExternoId);
-}
-
 /** Uso interno do módulo (login): inclui o hash da senha. */
 export async function buscarContaPorEmail(email: string): Promise<Conta | null> {
   const [conta] = await db
@@ -76,11 +51,8 @@ export async function montarConta(dados: NovaConta): Promise<Conta> {
     email: dados.email.trim().toLowerCase(),
     senhaHash: await gerarHashSenha(dados.senha, dados.salSenha),
     papel: dados.papel,
+    assessorId: null,
     criadoEm: dados.criadoEm ?? new Date().toISOString(),
-    idExterno: null,
-    assessorExternoId: null,
-    cargo: null,
-    ativo: true,
   };
 }
 
@@ -88,4 +60,24 @@ export async function criarUsuario(dados: NovaConta): Promise<Usuario> {
   const conta = await montarConta(dados);
   await db.insert(usuariosContas).values(conta);
   return paraUsuario(conta);
+}
+
+/** Usuário pelo e-mail (normalizado), sem dados de credencial. */
+export async function buscarUsuarioPorEmail(email: string): Promise<Usuario | null> {
+  const conta = await buscarContaPorEmail(email);
+  return conta ? paraUsuario(conta) : null;
+}
+
+/** Assessor que atende o usuário (vínculo em usuarios_contas.assessor_id), ou null. */
+export async function buscarAssessorDoUsuario(usuarioId: string): Promise<Usuario | null> {
+  const [conta] = await db
+    .select({ assessorId: usuariosContas.assessorId })
+    .from(usuariosContas)
+    .where(eq(usuariosContas.id, usuarioId));
+  return conta?.assessorId ? buscarUsuarioPorId(conta.assessorId) : null;
+}
+
+/** Liga o cliente ao assessor que o atende (substitui o vínculo anterior). */
+export async function vincularAssessor(clienteId: string, assessorId: string): Promise<void> {
+  await db.update(usuariosContas).set({ assessorId }).where(eq(usuariosContas.id, clienteId));
 }

@@ -155,6 +155,13 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Regra de senha nova única (`SenhaNovaSchema`) para cadastro e redefinição | — | Mesma regra nos dois fluxos. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
+### Vínculo cliente → assessor
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | Fonte única: coluna `usuarios_contas.assessor_id` (M1), com `buscarAssessorDoUsuario` e `vincularAssessor`; o seed liga `usuario1`/`usuario2` ao assessor da demo | `id_externo` + `assessor_externo_id` (PR #25); tabela no módulo assessor | Havia dois vínculos concorrentes (PR #25 e `assessor/clientes/vinculo.ts`); a coluna simples atende as telas do cliente já; a tela do assessor passa a usá-la na integração com a sessão real |
+| 10/10/2026 | Scripts `migrar-login-main.ts` e `corrigir-papeis-login.ts` fora do repositório | Manter | Uso único no banco local antigo de uma pessoa da equipe |
+
 ### Arquitetura
 
 | Data | Decisão | Alternativas descartadas | Motivo |

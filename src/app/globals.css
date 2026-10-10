@@ -77,39 +77,11 @@ button { cursor: pointer; }
 .xp-event p { margin: 4px 0 0; color: var(--xp-muted); font-size: 9px; }
 .xp-event .xp-tag { margin-left: auto; }
 .xp-placeholder { min-height: 180px; display: grid; place-content: center; color: var(--xp-muted); text-align: center; font-size: 12px; }
-.xp-client-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.xp-profile-value { text-transform: capitalize; }
-.xp-client-details { display: grid; gap: 0; margin: 12px 0 0; }
-.xp-client-details > div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid #f0f0ed; font-size: 10px; }
-.xp-client-details dt { color: var(--xp-muted); }
-.xp-client-details dd { margin: 0; text-align: right; font-weight: 700; }
-.xp-client-allocation { display: grid; gap: 14px; }
-.xp-client-allocation > div { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; color: #555; font-size: 10px; }
-.xp-client-allocation b { color: #111; }
-.xp-allocation-track { grid-column: 1 / -1; height: 5px; overflow: hidden; border-radius: 8px; background: #efefea; }
-.xp-allocation-track span { display: block; height: 100%; border-radius: inherit; background: var(--xp-lime); }
-.xp-client-banks { margin-top: 15px; }
-.xp-bank-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.xp-bank-card { min-width: 0; border: 1px solid var(--xp-line); border-radius: 8px; padding: 14px; }
-.xp-bank-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.xp-bank-heading h3 { margin: 0; font-size: 12px; }
-.xp-bank-heading p { margin: 5px 0 0; color: var(--xp-muted); font-size: 10px; }
-.xp-bank-note { margin: 10px 0 0; border-radius: 6px; padding: 9px; background: #f5f5f2; color: #555; font-size: 10px; line-height: 1.5; }
-.xp-calendar-card { max-width: 700px; }
-.xp-calendar-intro { display: flex; align-items: center; gap: 13px; }
-.xp-calendar-intro p { margin: 5px 0 0; color: var(--xp-muted); font-size: 11px; }
-.xp-calendar-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 8px; background: var(--xp-lime); font-size: 20px; }
-.xp-calendar-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
-.xp-calendar-form label { display: grid; gap: 7px; font-size: 10px; font-weight: 700; }
-.xp-calendar-form input, .xp-calendar-form select { width: 100%; min-height: 42px; border: 1px solid var(--xp-line); border-radius: 6px; padding: 0 10px; background: #fff; font: inherit; }
-.xp-calendar-form button { grid-column: 1 / -1; min-height: 43px; }
-.xp-calendar-form button:disabled { cursor: not-allowed; opacity: .55; }
 .xp-mobile-menu { display: none; }
 .xp-home { min-height: 100vh; display: grid; grid-template-columns: 1.05fr .95fr; background: #0a0a0a; color: #fff; }
 .xp-home-brand { padding: 8vh 8vw; display: flex; flex-direction: column; justify-content: space-between; }
 .xp-home-access { display: grid; place-items: center; padding: 24px; background: #fff; color: #111; }
 @media (max-width: 1050px) { .xp-shell { grid-template-columns: 205px minmax(0, 1fr); } .xp-content { padding: 28px 23px 42px; } .xp-top { padding: 0 23px; } .xp-grid-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .xp-columns { grid-template-columns: 1fr; } }
-@media (max-width: 700px) { .xp-home { grid-template-columns: 1fr; } .xp-home-brand { min-height: 260px; padding: 24px; } .xp-home-brand h1 { margin: 11px 0; } .xp-home-brand > small { display: none; } .xp-home-access { padding: 35px 24px; } .xp-shell { display: block; } .xp-side { position: fixed; left: -260px; width: 244px; transition: left .2s ease; } .xp-side.open { left: 0; box-shadow: 0 0 0 999px #0008; } .xp-top { height: 58px; padding: 0 14px; } .xp-mobile-menu { display: inline-grid; place-items: center; } .xp-top-actions { gap: 7px; } .xp-role { display: none; } .xp-content { padding: 23px 14px 36px; } .xp-head { align-items: flex-start; flex-direction: column; } .xp-head h1 { font-size: 22px; } .xp-grid-stats { gap: 8px; } .xp-client-stats, .xp-bank-grid { grid-template-columns: 1fr; } .xp-calendar-form { grid-template-columns: 1fr; } .xp-calendar-form button { grid-column: auto; } .xp-client-details > div { align-items: flex-start; } .xp-client-details dd { max-width: 65%; } .xp-card { padding: 14px; } .xp-stat strong { font-size: 17px; } .xp-donut-row { grid-template-columns: 112px minmax(0, 1fr); gap: 10px; } .xp-donut { width: 108px; } .xp-donut::after { width: 73px; font-size: 10px; } .xp-chart { height: 145px; } }
 @media (max-width: 700px) { .xp-home { grid-template-columns: 1fr; } .xp-home-brand { min-height: 260px; padding: 24px; } .xp-home-brand h1 { margin: 11px 0; } .xp-home-brand > small { display: none; } .xp-home-access { padding: 35px 24px; } .xp-shell { display: block; } .xp-side { position: fixed; top: 58px; height: calc(100vh - 58px); left: -260px; width: 244px; transition: left .2s ease; } .xp-side.open { left: 0; box-shadow: 0 0 0 999px #0008; } .xp-top { height: 58px; padding: 0 14px; z-index: 6; } .xp-mobile-menu { display: inline-grid; place-items: center; } .xp-top-actions { gap: 7px; } .xp-role { display: none; } .xp-content { padding: 23px 14px 36px; } .xp-head { align-items: flex-start; flex-direction: column; } .xp-head h1 { font-size: 22px; } .xp-grid-stats { gap: 8px; } .xp-card { padding: 14px; } .xp-stat strong { font-size: 17px; } .xp-donut-row { grid-template-columns: 112px minmax(0, 1fr); gap: 10px; } .xp-donut { width: 108px; } .xp-donut::after { width: 73px; font-size: 10px; } .xp-chart { height: 145px; } }
 .xp-stack { display: grid; gap: 15px; }
 .xp-band { margin-bottom: 15px; }
@@ -282,3 +254,32 @@ fieldset.xp-filters { margin: 0; border: 0; padding: 0; display: block; }
 .xp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 @media (max-width: 1050px) { .xp-metrics-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 700px) { .xp-metrics-5 { grid-template-columns: 1fr 1fr; } }
+
+/* Telas do cliente (painel, patrimônio, calendário) */
+.xp-client-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.xp-profile-value { text-transform: capitalize; }
+.xp-client-details { display: grid; gap: 0; margin: 12px 0 0; }
+.xp-client-details > div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-bottom: 1px solid #f0f0ed; font-size: 10px; }
+.xp-client-details dt { color: var(--xp-muted); }
+.xp-client-details dd { margin: 0; text-align: right; font-weight: 700; }
+.xp-client-allocation { display: grid; gap: 14px; }
+.xp-client-allocation > div { display: grid; grid-template-columns: 1fr auto; gap: 7px 12px; color: #555; font-size: 10px; }
+.xp-client-allocation b { color: #111; }
+.xp-allocation-track { grid-column: 1 / -1; height: 5px; overflow: hidden; border-radius: 8px; background: #efefea; }
+.xp-allocation-track span { display: block; height: 100%; border-radius: inherit; background: var(--xp-lime); }
+.xp-client-banks { margin-top: 15px; }
+.xp-bank-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.xp-bank-card { min-width: 0; border: 1px solid var(--xp-line); border-radius: 8px; padding: 14px; }
+.xp-bank-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.xp-bank-heading h3 { margin: 0; font-size: 12px; }
+.xp-bank-heading p { margin: 5px 0 0; color: var(--xp-muted); font-size: 10px; }
+.xp-bank-note { margin: 10px 0 0; border-radius: 6px; padding: 9px; background: #f5f5f2; color: #555; font-size: 10px; line-height: 1.5; }
+.xp-calendar-card { max-width: 700px; }
+.xp-calendar-intro { display: flex; align-items: center; gap: 13px; }
+.xp-calendar-intro p { margin: 5px 0 0; color: var(--xp-muted); font-size: 11px; }
+.xp-calendar-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 8px; background: var(--xp-lime); font-size: 20px; }
+.xp-calendar-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+.xp-calendar-form label { display: grid; gap: 7px; font-size: 10px; font-weight: 700; }
+.xp-calendar-form input, .xp-calendar-form select { width: 100%; min-height: 42px; border: 1px solid var(--xp-line); border-radius: 6px; padding: 0 10px; background: #fff; font: inherit; }
+.xp-calendar-form button { grid-column: 1 / -1; min-height: 43px; }
+.xp-calendar-form button:disabled { cursor: not-allowed; opacity: .55; }

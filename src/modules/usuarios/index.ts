@@ -12,7 +12,7 @@ export {
   buscarAssessorDoUsuario,
   buscarUsuarioPorEmail,
   buscarUsuarioPorId,
-  buscarUsuarioPorIdExterno,
+  vincularAssessor,
 } from "./perfis/service";
 export { cadastrar, buscarDadosPessoais } from "./cadastro/service";
 export type { ResultadoCadastro } from "./cadastro/service";

@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 type Role = "assessor" | "cliente";
@@ -40,7 +38,7 @@ function Positions() {
 }
 
 function Events({ role }: { role: Role }) {
-  return <div className="xp-events"><div className="xp-event"><span className="xp-event-date"><small>OUT</small>14</span><div><b>Revisão de carteira</b><p>10:30 · Ana Martins · Reunião online</p></div><span className="xp-tag lime">Confirmado</span></div><div className="xp-event"><span className="xp-event-date"><small>OUT</small>16</span><div><b>Vencimento de aplicação</b><p>14:00 · CDB Banco XP · R$ 85 mil</p></div><span className="xp-tag">Lembrete</span></div>{role === "assessor" && <Link className="xp-btn" style={{ display: "inline-block", marginTop: 12 }} href="/assessor/clientes" target="_self">Ver clientes</Link>}</div>;
+  return <div className="xp-events"><div className="xp-event"><span className="xp-event-date"><small>OUT</small>14</span><div><b>Revisão de carteira</b><p>10:30 · Ana Martins · Reunião online</p></div><span className="xp-tag lime">Confirmado</span></div><div className="xp-event"><span className="xp-event-date"><small>OUT</small>16</span><div><b>Vencimento de aplicação</b><p>14:00 · CDB Banco XP · R$ 85 mil</p></div><span className="xp-tag">Lembrete</span></div>{role === "assessor" && <Link className="xp-btn" style={{ display: "inline-block", marginTop: 12 }} href="/assessor/clientes">Ver clientes</Link>}</div>;
 }
 
 export function Dashboard({ role, userName }: { role: Role; userName?: string }) {
