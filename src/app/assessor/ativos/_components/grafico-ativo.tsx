@@ -42,7 +42,15 @@ export function GraficoAtivo({ serie, marcadores }: Props) {
                 strokeWidth={1.5}
               />
             ))}
-            <Line type="monotone" dataKey="valor" stroke="#111" strokeWidth={2} dot={false} />
+            <Line
+              type="monotone"
+              dataKey="valor"
+              stroke="#111"
+              strokeWidth={2}
+              dot={false}
+              // Sem animação: com ela, a linha às vezes ficava parada no início ao trocar de ativo.
+              isAnimationActive={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
