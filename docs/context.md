@@ -72,6 +72,13 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Geradores com semente fixa (`@/shared/aleatorio`, inclusive `uuid()`) | `Math.random` / UUID aleatório | Todos da equipe têm o mesmo banco e os mesmos ids. |
 | 10/10/2026 | `seed.ts` importado direto pelos scripts, fora do `index.ts` | Import dinâmico do Next nos services | O `index.ts` carrega código do Next, que quebra fora do servidor; import dinâmico seria armadilha para a equipe. |
 
+### Arquitetura
+
+| Data | Decisão | Alternativas descartadas | Motivo |
+|---|---|---|---|
+| 10/10/2026 | `src/features/dashboard/` (M2, PR #9) aceito como exceção ao monolito modular durante o hackathon, com regras no dependency-cruiser: só importa módulos pelo `index.ts`; `modules`, `core` e `shared` não importam `features` | Mover já para `src/modules/assessor/`; adotar `src/features` como padrão do projeto | Código autocontido (não importa nada de fora); mover 42 arquivos agora custaria tempo perto da entrega (17h30). As regras cobrem o risco de fronteira sem trabalho para a autora. |
+| 10/10/2026 | Services de `src/features` com chave ou segredo devem usar `import "server-only"` | — | Evita levar código de servidor (e chaves) para o navegador. |
+
 ### Processo
 
 | Data | Decisão | Motivo |
@@ -81,6 +88,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
 ## Questões em aberto
 
+- Depois da demo: mover `src/features/dashboard` para `src/modules` (nomes em kebab-case/português) e unificar os tipos de ativo/cotação do M2 (`Category`, `Period`, `DataOrigin`, `Money`, `QuotePoint`) com os do M4 (`Categoria`, `Periodo`, `OrigemDado`, `Moeda`, `Cotacao`).
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.
