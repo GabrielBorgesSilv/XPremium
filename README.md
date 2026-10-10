@@ -98,6 +98,10 @@ const usuario = await obterUsuarioAtual();
 
 **Tela de login:** `/login` (visual do `prototipo.html`). Login só por e-mail (espaços nas pontas e maiúsculas são ignorados). "Sou assessor"/"Sou cliente" escolhem a área de destino; a permissão vem sempre do papel da conta. Quem abre uma página protegida sem login vai para `/login?voltar=<página>` e volta para ela depois de entrar (só caminhos internos).
 
+**Cadastro:** `/cadastro` (etapa 1 do onboarding do protótipo). Cria a conta sempre com papel `usuario` e já entra (vai para `/cliente`). Campos obrigatórios: nome, e-mail, senha (8 a 200 caracteres) e confirmação, data de nascimento (18 anos ou mais), celular com DDD, profissão, estado civil, renda mensal e consentimento LGPD (gravado com data e versão do termo). As etapas 2–4 (anamnese) são do módulo `cliente`.
+
+**Dados pessoais** ficam em `usuarios_dados_pessoais`, separados da conta. Outros módulos leem por `buscarDadosPessoais(usuarioId)` (retorna `null` para contas sem dados, como as do seed). O `db:exportar` grava o **celular vazio**: nenhum telefone vai para o git.
+
 **Botão de sair**, em qualquer componente:
 
 ```tsx
@@ -190,7 +194,7 @@ git add dados/seed && git commit -m "Atualiza dados do seed"
 ```
 
 - Um registro por linha e ordenado pelo id, para reduzir conflitos de merge.
-- A tabela `usuarios_sessoes` nunca é exportada.
+- A tabela `usuarios_sessoes` nunca é exportada, e o celular de `usuarios_dados_pessoais` vai vazio.
 - **LGPD:** a exportação é recusada se alguma coluna de e-mail tiver domínio diferente de `.test` (reservado, nunca real). Só dados fictícios no git.
 
 **Escrevendo o `seed.ts` de um módulo:**

@@ -29,9 +29,9 @@ export default async function PaginaLogin({
         <div className={estilos.chamada}>
           <small>ASSESSORIA PRIVATE · XP INC.</small>
           <h1>
-            Seu patrimônio.
+            Estratégias exclusivas,
             <br />
-            <em>Suas escolhas.</em>
+            <em>resultados de alto nível.</em>
           </h1>
           <p>Uma experiência próxima e completa para acompanhar seus investimentos ao lado da sua assessoria.</p>
         </div>

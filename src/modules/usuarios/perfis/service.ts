@@ -32,7 +32,7 @@ export async function buscarContaPorEmail(email: string): Promise<Conta | null> 
   return conta ?? null;
 }
 
-export async function criarUsuario(dados: {
+type NovaConta = {
   /** Só o seed passa id, data e sal fixos, para o banco gerado ser igual a cada reset. */
   id?: string;
   criadoEm?: string;
@@ -41,8 +41,11 @@ export async function criarUsuario(dados: {
   email: string;
   senha: string;
   papel: Papel;
-}): Promise<Usuario> {
-  const conta: Conta = {
+};
+
+/** Monta a linha da conta (normaliza o e-mail e gera o hash da senha) sem gravar. */
+export async function montarConta(dados: NovaConta): Promise<Conta> {
+  return {
     id: dados.id ?? randomUUID(),
     nome: dados.nome,
     email: dados.email.trim().toLowerCase(),
@@ -50,6 +53,10 @@ export async function criarUsuario(dados: {
     papel: dados.papel,
     criadoEm: dados.criadoEm ?? new Date().toISOString(),
   };
+}
+
+export async function criarUsuario(dados: NovaConta): Promise<Usuario> {
+  const conta = await montarConta(dados);
   await db.insert(usuariosContas).values(conta);
   return paraUsuario(conta);
 }

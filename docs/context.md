@@ -59,6 +59,12 @@ Perfil + patrimônio + insights ──▶ módulo assessor ──▶ gestão, m�
 
 Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
+### Produto e marca
+
+| Data | Decisão | Substitui |
+|---|---|---|
+| 10/10/2026 | Slogan: **"Estratégias exclusivas, resultados de alto nível."** | "Seu patrimônio. Suas escolhas." (protótipo de UI) |
+
 ### Banco de dados
 
 | Data | Decisão | Alternativas descartadas | Motivo |
@@ -102,6 +108,17 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Sem `SENHA_DEMO` no `.env`, o seed usa `demo-hubxp` em desenvolvimento (com aviso); com `NODE_ENV=production` é obrigatória | Sempre exigir | `.env` antigos da equipe não travam o `npm run dev`. |
 | 10/10/2026 | Seed de usuários estável: `criado_em` fixo e sal da senha vindo do gerador com semente | Sal aleatório | `db:exportar` não gera diferença em todos os usuários a cada reset. |
 | 10/10/2026 | Testes automáticos de sessão e seed com SQLite em memória (`pushSQLiteSchema` com os `db.ts` reais) | Só testes manuais | Regressões aparecem no `npm run check`. |
+| 10/10/2026 | Cadastro (`/cadastro`) com conta + dados pessoais da etapa 1 do protótipo, sem CPF; conta sempre com papel `usuario`; etapas 2–4 (anamnese) ficam com o módulo `cliente` | Só os campos da conta; as 4 etapas | Fiel ao protótipo na etapa 1 sem invadir a anamnese (M3). |
+| 10/10/2026 | Dados pessoais em `usuarios_dados_pessoais` (1 por conta), lidos por `buscarDadosPessoais` | Colunas na conta; módulo `cliente` | Separa credenciais de dados pessoais; tudo no M1. Avisar o dono do M3. |
+| 10/10/2026 | Todos os campos do cadastro obrigatórios | Pessoais opcionais | Decisão de produto. |
+| 10/10/2026 | Senha do cadastro: 8 a 200 caracteres, com confirmação | Exigir letra e número; 12+ | Tamanho importa mais que símbolos; menos atrito. |
+| 10/10/2026 | Nascimento: 18 anos ou mais; recusa datas futuras, impossíveis ou acima de 130 anos | Não validar idade | Conta de investimento para menor exige responsável legal. |
+| 10/10/2026 | Celular brasileiro: DDD (sem zero) + 9 + 8 dígitos; guarda só dígitos | — | Formato do protótipo "(11) 90000-0000". |
+| 10/10/2026 | E-mail já cadastrado: avisa "E-mail já cadastrado" com links para entrar ou recuperar a senha | Mensagem genérica | Sem serviço de e-mail não há outra forma de avisar; aceito no MVP (revela que o e-mail tem conta). |
+| 10/10/2026 | Após o cadastro, já entra e vai para `/cliente` | Voltar ao `/login` | Menos atrito. |
+| 10/10/2026 | Consentimento LGPD obrigatório, gravado com data e versão do termo (`2026-10-10`) | Só exigir o checkbox | Evidência do que foi aceito se o texto mudar. |
+| 10/10/2026 | Seed sem dados pessoais; `db:exportar` grava o celular vazio | Recusar exportação; não exportar dados pessoais | Celular gerado pode ser de pessoa real; contas criadas na app continuam exportáveis. |
+| 10/10/2026 | Visual do cadastro: formulário do onboarding do protótipo, só a etapa 1, sem a barra de 4 etapas | Barra de etapas; layout do login | Etapas 2–4 ainda não existem. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
 
 ### Processo

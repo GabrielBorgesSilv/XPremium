@@ -4,10 +4,12 @@
  *
  * LGPD: recusa exportar se alguma coluna de e-mail tiver domínio diferente de
  * .test (reservado, nunca real). Não imprime os valores, só tabela e coluna.
+ * Colunas de COLUNAS_APAGADAS_NA_EXPORTACAO (ex.: celular) vão vazias.
  */
 import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 
 import {
+  COLUNAS_APAGADAS_NA_EXPORTACAO,
   PASTA_DADOS,
   TABELAS_NAO_EXPORTADAS,
   arquivoDaTabela,
@@ -26,8 +28,9 @@ async function main() {
     const pks = colunas.filter((c) => c.pk > 0).sort((a, b) => a.pk - b.pk);
     const ordem = pks.length > 0 ? pks.map((c) => `"${c.nome}"`).join(", ") : "rowid";
     const r = await cliente.execute(`SELECT * FROM "${tabela}" ORDER BY ${ordem}`);
+    const apagadas = new Set(COLUNAS_APAGADAS_NA_EXPORTACAO[tabela] ?? []);
     const registros = r.rows.map((linha) =>
-      Object.fromEntries(colunas.map((c) => [c.nome, linha[c.nome] ?? null])),
+      Object.fromEntries(colunas.map((c) => [c.nome, apagadas.has(c.nome) ? null : (linha[c.nome] ?? null)])),
     );
 
     for (const coluna of colunas.filter((c) => c.nome.toLowerCase().includes("email"))) {
