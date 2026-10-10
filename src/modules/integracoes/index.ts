@@ -9,6 +9,3 @@ export { listarNoticias } from "./noticias/service";
 export type { Noticias } from "./noticias/schema";
 export { executarAgentBancario } from "./agents/banco-agent";
 export { executarAgentNoticias } from "./agents/noticias-agent";
-
-// Só para desenvolvimento: chamado por scripts/db/seed.ts.
-export { semearIntegracoes } from "./seed";

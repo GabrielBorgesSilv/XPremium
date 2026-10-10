@@ -26,6 +26,7 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
   - Sem as duas confirmações, não execute. Uma aprovação anterior não vale para uma nova subida.
 - Nunca use `--force` em `main`/`master`.
 - Commits e PRs só quando o usuário pedir.
+- Decisões tomadas: registre em `docs/context.md` (seção "Decisões"), com data, alternativas e motivo.
 
 ## Arquitetura: monolito modular (Next.js full-stack)
 
@@ -39,8 +40,10 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
 - `src/core/` é só infraestrutura (env, db, llm); `src/shared/` não tem regra de negócio. Nenhum dos dois importa `src/modules`.
 - Submódulos seguem o padrão `service.ts` (regra de negócio, com `import "server-only"`), `schema.ts` (Zod) e `db.ts` (tabelas Drizzle).
 - Novo submódulo: crie a pasta com esses arquivos e exporte o que for público no `index.ts` do módulo.
-- Banco de desenvolvimento: SQLite local. Mudou um `db.ts`, rode `npm run db:reset` (push + seed); não crie migrations durante o hackathon.
-- Dados sintéticos de cada módulo ficam em `src/modules/<modulo>/seed.ts` (`semear<Modulo>`, exportado no `index.ts`), usando o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`, para que o banco gerado seja igual para toda a equipe.
+- Banco de desenvolvimento: SQLite local, preparado sozinho no `npm run dev`/`start` (`db:preparar`). Mudou um `db.ts`, rode `npm run db:reset`; não crie migrations durante o hackathon.
+- Seed = dados exportados (`dados/seed/<tabela>.json`, via `npm run db:exportar`) + geradores sintéticos (`src/modules/<modulo>/seed.ts`, `semear<Modulo>`). O exportado vence por módulo.
+- `seed.ts` é a única exceção à interface pública: só `scripts/db/` o importa direto (`@/modules/<modulo>/seed`); ele não entra no `index.ts` e não pode importar código do Next. Use o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`; dados de outro módulo, leia do banco.
+- LGPD: só dados fictícios no seed; e-mails sempre no domínio `.test` (o `db:exportar` recusa outros).
 - Prefira Server Components e Server Actions; use `"use client"` só quando precisar de interatividade.
 
 ## Código
