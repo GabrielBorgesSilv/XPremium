@@ -1,0 +1,103 @@
+# Hub XP
+
+Hub centralizado que conecta **cliente** e **assessor** de investimentos da XP.
+
+- **Cliente**: faz a anamnese e conecta suas contas via Open Finance para administrar todos os seus ativos e investimentos em um só lugar.
+- **Assessor**: gerencia e se relaciona com seus clientes, acompanha métricas e prospecta novos clientes com base em benchmark, apoiado por agents de IA que trazem dados bancários e notícias de mercado.
+
+Contexto completo do produto: [`docs/context.md`](docs/context.md).
+
+## Arquitetura
+
+**Monolito modular em Next.js full-stack**: um único projeto e um único deploy. A UI e a API ficam em `src/app` (App Router), e as regras de negócio ficam em módulos independentes em `src/modules`. Cada módulo é dono dos seus dados e só é acessado pela sua interface pública (`index.ts`).
+
+```
+Cliente ──▶ /cliente  ──▶ [cliente] ──┐
+                                      ├──▶ [assessor] ◀── /assessor ◀── Assessor
+          [integracoes/agents] ───────┘
+            ├─ agent bancário (Open Finance)
+            └─ agent de notícias (APIs externas + LLM)
+          [usuarios] ── identidade e permissões para todos
+```
+
+| Módulo | Tipo | Submódulos |
+|---|---|---|
+| `cliente` | primordial | `anamnese`, `open-finance`, `patrimonio` |
+| `assessor` | primordial | `clientes`, `ativos`, `metricas`, `prospeccao` |
+| `usuarios` | suporte | `auth`, `perfis` |
+| `integracoes` | suporte | `bancos`, `noticias`, `agents` |
+
+## Estrutura de pastas
+
+```
+.
+├── CLAUDE.md                  # regras do projeto para o Claude Code
+├── docs/                      # context.md (produto), study.md
+├── src/
+│   ├── app/                   # rotas Next: UI e API (camada fina, sem regra de negócio)
+│   │   ├── cliente/           # anamnese, open-finance, patrimonio
+│   │   ├── assessor/          # clientes, ativos, metricas, prospeccao
+│   │   └── api/               # route handlers (ex.: /api/health)
+│   ├── modules/
+│   │   ├── cliente/
+│   │   │   ├── index.ts       # interface pública do módulo
+│   │   │   └── anamnese/      # service.ts, schema.ts, db.ts
+│   │   ├── assessor/
+│   │   ├── usuarios/
+│   │   └── integracoes/
+│   │       └── agents/        # banco-agent.ts, noticias-agent.ts
+│   ├── core/                  # infraestrutura: env, db (Drizzle), llm (Anthropic)
+│   └── shared/                # utilitários e UI genérica, sem regra de negócio
+├── drizzle.config.ts
+├── .dependency-cruiser.cjs    # regras de fronteira entre módulos
+└── package.json
+```
+
+Cada submódulo segue o mesmo padrão:
+
+- `service.ts`: regras de negócio (só no servidor, `import "server-only"`)
+- `schema.ts`: DTOs e validação com Zod
+- `db.ts`: tabelas Drizzle, prefixadas com o nome do módulo (`cliente_*`)
+
+## Regras dos módulos
+
+1. `src/app` e outros módulos só importam `@/modules/<modulo>` (o `index.ts`), nunca arquivos internos.
+2. Cada módulo é dono das suas tabelas; nada de joins entre tabelas de módulos diferentes.
+3. `src/core` e `src/shared` não importam nada de `src/modules`.
+4. Regras verificadas com `npm run check:modules` (dependency-cruiser).
+
+## Dependências
+
+Versões fixadas (`.npmrc` com `save-exact=true`).
+
+| Pacote | Uso |
+|---|---|
+| `next`, `react`, `react-dom` | framework full-stack (UI, rotas, server actions) |
+| `zod` | validação de DTOs e variáveis de ambiente |
+| `drizzle-orm`, `@libsql/client` | ORM + SQLite no MVP (fácil trocar por Postgres) |
+| `@anthropic-ai/sdk` | LLM dos agents de IA |
+| `recharts` | gráficos de patrimônio e métricas |
+| `server-only` | impede código de servidor de ir para o browser |
+
+| Dev | Uso |
+|---|---|
+| `typescript`, `@types/*` | tipagem |
+| `eslint`, `eslint-config-next` | lint |
+| `tailwindcss`, `@tailwindcss/postcss` | estilos |
+| `drizzle-kit` | migrations |
+| `vitest`, `@vitejs/plugin-react`, `vite-tsconfig-paths`, `@testing-library/*`, `jsdom` | testes |
+| `dependency-cruiser` | fronteiras entre módulos |
+
+## Como rodar
+
+Requer Node.js 20.9+.
+
+```bash
+npm install
+cp .env.example .env
+
+npm run dev            # http://localhost:3000
+npm run check          # typecheck + lint + fronteiras + testes
+npm run db:generate    # gera migrations a partir dos db.ts
+npm run db:migrate     # aplica migrations
+```
