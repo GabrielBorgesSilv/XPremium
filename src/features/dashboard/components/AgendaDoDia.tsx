@@ -36,7 +36,7 @@ function quando(emDias: number): string {
   return `Em ${emDias} dias`;
 }
 
-export function AgendaDoDia({ atividades }: { atividades: readonly Atividade[] }) {
+export function AgendaDoDia({ atividades, nome }: { atividades: readonly Atividade[]; nome: string }) {
   const [periodo, setPeriodo] = useState<PeriodoAgenda>("HOJE");
   const [criticidade, setCriticidade] = useState<Criticidade | "TODAS">("TODAS");
   const [dimensao, setDimensao] = useState<Dimensao | "TODAS">("TODAS");
@@ -58,7 +58,7 @@ export function AgendaDoDia({ atividades }: { atividades: readonly Atividade[] }
       <header className="xp-head">
         <div>
           <div className="xp-kicker">VISÃO DO ASSESSOR</div>
-          <h1>Bom dia, Mariana</h1>
+          <h1>Bom dia, {nome}</h1>
         </div>
       </header>
 

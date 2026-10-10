@@ -95,5 +95,5 @@ Em qualquer das duas, o PR só entra depois do PR do login (`sairAction`).
 ## Pendências para o Elvis
 
 - Texto abaixo do nome por papel, inclusive `admin`.
-- `src/shared/ui/dashboard.tsx` ainda tem a saudação fixa ("Bom dia, Mariana" / "Olá, Ana"). Usar o nome real exige passar o usuário do layout/página para o componente; fora deste plano, aguarda o Elvis.
+- ~~Saudação fixa do `src/shared/ui/dashboard.tsx`~~: resolvido em 10/10/2026 a pedido do Márcio. As páginas `/assessor` e `/cliente` passam o nome do usuário logado e a saudação usa o primeiro nome ("Bom dia, Márcio").
 - Na `/login`, "Sou assessor" vem selecionado por padrão; quem clica "Sou cliente" na home cai no login com "Sou assessor" marcado. Sugestão: `/login?area=cliente` pré-seleciona a área (pequena mudança no M1, se ele concordar).

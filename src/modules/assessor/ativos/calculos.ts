@@ -23,7 +23,8 @@ export type DadosCarteiras = {
   cambio: TaxasCambio;
 };
 
-function fatorCambio(moeda: Moeda, cambio: TaxasCambio): number {
+/** Quantos reais vale 1 unidade da moeda. */
+export function fatorCambio(moeda: Moeda, cambio: TaxasCambio): number {
   return moeda === "BRL" ? 1 : cambio[moeda];
 }
 
@@ -115,9 +116,11 @@ export function clientesDoAtivo(
   dados: DadosCarteiras,
   limite: number = LIMITE_CONCENTRACAO_PADRAO,
 ): ClienteDoAtivo[] {
-  const { quantidades, valorDe, totalPorCliente } = valorizar(dados);
+  const { ativoPorTicker, quantidades, valorDe, totalPorCliente } = valorizar(dados);
   const porCliente = quantidades.get(ticker);
   if (!porCliente) return [];
+  // Renda fixa não entra na regra de concentração (decisão de produto): o risco dela é tratado pelo FGC.
+  const avaliaConcentracao = ativoPorTicker.get(ticker)?.categoria !== "RENDA_FIXA";
 
   return [...porCliente]
     .map(([clienteId, quantidade]) => {
@@ -129,7 +132,7 @@ export function clientesDoAtivo(
         quantidade,
         valor,
         pesoNaCarteira,
-        acimaDoLimite: pesoNaCarteira !== null && pesoNaCarteira > limite,
+        acimaDoLimite: avaliaConcentracao && pesoNaCarteira !== null && pesoNaCarteira > limite,
       };
     })
     .sort((a, b) => (b.valor ?? -1) - (a.valor ?? -1) || a.clienteId.localeCompare(b.clienteId));

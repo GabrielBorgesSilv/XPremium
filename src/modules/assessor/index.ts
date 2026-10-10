@@ -3,8 +3,23 @@
  *
  * Interface pública do módulo: src/app e outros módulos só importam daqui.
  */
-export { listarClientes } from "./clientes/service";
-export type { Clientes } from "./clientes/schema";
+export {
+  listarClientes,
+  obterDashCliente,
+  obterResumoAssessor,
+  type DashCliente,
+  type ResumoAssessor,
+  type LinhaCliente,
+  type ListaClientes,
+} from "./clientes/service";
+export {
+  ESTADOS_CIVIS,
+  FAIXAS_RENDA,
+  type CadastroCliente,
+  type ClienteVinculado,
+  type FiltrosClientes,
+} from "./clientes/schema";
+export type { CarteiraCliente, EvolucaoCarteira, PontoDeAtencao, PosicaoCliente, Severidade } from "./ativos/carteira-cliente";
 export {
   obterVisaoAtivos,
   type DetalheAtivo,

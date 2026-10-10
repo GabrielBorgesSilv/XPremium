@@ -1,5 +1,9 @@
+import Link from "next/link";
+
 import type { ResumoFGC } from "@/modules/assessor";
 import { formatarMoeda, formatarPercentual } from "@/shared/formatar";
+
+import { hrefCliente } from "../../_components/rotas";
 
 /** Aviso do topo: clientes acima (vermelho) ou perto (amarelo) do limite do FGC em algum emissor. */
 export function AvisoFGC({ fgc }: { fgc: ResumoFGC }) {
@@ -17,7 +21,7 @@ export function AvisoFGC({ fgc }: { fgc: ResumoFGC }) {
         {fgc.exposicoes.map((e) => (
           <li key={`${e.clienteId}-${e.emissor}`}>
             <span className={`xp-tag ${e.situacao === "ACIMA" ? "neg" : "mix"}`}>{e.situacao === "ACIMA" ? "Acima" : "Perto"}</span>{" "}
-            <b>{e.nome}</b> · {e.emissor}: {formatarMoeda(e.valorCoberto)} em títulos cobertos
+            <Link href={hrefCliente(e.clienteId)}><b>{e.nome}</b></Link> · {e.emissor}: {formatarMoeda(e.valorCoberto)} em títulos cobertos
             {e.situacao === "ACIMA"
               ? ` · ${formatarMoeda(e.descoberto)} acima do limite`
               : ` · ${formatarPercentual(e.valorCoberto / fgc.limite, { casas: 0 })} do limite`}{" "}
