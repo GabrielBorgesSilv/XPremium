@@ -71,6 +71,17 @@ export const ImpactoNoticiaSchema = z.object({
 });
 export type ImpactoNoticia = z.infer<typeof ImpactoNoticiaSchema>;
 
+/**
+ * Filtros da tela, vindos da URL (?ativo=PETR4&categoria=ACOES&alerta=1).
+ * Valor inválido vira "sem filtro" em vez de erro: a URL pode ser editada à mão.
+ */
+export const FiltrosVisaoSchema = z.object({
+  ativo: z.string().min(1).max(20).optional().catch(undefined),
+  categoria: CategoriaSchema.optional().catch(undefined),
+  alerta: z.literal("1").optional().catch(undefined),
+});
+export type FiltrosVisao = z.infer<typeof FiltrosVisaoSchema>;
+
 // Saídas dos cálculos (montadas pelo servidor, não vêm de fora; por isso só tipos).
 
 /** Uma linha da lista principal: o ativo somado entre todos os clientes do assessor. */

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { filtrarImpactos, resumirAlertas } from "./impactos";
+import { filtrarImpactos, ordenarComAlertas, resumirAlertas } from "./impactos";
 import type { ImpactoNoticia } from "./schema";
 
 const permitidos = new Set(["PETR4", "VALE3"]);
@@ -67,6 +67,17 @@ describe("resumirAlertas", () => {
   it("usa INDEFINIDO quando nenhuma notícia tem direção clara", () => {
     const alerta = resumirAlertas([impacto({ direcao: "INDEFINIDO" })]).get("PETR4");
     expect(alerta?.direcao).toBe("INDEFINIDO");
+  });
+
+  it("ordena ativos com alerta primeiro, do mais recente, mantendo os demais na ordem", () => {
+    const linhas = ["A", "B", "C", "D"].map((ticker) => ({ ativo: { ticker } }));
+    const alertas = resumirAlertas([
+      impacto({ ticker: "C", publicadoEm: "2026-10-08T10:00:00-03:00" }),
+      impacto({ ticker: "D", publicadoEm: "2026-10-09T10:00:00-03:00" }),
+    ]);
+    const ordem = ordenarComAlertas(linhas, alertas).map((l) => l.ativo.ticker);
+    expect(ordem).toEqual(["D", "C", "A", "B"]);
+    expect(linhas.map((l) => l.ativo.ticker)).toEqual(["A", "B", "C", "D"]);
   });
 
   it("separa os alertas por ativo", () => {

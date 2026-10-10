@@ -44,6 +44,26 @@ export type AlertaAtivo = {
   impactos: ImpactoNoticia[];
 };
 
+/**
+ * Ativos com alerta primeiro (do alerta mais recente para o mais antigo);
+ * os demais mantêm a ordem recebida. Não altera a lista original.
+ */
+export function ordenarComAlertas<T extends { ativo: { ticker: string } }>(
+  linhas: T[],
+  alertas: Map<string, AlertaAtivo>,
+): T[] {
+  const momento = (linha: T) => {
+    const alerta = alertas.get(linha.ativo.ticker);
+    return alerta ? Date.parse(alerta.maisRecente) : -Infinity;
+  };
+  // sort é estável: empates (inclusive "sem alerta") mantêm a ordem original.
+  return [...linhas].sort((a, b) => {
+    const ma = momento(a);
+    const mb = momento(b);
+    return ma === mb ? 0 : mb > ma ? 1 : -1;
+  });
+}
+
 /** Agrupa os impactos por ativo, com as notícias mais recentes primeiro. */
 export function resumirAlertas(impactos: ImpactoNoticia[]): Map<string, AlertaAtivo> {
   const porTicker = new Map<string, ImpactoNoticia[]>();
