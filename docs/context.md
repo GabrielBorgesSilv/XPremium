@@ -146,7 +146,6 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
 - Limite de tentativas de login e de pedidos de recuperação de senha (sem limite no MVP).
 - Serviço de envio de e-mail (hoje o link de redefinição só aparece no terminal em desenvolvimento).
-- Limite de tentativas de login (sem limite no MVP).
 - Depois da demo: mover `src/features/dashboard` para `src/modules` (nomes em kebab-case/português) e unificar os tipos de ativo/cotação do M2 (`Category`, `Period`, `DataOrigin`, `Money`, `QuotePoint`) com os do M4 (`Categoria`, `Periodo`, `OrigemDado`, `Moeda`, `Cotacao`).
 - Onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
