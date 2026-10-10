@@ -153,6 +153,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | 10/10/2026 | Links montados com `APP_URL` do `.env` (padrão `http://localhost:3000`), nunca com o Host da requisição; página do link com `referrer: no-referrer` | Usar o Host da requisição | Host pode ser forjado (links falsos quando houver e-mail); o token na URL não vaza por Referer. Escolha técnica do Claude, a confirmar. |
 | 10/10/2026 | Regra de senha nova única (`SenhaNovaSchema`) para cadastro e redefinição | — | Mesma regra nos dois fluxos. |
 | 10/10/2026 | Sem limite de tentativas de login no MVP | 5 tentativas / 15 min | Banco local e demo; scrypt já torna cada tentativa lenta. Pendência para produção. |
+| 10/10/2026 | A home `/cliente` mostra só a carteira da pessoa logada: cenários de rendimento e investimentos futuros, com botão para `/cliente/reunioes` | Protótipo com patrimônio, alocação e agenda compartilhada | O cliente não precisa ver o painel do assessor. As reuniões ficam numa tela própria. |
 
 ### Arquitetura
 

@@ -13,7 +13,7 @@ const navigation: Record<WorkspaceRole, { group: string; links: { label: string;
   ],
   cliente: [
     { group: "Visão geral", links: [{ label: "Dashboard", href: "/cliente", icon: "▦" }, { label: "Patrimônio", href: "/cliente/patrimonio", icon: "◈" }, { label: "Investimentos", href: "/cliente/patrimonio", icon: "↗" }] },
-    { group: "Relacionamento", links: [{ label: "Agenda", href: "/cliente", icon: "▦" }, { label: "Meu perfil", href: "/cliente/perfil", icon: "◉" }, { label: "Open Finance", href: "/cliente/open-finance", icon: "⌁" }] },
+    { group: "Relacionamento", links: [{ label: "Reuniões", href: "/cliente/reunioes", icon: "▦" }, { label: "Meu perfil", href: "/cliente/perfil", icon: "◉" }, { label: "Open Finance", href: "/cliente/open-finance", icon: "⌁" }] },
   ],
 };
 
