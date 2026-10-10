@@ -187,7 +187,6 @@ de senha sem alterá-los, e preserva os IDs dos registros de anamnese, Open Fina
 Não use `db:reset` nesse caso.
 
 **Testes com banco:** use SQLite em memória (`DATABASE_URL=:memory:`) e aplique a estrutura real com `pushSQLiteSchema` do `drizzle-kit/api`. Exemplo em `src/modules/usuarios/auth/service.test.ts` (inclui como simular cookies e `redirect` do Next).
-
 ### Dados do seed: exportados + sintéticos
 
 O seed tem duas fontes. Para cada módulo, na ordem `usuarios` → `cliente` → `assessor` → `integracoes`:

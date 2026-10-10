@@ -11,8 +11,13 @@ const positions = [
   ["IVVB11", "Exterior", "R$ 198.250", "+14,6%", "Ativo"],
 ];
 
+/** Primeiro nome do usuário logado para a saudação ("Carla Rocha" → "Carla"). */
+function firstName(name: string) {
+  return name.trim().split(/\s+/)[0] ?? name;
+}
+
 function Heading({ role, userName }: { role: Role; userName: string }) {
-  return <div className="xp-head"><div><div className="xp-kicker">{role === "assessor" ? "VISÃO DO ASSESSOR" : "ÁREA DO CLIENTE"}</div><h1>{role === "assessor" ? `Bom dia, ${userName}` : `Olá, ${userName}`}</h1><p>{role === "assessor" ? "Resumo das carteiras e dos próximos compromissos." : "Acompanhe seu patrimônio e seus investimentos."}</p></div><button className="xp-btn lime" type="button">＋ {role === "assessor" ? "Nova análise" : "Baixar extrato"}</button></div>;
+  return <div className="xp-head"><div><div className="xp-kicker">{role === "assessor" ? "VISÃO DO ASSESSOR" : "ÁREA DO CLIENTE"}</div><h1>{role === "assessor" ? `Bom dia, ${firstName(userName)}` : `Olá, ${firstName(userName)}`}</h1><p>{role === "assessor" ? "Resumo das carteiras e dos próximos compromissos." : "Acompanhe seu patrimônio e seus investimentos."}</p></div><button className="xp-btn lime" type="button">＋ {role === "assessor" ? "Nova análise" : "Baixar extrato"}</button></div>;
 }
 
 function Stats({ role }: { role: Role }) {

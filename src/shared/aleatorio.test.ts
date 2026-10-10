@@ -29,6 +29,14 @@ describe("criarAleatorio", () => {
     }
   });
 
+  it("gera UUID v4 válido e determinístico", () => {
+    const uuidV4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+    const a = criarAleatorio(42).uuid();
+    expect(a).toMatch(uuidV4);
+    expect(criarAleatorio(42).uuid()).toBe(a);
+    expect(criarAleatorio(43).uuid()).not.toBe(a);
+  });
+
   it("escolhe só itens da lista e recusa lista vazia", () => {
     const r = criarAleatorio(3);
     const itens = ["a", "b", "c"] as const;
