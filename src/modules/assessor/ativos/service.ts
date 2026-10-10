@@ -9,6 +9,7 @@ import {
   REFERENCIA_SERIE_DEMO,
   RESPOSTA_IA_DEMO,
 } from "./demo";
+import { avaliarFGC, type ExposicaoFGC, LIMITE_FGC, type SituacaoFGC } from "./fgc";
 import { type AlertaAtivo, filtrarImpactos, ordenarComAlertas, resumirAlertas } from "./impactos";
 import {
   type ClienteDoAtivo,
@@ -24,14 +25,29 @@ import {
 } from "./schema";
 import { calcularVariacao, gerarSerieSimulada, type Variacao } from "./serie";
 
-export type LinhaAtivo = ResumoAtivo & { alerta: AlertaAtivo | null };
+export type LinhaAtivo = ResumoAtivo & {
+  alerta: AlertaAtivo | null;
+  /** Pior situação de FGC entre os clientes que têm este título (null se não há aviso). */
+  fgc: SituacaoFGC | null;
+};
+
+export type ExposicaoFGCCliente = ExposicaoFGC & { nome: string };
+
+export type ResumoFGC = {
+  limite: number;
+  /** Casos acima ou perto do limite, do maior valor descoberto para o menor. */
+  exposicoes: ExposicaoFGCCliente[];
+  clientesAcima: number;
+  clientesPerto: number;
+  totalDescoberto: number;
+};
 
 export type NoticiaDoAtivo = { impacto: ImpactoNoticia; titulo: string; fonte: string };
 
 export type DetalheAtivo = {
   linha: LinhaAtivo;
   cotacao: Cotacao | null;
-  clientes: (ClienteDoAtivo & { nome: string })[];
+  clientes: (ClienteDoAtivo & { nome: string; fgc: ExposicaoFGC | null })[];
   serie: SeriePrecos | null;
   variacoes: Record<Periodo, Variacao | null>;
   noticias: NoticiaDoAtivo[];
@@ -62,8 +78,31 @@ export type VisaoAtivos = {
   numAtivosComAlerta: number;
   /** Impactos devolvidos pela IA e recusados pelo filtro (ex.: ativo fora da carteira). */
   impactosDescartados: number;
+  fgc: ResumoFGC;
   detalhe: DetalheAtivo | null;
 };
+
+const NOMES_CLIENTES = new Map(CLIENTES_DEMO.map((c) => [c.id, c.nome]));
+const nomeDoCliente = (id: string) => NOMES_CLIENTES.get(id) ?? id;
+
+function resumirFGC(exposicoes: ExposicaoFGC[]): ResumoFGC {
+  const clientes = (situacao: SituacaoFGC) =>
+    new Set(exposicoes.filter((e) => e.situacao === situacao).map((e) => e.clienteId)).size;
+  return {
+    limite: LIMITE_FGC,
+    exposicoes: exposicoes.map((e) => ({ ...e, nome: nomeDoCliente(e.clienteId) })),
+    clientesAcima: clientes("ACIMA"),
+    clientesPerto: clientes("PERTO"),
+    totalDescoberto: exposicoes.reduce((soma, e) => soma + e.descoberto, 0),
+  };
+}
+
+/** Pior situação de FGC entre as exposições que envolvem o título. */
+function situacaoFGCDoTitulo(ticker: string, exposicoes: ExposicaoFGC[]): SituacaoFGC | null {
+  const doTitulo = exposicoes.filter((e) => e.tickers.includes(ticker));
+  if (doTitulo.some((e) => e.situacao === "ACIMA")) return "ACIMA";
+  return doTitulo.length > 0 ? "PERTO" : null;
+}
 
 /**
  * Regras de negócio: investimentos dos clientes do assessor, vistos por ativo.
@@ -79,8 +118,13 @@ export async function obterVisaoAtivos(parametros: Record<string, string | strin
   // TODO(M5): trocar a resposta fixa pela chamada ao agente de notícias.
   const { validos, descartados } = filtrarImpactos(RESPOSTA_IA_DEMO, tickersDaCarteira);
   const alertas = resumirAlertas(validos);
+  const exposicoesFGC = avaliarFGC(dados);
 
-  const todas: LinhaAtivo[] = resumo.ativos.map((a) => ({ ...a, alerta: alertas.get(a.ativo.ticker) ?? null }));
+  const todas: LinhaAtivo[] = resumo.ativos.map((a) => ({
+    ...a,
+    alerta: alertas.get(a.ativo.ticker) ?? null,
+    fgc: situacaoFGCDoTitulo(a.ativo.ticker, exposicoesFGC),
+  }));
   const linhas = ordenarComAlertas(
     todas.filter(
       (l) => (!filtros.categoria || l.ativo.categoria === filtros.categoria) && (!filtros.alerta || l.alerta !== null),
@@ -98,14 +142,14 @@ export async function obterVisaoAtivos(parametros: Record<string, string | strin
     linhas,
     numAtivosComAlerta: alertas.size,
     impactosDescartados: descartados,
-    detalhe: selecionada ? montarDetalhe(selecionada) : null,
+    fgc: resumirFGC(exposicoesFGC),
+    detalhe: selecionada ? montarDetalhe(selecionada, exposicoesFGC) : null,
   };
 }
 
-function montarDetalhe(linha: LinhaAtivo): DetalheAtivo {
+function montarDetalhe(linha: LinhaAtivo, exposicoesFGC: ExposicaoFGC[]): DetalheAtivo {
   const { ticker } = linha.ativo;
   const cotacao = CARTEIRAS_DEMO.cotacoes.find((c) => c.ticker === ticker) ?? null;
-  const nomes = new Map(CLIENTES_DEMO.map((c) => [c.id, c.nome]));
   const noticias = new Map(NOTICIAS_DEMO.map((n) => [n.id, n]));
 
   // TODO(M2): buscar o histórico real; a série simulada é o fallback rotulado.
@@ -127,7 +171,12 @@ function montarDetalhe(linha: LinhaAtivo): DetalheAtivo {
   return {
     linha,
     cotacao,
-    clientes: clientesDoAtivo(ticker, CARTEIRAS_DEMO).map((c) => ({ ...c, nome: nomes.get(c.clienteId) ?? c.clienteId })),
+clientes: clientesDoAtivo(ticker, CARTEIRAS_DEMO).map((c) => ({
+      ...c,
+      nome: nomeDoCliente(c.clienteId),
+      // Situação do cliente no emissor deste título (a regra do FGC é por instituição).
+      fgc: exposicoesFGC.find((e) => e.clienteId === c.clienteId && e.emissor === linha.ativo.emissor) ?? null,
+    })),
     serie,
     variacoes: {
       "7D": serie ? calcularVariacao(serie, "7D") : null,

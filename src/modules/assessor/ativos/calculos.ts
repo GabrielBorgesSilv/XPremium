@@ -27,8 +27,11 @@ function fatorCambio(moeda: Moeda, cambio: TaxasCambio): number {
   return moeda === "BRL" ? 1 : cambio[moeda];
 }
 
-/** Indexa os dados e valoriza cada posição em reais (null quando o ativo não tem cotação). */
-function valorizar({ ativos, posicoes, cotacoes, cambio }: DadosCarteiras) {
+/**
+ * Indexa os dados e valoriza cada posição em reais (null quando o ativo não tem cotação).
+ * Uso interno do submódulo (não exportado no index.ts).
+ */
+export function valorizar({ ativos, posicoes, cotacoes, cambio }: DadosCarteiras) {
   const ativoPorTicker = new Map(ativos.map((a) => [a.ticker, a]));
   const cotacaoPorTicker = new Map(cotacoes.map((c) => [c.ticker, c]));
 

@@ -30,12 +30,19 @@ export const CARTEIRAS_DEMO: DadosCarteiras = {
     { ticker: "BOVA11", nome: "iShares Ibovespa (ETF)", categoria: "ETF", moeda: "BRL" },
     { ticker: "BTC", nome: "Bitcoin", categoria: "CRIPTO", moeda: "BRL" },
     { ticker: "IPCA-2035", nome: "Tesouro IPCA+ 2035", categoria: "RENDA_FIXA", moeda: "BRL" },
+    // Títulos bancários de emissores fictícios, cobertos pelo FGC.
+    { ticker: "CDB-ALFA-2027", nome: "CDB Banco Alfa 2027", categoria: "RENDA_FIXA", moeda: "BRL", emissor: "Banco Alfa", coberturaFGC: true },
+    { ticker: "LCI-ALFA-2026", nome: "LCI Banco Alfa 2026", categoria: "RENDA_FIXA", moeda: "BRL", emissor: "Banco Alfa", coberturaFGC: true },
+    { ticker: "LCA-BETA-2028", nome: "LCA Banco Beta 2028", categoria: "RENDA_FIXA", moeda: "BRL", emissor: "Banco Beta", coberturaFGC: true },
   ],
   posicoes: [
     // Ana: concentrada em renda fixa.
     { clienteId: "cli-1", ticker: "IPCA-2035", quantidade: 60 },
     { clienteId: "cli-1", ticker: "ITUB4", quantidade: 800 },
     { clienteId: "cli-1", ticker: "HGLG11", quantidade: 120 },
+    // Ana passa do FGC no Banco Alfa só somando os dois títulos (R$ 162.810 + R$ 104.210).
+    { clienteId: "cli-1", ticker: "CDB-ALFA-2027", quantidade: 150 },
+    { clienteId: "cli-1", ticker: "LCI-ALFA-2026", quantidade: 100 },
     // Bruno: diversificado.
     { clienteId: "cli-2", ticker: "PETR4", quantidade: 1500 },
     { clienteId: "cli-2", ticker: "VALE3", quantidade: 600 },
@@ -43,11 +50,14 @@ export const CARTEIRAS_DEMO: DadosCarteiras = {
     { clienteId: "cli-2", ticker: "KNRI11", quantidade: 150 },
     { clienteId: "cli-2", ticker: "IPCA-2035", quantidade: 15 },
     { clienteId: "cli-2", ticker: "O", quantidade: 200 },
+    // Bruno fica perto do limite no Banco Beta (R$ 229.792,50, 92%).
+    { clienteId: "cli-2", ticker: "LCA-BETA-2028", quantidade: 225 },
     // Carla: com cripto e exterior.
     { clienteId: "cli-3", ticker: "BTC", quantidade: 0.35 },
     { clienteId: "cli-3", ticker: "IVVB11", quantidade: 140 },
     { clienteId: "cli-3", ticker: "PETR4", quantidade: 400 },
     { clienteId: "cli-3", ticker: "O", quantidade: 120 },
+    { clienteId: "cli-3", ticker: "CDB-ALFA-2027", quantidade: 50 },
     // Diego: concentrado em ações; XPML11 está sem cotação (mostra cobertura parcial).
     { clienteId: "cli-4", ticker: "PETR4", quantidade: 5000 },
     { clienteId: "cli-4", ticker: "VALE3", quantidade: 900 },
@@ -65,6 +75,9 @@ export const CARTEIRAS_DEMO: DadosCarteiras = {
     cotacao("BOVA11", 128.6),
     cotacao("BTC", 340000),
     cotacao("IPCA-2035", 3150),
+    cotacao("CDB-ALFA-2027", 1085.4),
+    cotacao("LCI-ALFA-2026", 1042.1),
+    cotacao("LCA-BETA-2028", 1021.3),
   ],
   cambio: { USD: 5.4 },
 };
@@ -72,6 +85,9 @@ export const CARTEIRAS_DEMO: DadosCarteiras = {
 /** Valor atual usado como fim da série simulada: preço, ou taxa (% a.a.) em renda fixa. */
 export const REFERENCIA_SERIE_DEMO: Record<string, number> = {
   "IPCA-2035": 6.45,
+  "CDB-ALFA-2027": 13.1,
+  "LCI-ALFA-2026": 11.2,
+  "LCA-BETA-2028": 11.6,
 };
 
 export type NoticiaDemo = { id: string; titulo: string; fonte: string; publicadoEm: string };

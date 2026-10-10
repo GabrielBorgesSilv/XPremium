@@ -17,12 +17,21 @@ export const OrigemDadoSchema = z.enum(["REAL", "ULTIMO_REAL", "SIMULADO"]);
 export type OrigemDado = z.infer<typeof OrigemDadoSchema>;
 
 /** Identificação do ativo, sem nada específico de provedor externo (contrato com M2). */
-export const AtivoSchema = z.object({
-  ticker: z.string().min(1),
-  nome: z.string().min(1),
-  categoria: CategoriaSchema,
-  moeda: MoedaSchema,
-});
+export const AtivoSchema = z
+  .object({
+    ticker: z.string().min(1),
+    nome: z.string().min(1),
+    categoria: CategoriaSchema,
+    moeda: MoedaSchema,
+    /** Instituição emissora (conglomerado), para títulos bancários. */
+    emissor: z.string().min(1).optional(),
+    /** Coberto pelo FGC (CDB, LCI, LCA, LC, RDB...). Ausente = não coberto. */
+    coberturaFGC: z.boolean().optional(),
+  })
+  .refine((a) => !a.coberturaFGC || a.emissor !== undefined, {
+    message: "Ativo coberto pelo FGC precisa informar o emissor",
+    path: ["emissor"],
+  });
 export type Ativo = z.infer<typeof AtivoSchema>;
 
 /** Quanto um cliente tem de um ativo (contrato com M3: o M3 é dono do cliente, o M4 só guarda o id). */
