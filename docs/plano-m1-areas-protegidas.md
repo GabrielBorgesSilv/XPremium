@@ -85,4 +85,15 @@ Em qualquer das duas, o PR só entra depois do PR do login (`sairAction`).
 
 ## Andamento
 
-- 10/10/2026: Márcio pediu para seguir com o plano (opção A); as respostas às perguntas acima ficam registradas aqui conforme forem definidas.
+- 10/10/2026: Márcio pediu para seguir com o plano pela **opção A**. Respostas dadas por ele:
+  1. Botão de sair: **rodapé da barra lateral**, junto do nome.
+  2. Texto abaixo do nome (inclusive para `admin`): **aguarda o Elvis**. Por enquanto continua "Assessora private" / "Cliente private".
+  3. Home: **(a)**, os dois botões apontam para `/login`.
+  4. Slogan na home e no `prototipo.html`: trocado na mesma branch.
+- 10/10/2026: implementado na branch `feature/m1-areas-protegidas` (PR depois do login, cadastro e recuperar senha). No `WorkspaceShell`, as props novas seguem os nomes em inglês do arquivo: `user`, `canViewAdvisor`, `signOutAction`.
+
+## Pendências para o Elvis
+
+- Texto abaixo do nome por papel, inclusive `admin`.
+- `src/shared/ui/dashboard.tsx` ainda tem a saudação fixa ("Bom dia, Mariana" / "Olá, Ana"). Usar o nome real exige passar o usuário do layout/página para o componente; fora deste plano, aguarda o Elvis.
+- Na `/login`, "Sou assessor" vem selecionado por padrão; quem clica "Sou cliente" na home cai no login com "Sou assessor" marcado. Sugestão: `/login?area=cliente` pré-seleciona a área (pequena mudança no M1, se ele concordar).
