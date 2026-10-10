@@ -1,9 +1,9 @@
 import "server-only";
 
-import type { Ativos } from "./schema";
+import type { ResumoCarteiras } from "./schema";
 
-/** Regras de negócio: ativos sob gestão do assessor. */
-export async function listarAtivos(): Promise<Ativos[]> {
-  // TODO: implementar
-  return [];
+/** Regras de negócio: investimentos dos clientes do assessor, vistos por ativo. */
+export async function listarAtivos(): Promise<ResumoCarteiras | null> {
+  // TODO: buscar clientes vinculados (M3), posições e cotações e chamar resumirCarteiras.
+  return null;
 }
