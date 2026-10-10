@@ -57,7 +57,12 @@ const CelularSchema = z
 
 export const CadastroSchema = z
   .object({
-    nome: z.string().trim().min(2, "Informe seu nome completo.").max(120, "Nome muito longo."),
+    // Regra: nome completo = pelo menos nome e sobrenome (duas palavras).
+    nome: z
+      .string()
+      .trim()
+      .max(120, "Nome muito longo.")
+      .refine((v) => v.split(/\s+/).filter(Boolean).length >= 2, "Informe nome e sobrenome."),
     email: z
       .string()
       .trim()

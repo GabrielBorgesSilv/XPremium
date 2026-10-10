@@ -33,6 +33,15 @@ describe("CadastroSchema", () => {
     expect(r.celular).toBe("11912345678");
   });
 
+  it("nome exige pelo menos nome e sobrenome", () => {
+    for (const nome of ["Ana Li", "Maria da Silva", "  Ana   Martins  "]) {
+      expect(errosDe({ ...valido, nome }), nome).toEqual({});
+    }
+    for (const nome of ["Ana", "  Ana  ", ""]) {
+      expect(errosDe({ ...valido, nome }), nome).toHaveProperty("nome");
+    }
+  });
+
   it("todos os campos são obrigatórios", () => {
     const erros = errosDe({});
     for (const campo of [
