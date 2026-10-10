@@ -8,7 +8,7 @@ type WorkspaceRole = "assessor" | "cliente";
 
 const navigation: Record<WorkspaceRole, { group: string; links: { label: string; href: string; icon: string }[] }[]> = {
   assessor: [
-    { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Carteira", href: "/assessor/ativos", icon: "◈" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
+    { group: "Visão geral", links: [{ label: "Dashboard", href: "/assessor", icon: "▦" }, { label: "Mercado", href: "/assessor/dashboard", icon: "▤" }, { label: "Carteira", href: "/assessor/ativos", icon: "◈" }, { label: "Investimentos", href: "/assessor/ativos", icon: "↗" }, { label: "Métricas", href: "/assessor/metricas", icon: "⌁" }] },
     { group: "Relacionamento", links: [{ label: "Clientes", href: "/assessor/clientes", icon: "♙" }, { label: "Agenda", href: "/assessor", icon: "▦" }, { label: "Perfil", href: "/assessor", icon: "◉" }] },
     { group: "Expansão", links: [{ label: "Prospecção", href: "/assessor/prospeccao", icon: "⌕" }] },
   ],
