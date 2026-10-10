@@ -99,6 +99,33 @@ export async function listarClientes(parametros: Record<string, string | string[
   };
 }
 
+export type ResumoAssessor = {
+  origem: OrigemDado;
+  asOf: string;
+  numClientes: number;
+  /** Soma em reais das posições com cotação de todos os clientes vinculados. */
+  patrimonioSobGestao: number;
+  /** Clientes com algum ponto de atenção alto ou médio. */
+  clientesComAtencao: number;
+  ativosComAlerta: number;
+  clientesAcimaFGC: number;
+};
+
+/** Números da carteira do assessor para o perfil, a partir dos mesmos cálculos das outras telas. */
+export async function obterResumoAssessor(): Promise<ResumoAssessor> {
+  const lista = await listarClientes({});
+  const carregado = carregarDadosCarteiras(new Set(lista.linhas.map((c) => c.id)));
+  return {
+    origem: lista.origem,
+    asOf: lista.asOf,
+    numClientes: lista.totalClientes,
+    patrimonioSobGestao: lista.linhas.reduce((soma, c) => soma + c.patrimonio, 0),
+    clientesComAtencao: lista.comAtencao,
+    ativosComAlerta: carregado.alertas.size,
+    clientesAcimaFGC: new Set(carregado.exposicoesFGC.filter((e) => e.situacao === "ACIMA").map((e) => e.clienteId)).size,
+  };
+}
+
 /** Dash de um cliente; null se o cliente não existe ou não é vinculado a este assessor. */
 export async function obterDashCliente(clienteId: string): Promise<DashCliente | null> {
   const cliente = buscarClienteDoAssessor(assessorAtual(), clienteId);
