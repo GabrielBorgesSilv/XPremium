@@ -64,9 +64,10 @@ describe("serviços de ranking e renda fixa", () => {
     expect(ranking.losers.map((row) => row.changePercent)).toEqual(
       [...ranking.losers.map((row) => row.changePercent)].sort((left, right) => left - right),
     );
-    expect(ranking.gainers.concat(ranking.losers).every((row) => row.symbol.startsWith("DEMO_INTL_REIT_"))).toBe(
-      true,
+    const intlReit = new Set(
+      marketFixtures.filter((asset) => asset.region === "INTL" && asset.category === "REAL_ESTATE").map((asset) => asset.symbol),
     );
+    expect(ranking.gainers.concat(ranking.losers).every((row) => intlReit.has(row.symbol))).toBe(true);
     expect(ranking.coverage.description.toLowerCase().includes("todo mercado")).toBe(false);
     expect(ranking.coverage.description).toContain("Universo de demonstração analisado neste filtro");
   });
@@ -189,8 +190,8 @@ describe("serviços de ranking e renda fixa", () => {
     );
 
     const withBoth = brazil.instruments.find((item) => item.id === "DEMO_RF_BR_03");
-    expect(withBoth?.yieldRate).toEqual({ value: 4, unit: "percentual", type: "taxa demonstrativa" });
-    expect(withBoth?.unitPrice).toEqual({ value: 10, type: "preço demonstrativo" });
+    expect(withBoth?.yieldRate).toEqual({ value: 11.4, unit: "% a.a.", type: "prefixado" });
+    expect(withBoth?.unitPrice).toEqual({ value: 912.5, type: "preço" });
     expect(Object.keys(brazil).sort()).toEqual(["dataStatus", "instruments", "region"]);
     expect(queryFixedIncome("EU").ok).toBe(false);
   });

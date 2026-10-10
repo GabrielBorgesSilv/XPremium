@@ -1,8 +1,8 @@
 import type { PriceBasis } from "../domain/types";
 
 const PRICE_BASIS_LABEL: Record<PriceBasis, string> = {
-  ADJUSTED: "Ajustado, demonstração",
-  UNADJUSTED: "Não ajustado, demonstração",
+  ADJUSTED: "Ajustado",
+  UNADJUSTED: "Não ajustado",
   NOT_APPLICABLE: "Não se aplica",
 };
 

@@ -1,5 +1,4 @@
 import type { FixedIncomeResponse } from "../domain/types";
-import { DataProvenance } from "./DataProvenance";
 import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { formatDate, formatMoney, formatNumber } from "./format";
 
@@ -11,10 +10,8 @@ export function FixedIncomePanel({ data }: { data: FixedIncomeResponse }) {
   return (
     <section aria-labelledby="renda-fixa-titulo" className="xp-card">
       <h2 id="renda-fixa-titulo">Renda fixa</h2>
-      <DataProvenance dataStatus={data.dataStatus} />
       <p className="xp-desc">
-        Taxas, preços e vencimentos aparecem só quando o conjunto de demonstração os traz. Nada aqui é calculado a
-        partir da taxa.
+        Taxa, preço e vencimento deste recorte. Quando um campo não veio no cenário, ele aparece como indisponível.
       </p>
       {data.instruments.length === 0 ? (
         <LoadingErrorEmpty state="empty" title="Nenhuma referência de renda fixa neste recorte." />

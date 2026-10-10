@@ -17,6 +17,7 @@ import {
 } from "../domain/types";
 import { expectedAssetType, expectedQuoteCurrency } from "../domain/selectors";
 import { marketFixtureListSchema, overviewResponseSchema } from "../schemas/dashboardSchemas";
+import { castName } from "./cast";
 
 const PERIOD_FACTOR: Record<Period, number> = {
   "1D": 1,
@@ -68,17 +69,17 @@ function buildAsset(
   magnitude: number,
 ): MarketFixtureAsset {
   const token = symbolToken(region, category);
-  const symbol = `DEMO_${region}_${token}_${String(sequence).padStart(2, "0")}`;
+  const cast = castName(region, category, sequence);
   const currency = role === "foreign-currency" ? "EUR" : expectedQuoteCurrency(region);
   const quoteContext =
     category === "CRYPTO"
-      ? `Cotação de demonstração em ${currency}. Região editorial ${region}; o conjunto não afirma restrição territorial do mercado.`
-      : `Cotação de demonstração em ${currency}.`;
+      ? `Cotação em ${currency}. Região editorial ${region}; o conjunto não afirma restrição territorial do mercado.`
+      : `Cotação em ${currency}.`;
 
   return {
-    assetId: symbol,
-    symbol,
-    name: `Ativo demonstrativo ${token} ${region} ${String(sequence).padStart(2, "0")}`,
+    assetId: cast.symbol,
+    symbol: cast.symbol,
+    name: cast.name,
     region,
     category,
     assetType: token,
@@ -119,7 +120,7 @@ function buildMarketFixtures(): MarketFixtureAsset[] {
   return assets;
 }
 
-/** Universo fictício. Símbolos `DEMO_*` e variações estáveis por período. */
+/** Universo fictício. Tickers inventados e variações estáveis por período. */
 export const marketFixtures: readonly MarketFixtureAsset[] = marketFixtureListSchema.parse(
   buildMarketFixtures(),
 );
@@ -129,42 +130,47 @@ const indicatorPlan: Array<{
   name: string;
   region: Region;
   value: number;
+  unit: string;
   changePercent: number;
 }> = [
   {
     id: "DEMO_IND_BR_01",
-    name: "Indicador demonstrativo Brasil 01",
+    name: "Bolsa Brasil",
     region: "BR",
-    value: 10,
-    changePercent: 1,
+    value: 128450,
+    unit: "pontos",
+    changePercent: 0.84,
   },
   {
     id: "DEMO_IND_BR_02",
-    name: "Indicador demonstrativo Brasil 02",
+    name: "Juros Brasil",
     region: "BR",
-    value: 20,
-    changePercent: -1,
+    value: 10.75,
+    unit: "% a.a.",
+    changePercent: -0.12,
   },
   {
     id: "DEMO_IND_INTL_01",
-    name: "Indicador demonstrativo internacional 01",
+    name: "Bolsa internacional",
     region: "INTL",
-    value: 30,
-    changePercent: 2,
+    value: 5420,
+    unit: "pontos",
+    changePercent: 1.15,
   },
   {
     id: "DEMO_IND_INTL_02",
-    name: "Indicador demonstrativo internacional 02",
+    name: "Dólar",
     region: "INTL",
-    value: 40,
-    changePercent: -2,
+    value: 5.42,
+    unit: "R$",
+    changePercent: -0.35,
   },
 ];
 
 function buildOverview(): OverviewResponse {
   const indicators: MarketIndicator[] = indicatorPlan.map((indicator) => ({
     ...indicator,
-    unit: "pontos de demonstração",
+    unit: indicator.unit,
     dataStatus: demoQuoteStatus(),
   }));
   return {

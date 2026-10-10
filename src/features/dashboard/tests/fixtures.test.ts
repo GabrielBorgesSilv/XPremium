@@ -62,7 +62,8 @@ describe("fixtures do dashboard", () => {
   it("usa só símbolos de demonstração e não mistura região, categoria nem tipo", () => {
     const symbols = marketFixtures.map((asset) => asset.symbol);
     expect(new Set(symbols).size).toBe(symbols.length);
-    expect(symbols.every((symbol) => symbol.startsWith("DEMO_"))).toBe(true);
+    expect(symbols.some((symbol) => symbol.startsWith("DEMO_"))).toBe(false);
+    expect(marketFixtures.some((asset) => asset.name.includes("demonstrativo"))).toBe(false);
 
     for (const region of REGIONS) {
       for (const category of RANKING_CATEGORIES) {
@@ -113,11 +114,14 @@ describe("fixtures do dashboard", () => {
           expect(new Set(rows.map((row) => row.assetId)).size).toBe(rows.length);
           expect(rows.every((row) => row.origin === "SIMULATED" && row.price !== null)).toBe(true);
           expect(rows.every((row) => row.price?.currency === (region === "BR" ? "BRL" : "USD"))).toBe(true);
-          expect(rows.every((row) => row.symbol.startsWith(`DEMO_${region}_`))).toBe(true);
+          const allowed = new Set(
+            marketFixtures
+              .filter((asset) => asset.region === region && asset.category === category)
+              .map((asset) => asset.symbol),
+          );
+          expect(rows.every((row) => allowed.has(row.symbol))).toBe(true);
           expect(ranking.gainers.every((row) => row.changePercent > 0)).toBe(true);
           expect(ranking.losers.every((row) => row.changePercent < 0)).toBe(true);
-          const token = category === "REAL_ESTATE" ? (region === "BR" ? "FII" : "REIT") : category;
-          expect(rows.every((row) => row.symbol.includes(`_${token}_`))).toBe(true);
         }
       }
     }
@@ -126,8 +130,8 @@ describe("fixtures do dashboard", () => {
   it("separa os períodos e não promove ativo inelegível nem moeda inconsistente", () => {
     const oneDay = buildRanking(marketFixtures, { region: "BR", category: "STOCK", period: "1D" });
     const sevenDays = buildRanking(marketFixtures, { region: "BR", category: "STOCK", period: "7D" });
-    expect(oneDay.gainers[0]).toMatchObject({ symbol: "DEMO_BR_STOCK_12", changePercent: 12 });
-    expect(sevenDays.gainers[0]).toMatchObject({ symbol: "DEMO_BR_STOCK_12", changePercent: 36 });
+    expect(oneDay.gainers[0]).toMatchObject({ symbol: "SOLR3", name: "Solar do Cerrado", changePercent: 12 });
+    expect(sevenDays.gainers[0]).toMatchObject({ symbol: "SOLR3", changePercent: 36 });
     expect(oneDay.coverage).toMatchObject({ eligibleCount: 28, analyzedCount: 25 });
 
     const listed = [...oneDay.gainers, ...oneDay.losers].map((row) => row.symbol);
@@ -142,7 +146,7 @@ describe("fixtures do dashboard", () => {
           asset.role === "missing-change"),
     );
     expect(excluded.every((asset) => !listed.includes(asset.symbol))).toBe(true);
-    expect(marketFixtures.find((asset) => asset.symbol === "DEMO_BR_STOCK_12")?.liquidityMetric).toBe(1);
+    expect(marketFixtures.find((asset) => asset.symbol === "SOLR3")?.liquidityMetric).toBe(1);
   });
 
   it("mantém renda fixa sem derivar preço da taxa e sem URL falsa nas notícias", () => {
@@ -162,7 +166,7 @@ describe("fixtures do dashboard", () => {
     ]);
     expect(newsFixture.articles.every((article) => article.url === null)).toBe(true);
     expect(newsFixture.articles.every((article) => article.summary.generatedByAI === false)).toBe(true);
-    expect(newsFixture.articles.every((article) => article.source === "Conteúdo demonstrativo")).toBe(true);
+    expect(newsFixture.articles.every((article) => article.source === "Guia do painel")).toBe(true);
     expect(JSON.stringify(newsFixture).includes("http")).toBe(false);
     expect(newsFixture.dataStatus.message).toContain("não foi gerado por IA");
   });

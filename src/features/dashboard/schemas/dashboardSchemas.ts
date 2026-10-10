@@ -184,7 +184,7 @@ export const apiErrorSchema = z.object({
 
 export const marketFixtureAssetSchema = z.object({
   assetId: z.string().min(1),
-  symbol: z.string().regex(/^DEMO_[A-Z0-9_]+$/),
+  symbol: z.string().regex(/^[A-Z][A-Z0-9_]{1,23}$/),
   name: z.string().min(1),
   region: regionSchema,
   category: rankingCategorySchema,

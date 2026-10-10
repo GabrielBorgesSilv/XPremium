@@ -40,7 +40,7 @@ export function WorkspaceShell({ role, children }: { role: WorkspaceRole; childr
       <main className="xp-main">
         <header className="xp-top">
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <button className="xp-icon-button xp-mobile-menu" aria-label="Abrir menu" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>☰</button>
+            <button className="xp-icon-button xp-mobile-menu" aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>☰</button>
             <div className="xp-crumb">XPremium&nbsp; / &nbsp;<b>{pathname.split("/").filter(Boolean).at(-1) ?? "Dashboard"}</b></div>
           </div>
           <div className="xp-top-actions">

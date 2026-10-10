@@ -111,16 +111,19 @@ describe("ranking de demonstração", () => {
   });
 
   it("não mistura REIT no Brasil nem ativo de outra região", () => {
-    const foreign = marketFixtures.find((asset) => asset.symbol === "DEMO_INTL_REIT_01");
+    const foreign = marketFixtures.find((asset) => asset.region === "INTL" && asset.category === "REAL_ESTATE");
     expect(foreign).toBeDefined();
     if (!foreign) return;
     const ranking = buildRanking(
       [...marketFixtures, { ...foreign, region: "BR", editorialRegion: "BR" }],
       { region: "BR", category: "REAL_ESTATE", period: "30D" },
     );
-    expect(ranking.gainers.concat(ranking.losers).some((row) => row.symbol.includes("REIT"))).toBe(false);
-    expect(ranking.gainers.concat(ranking.losers).every((row) => row.symbol.startsWith("DEMO_BR_FII_"))).toBe(
-      true,
+    const brazilRealEstate = new Set(
+      marketFixtures
+        .filter((asset) => asset.region === "BR" && asset.category === "REAL_ESTATE")
+        .map((asset) => asset.symbol),
     );
+    expect(ranking.gainers.concat(ranking.losers).some((row) => row.symbol === foreign.symbol)).toBe(false);
+    expect(ranking.gainers.concat(ranking.losers).every((row) => brazilRealEstate.has(row.symbol))).toBe(true);
   });
 });

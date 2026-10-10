@@ -1,5 +1,4 @@
 import type { OverviewResponse, Region } from "../domain/types";
-import { DataProvenance } from "./DataProvenance";
 import { MarketIndicatorCard } from "./MarketIndicatorCard";
 
 const REGION_TITLE: Record<Region, string> = {
@@ -10,28 +9,29 @@ const REGION_TITLE: Record<Region, string> = {
 export function MarketOverview({ overview }: { overview: OverviewResponse }) {
   const regions: Region[] = ["BR", "INTL"];
 
+  const groups = regions.map((region) => ({
+    region,
+    indicators: overview.indicators.filter((indicator) => indicator.region === region),
+  }));
+
   return (
-    <section aria-labelledby="panorama-titulo" className="xp-card">
-      <h2 id="panorama-titulo">Panorama</h2>
-      <DataProvenance dataStatus={overview.dataStatus} />
-      <p className="xp-desc">Indicadores ilustrativos. A seleção final do panorama ainda não foi aprovada.</p>
-      {regions.map((region) => {
-        const indicators = overview.indicators.filter((indicator) => indicator.region === region);
-        return (
-          <div key={region}>
-            <h3>{REGION_TITLE[region]}</h3>
-            {indicators.length === 0 ? (
-              <p className="xp-desc">Nenhum indicador de demonstração nesta região.</p>
-            ) : (
-              <div className="xp-grid-stats">
-                {indicators.map((indicator) => (
-                  <MarketIndicatorCard key={indicator.id} indicator={indicator} />
-                ))}
-              </div>
-            )}
-          </div>
-        );
-      })}
+    <section aria-labelledby="panorama-titulo">
+      <h2 id="panorama-titulo" className="xp-block-title">
+        Panorama
+      </h2>
+      <p className="xp-desc">Brasil e exterior no mesmo dia. Os filtros abaixo não alteram estes cartões.</p>
+      {groups.map((group) =>
+        group.indicators.length === 0 ? (
+          <p key={group.region} className="xp-desc">
+            Nenhum indicador em {REGION_TITLE[group.region]}.
+          </p>
+        ) : null,
+      )}
+      <div className="xp-grid-stats">
+        {groups.flatMap((group) =>
+          group.indicators.map((indicator) => <MarketIndicatorCard key={indicator.id} indicator={indicator} />),
+        )}
+      </div>
     </section>
   );
 }

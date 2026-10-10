@@ -30,59 +30,60 @@ describe("interface do dashboard", () => {
     renderDashboard();
 
     expect(screen.getByRole("heading", { name: "Dashboard do Assessor" })).toBeTruthy();
-    expect(screen.getAllByText("DADOS SIMULADOS").length).toBeGreaterThan(0);
-    expect(screen.getByRole("heading", { name: "Indicador demonstrativo Brasil 01" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Indicador demonstrativo internacional 01" })).toBeTruthy();
+    expect(screen.queryByText("DADOS SIMULADOS")).toBeNull();
+    expect(screen.getByRole("heading", { name: "Bolsa Brasil" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Bolsa internacional" })).toBeTruthy();
     expect(screen.getByRole("table", { name: "Altas" })).toBeTruthy();
     expect(screen.getByRole("table", { name: "Baixas" })).toBeTruthy();
-    expect(screen.getByText("DEMO_BR_STOCK_12")).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Notícia demonstrativa 01" })).toBeTruthy();
-    expect(screen.getAllByText("demonstrativo").length).toBeGreaterThan(0);
+    expect(screen.getByText("SOLR3")).toBeTruthy();
+    expect(screen.getByText("Solar do Cerrado")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "O panorama fica fixo enquanto você filtra" })).toBeTruthy();
+    expect(screen.queryByText("demonstrativo")).toBeNull();
     expect(screen.queryByRole("link")).toBeNull();
     expect(document.body.textContent?.toLowerCase().includes("gerado por ia")).toBe(false);
 
     const altas = screen.getByRole("table", { name: "Altas" });
     const altasRows = within(altas).getAllByRole("row").slice(1);
     expect(altasRows).toHaveLength(10);
-    expect(altasRows[0]?.textContent).toContain("DEMO_BR_STOCK_12");
+    expect(altasRows[0]?.textContent).toContain("SOLR3");
     expect(altasRows[0]?.textContent).toContain("BRL");
-    expect(altasRows[0]?.textContent).toContain("Ajustado, demonstração");
+    expect(altasRows[0]?.textContent).toContain("Ajustado");
     expect(within(altas).getByRole("columnheader", { name: "Metodologia" })).toBeTruthy();
     expect(altas.parentElement?.getAttribute("tabindex")).toBe("0");
 
     const baixas = screen.getByRole("table", { name: "Baixas" });
     const baixasRows = within(baixas).getAllByRole("row").slice(1);
     expect(baixasRows).toHaveLength(10);
-    expect(baixasRows[0]?.textContent).toContain("DEMO_BR_STOCK_24");
+    expect(baixasRows[0]?.textContent).toContain("CRIS3");
 
-    expect(screen.queryByText("DEMO_BR_STOCK_25")).toBeNull();
-    expect(screen.queryByText("DEMO_BR_STOCK_26")).toBeNull();
-    expect(screen.queryByText("DEMO_BR_STOCK_27")).toBeNull();
+    expect(screen.queryByText("DUNA3")).toBeNull();
+    expect(screen.queryByText("NUBL3")).toBeNull();
+    expect(screen.queryByText("EULV3")).toBeNull();
     expect(screen.getAllByText(/15\/01\/2026 18:00 UTC/).length).toBeGreaterThan(0);
-    expect(screen.getByRole("heading", { name: "Notícia demonstrativa 03" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Atualizar reaproveita a cotação recente" })).toBeTruthy();
   });
 
   it("troca região e esconde o ranking quando a categoria é renda fixa", () => {
     renderDashboard();
 
     fireEvent.click(screen.getByRole("radio", { name: "Internacional" }));
-    expect(screen.getByText("DEMO_INTL_STOCK_12")).toBeTruthy();
+    expect(screen.getByText("ASTR")).toBeTruthy();
     expect(screen.getByText("USD 112,00")).toBeTruthy();
 
     fireEvent.click(screen.getByRole("radio", { name: "FIIs/REITs" }));
     expect(screen.getByText("REITs no recorte internacional.")).toBeTruthy();
-    expect(screen.queryByText("DEMO_INTL_STOCK_12")).toBeNull();
+    expect(screen.queryByText("ASTR")).toBeNull();
 
     fireEvent.click(screen.getByRole("radio", { name: "Cripto" }));
     expect(screen.getByText("Janela de cálculo contínua de demonstração; não representa pregão.")).toBeTruthy();
-    expect(screen.getAllByText("Não ajustado, demonstração").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Não ajustado").length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole("radio", { name: "Renda fixa" }));
     expect(screen.queryByRole("radio", { name: "1D" })).toBeNull();
     expect(screen.queryByRole("table", { name: "Altas" })).toBeNull();
     expect(screen.queryByRole("table", { name: "Baixas" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Renda fixa" })).toBeTruthy();
-    expect(screen.getByText("Referência soberana demonstrativa INTL 01")).toBeTruthy();
+    expect(screen.getByText("Título soberano 2030")).toBeTruthy();
   });
 
   it("reutiliza o cache de cotações e não altera o preço exibido", () => {
@@ -96,7 +97,7 @@ describe("interface do dashboard", () => {
     act(() => {
       vi.advanceTimersByTime(300);
     });
-    expect(screen.getByText(/preços de demonstração permanecem os mesmos/)).toBeTruthy();
+    expect(screen.getByText(/Os preços permanecem os mesmos/)).toBeTruthy();
     expect(screen.getByRole("table", { name: "Altas" }).textContent).toBe(before);
 
     fireEvent.click(screen.getByRole("button", { name: "Atualizar" }));
@@ -122,16 +123,16 @@ describe("interface do dashboard", () => {
     renderDashboard();
 
     fireEvent.click(screen.getByRole("radio", { name: "Internacional" }));
-    expect(screen.getByRole("heading", { name: "Indicador demonstrativo Brasil 01" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Notícia demonstrativa 01" })).toBeTruthy();
-    expect(screen.getByText("DEMO_INTL_STOCK_12")).toBeTruthy();
-    expect(screen.queryByText("DEMO_BR_STOCK_12")).toBeNull();
+    expect(screen.getByRole("heading", { name: "Bolsa Brasil" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "O panorama fica fixo enquanto você filtra" })).toBeTruthy();
+    expect(screen.getByText("ASTR")).toBeTruthy();
+    expect(screen.queryByText("SOLR3")).toBeNull();
 
     fireEvent.click(screen.getByRole("radio", { name: "Renda fixa" }));
-    expect(screen.getByRole("heading", { name: "Indicador demonstrativo internacional 01" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Notícia demonstrativa 02" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Bolsa internacional" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Altas e baixas seguem o recorte escolhido" })).toBeTruthy();
     expect(screen.queryByRole("table", { name: "Altas" })).toBeNull();
-    expect(screen.getAllByText("demonstrativo").length).toBeGreaterThan(0);
+    expect(screen.queryByText("DADOS SIMULADOS")).toBeNull();
   });
 
   it("isola falha de uma seção sem apagar as outras", () => {
@@ -146,8 +147,8 @@ describe("interface do dashboard", () => {
     );
     expect(screen.getByRole("alert").textContent).toBe("Notícias indisponíveis.");
     expect(screen.getByRole("table", { name: "Altas" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Indicador demonstrativo Brasil 01" })).toBeTruthy();
-    expect(screen.queryByRole("heading", { name: "Notícia demonstrativa 01" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "Bolsa Brasil" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "O panorama fica fixo enquanto você filtra" })).toBeNull();
     unmount();
 
     render(
@@ -162,7 +163,7 @@ describe("interface do dashboard", () => {
     expect(screen.getByText("Panorama indisponível.")).toBeTruthy();
     expect(screen.getByText("Rankings indisponíveis.")).toBeTruthy();
     expect(screen.queryByRole("table", { name: "Altas" })).toBeNull();
-    expect(screen.getByRole("heading", { name: "Notícia demonstrativa 01" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "O panorama fica fixo enquanto você filtra" })).toBeTruthy();
     expect(screen.getByRole("radio", { name: "Ações" })).toBeTruthy();
   });
 });

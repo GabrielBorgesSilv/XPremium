@@ -1,21 +1,19 @@
 import { DashboardShell } from "@/features/dashboard/components/DashboardShell";
-import { fixedIncomeFixtures } from "@/features/dashboard/fixtures/fixedIncome.fixture";
-import { marketFixtures, overviewFixture } from "@/features/dashboard/fixtures/market.fixture";
-import { loadDashboardNews } from "@/features/dashboard/services/newsService";
+import { loadDashboardView } from "@/features/dashboard/services/dashboardService";
 
 /**
- * A página usa o guard pendente nas rotas e a porta local de notícias.
+ * A página pede a visão aos provedores locais.
  * requireAssessor e GET /api/dashboard/news ainda não existem nos módulos 1 e 5.
  */
 export default async function AssessorDashboardPage() {
-  const news = await loadDashboardNews();
+  const view = await loadDashboardView();
 
   return (
     <DashboardShell
-      overview={overviewFixture}
-      assets={marketFixtures}
-      fixedIncome={fixedIncomeFixtures}
-      news={news}
+      overview={view.overview}
+      assets={view.assets}
+      fixedIncome={view.fixedIncome}
+      news={view.news}
     />
   );
 }

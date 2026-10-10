@@ -34,6 +34,6 @@ export function decideQuoteRefresh(
     requestedAt,
     cacheUntil: nextExpiry,
     message:
-      "Conjunto simulado relido. Os preços de demonstração permanecem os mesmos. O cache de cotações vale 15 minutos.",
+      "Cotações relidas. Os preços permanecem os mesmos. O cache de cotações vale 15 minutos.",
   };
 }

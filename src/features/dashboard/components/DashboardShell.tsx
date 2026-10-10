@@ -14,7 +14,6 @@ import {
   type Region,
 } from "../domain/types";
 import { getFixedIncome } from "../services/fixedIncomeService";
-import { DataProvenance, SimulatedChip } from "./DataProvenance";
 import { FixedIncomePanel } from "./FixedIncomePanel";
 import { LoadingErrorEmpty } from "./LoadingErrorEmpty";
 import { MarketFilters } from "./MarketFilters";
@@ -75,25 +74,52 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
     }, REFRESH_FEEDBACK_MS);
   }
 
+  const marketPanel = income ? (
+    sectionErrors?.fixedIncome ? (
+      <LoadingErrorEmpty state="error" title="Renda fixa indisponível." />
+    ) : (
+      <FixedIncomePanel data={income} />
+    )
+  ) : sectionErrors?.rankings ? (
+    <LoadingErrorEmpty state="error" title="Rankings indisponíveis." />
+  ) : ranking ? (
+    <section aria-labelledby="rankings-titulo" className="xp-card">
+      <div>
+        <h2 id="rankings-titulo">Rankings</h2>
+        {methodologyNote ? <p className="xp-desc">{methodologyNote}</p> : null}
+        <p className="xp-desc">
+          {ranking.coverage.status === "PARTIAL"
+            ? "Lista parcial deste recorte."
+            : `Até 10 altas e 10 baixas. Neste recorte: ${ranking.gainers.length} altas e ${ranking.losers.length} baixas.`}
+        </p>
+      </div>
+      {ranking.gainers.length === 0 && ranking.losers.length === 0 ? (
+        <LoadingErrorEmpty state="empty" title="Nenhum ativo elegível neste filtro." />
+      ) : (
+        <div className="xp-stack">
+          <RankingTable title="Altas" rows={ranking.gainers} />
+          <RankingTable title="Baixas" rows={ranking.losers} />
+        </div>
+      )}
+    </section>
+  ) : null;
+
   return (
-    <div className="xp-stack">
+    <>
       <header className="xp-head">
         <div>
           <div className="xp-kicker">VISÃO DO ASSESSOR</div>
           <h1>Dashboard do Assessor</h1>
           <p>
-            Referência {formatTimestamp(overview.dataStatus.asOf)}. Obtido em{" "}
-            {formatTimestamp(overview.dataStatus.fetchedAt)}. Cenário fictício.
+            Panorama, rankings e notícias para a conversa com o cliente. Referência{" "}
+            {formatTimestamp(overview.dataStatus.asOf)}.
           </p>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
-          <SimulatedChip />
-          <button type="button" onClick={refresh} disabled={refreshing} aria-busy={refreshing} className="xp-btn">
-            {refreshing ? "Atualizando…" : "Atualizar"}
-          </button>
-        </div>
+        <button type="button" onClick={refresh} disabled={refreshing} aria-busy={refreshing} className="xp-btn lime">
+          {refreshing ? "Atualizando…" : "Atualizar"}
+        </button>
       </header>
-      {refreshing ? <LoadingErrorEmpty state="loading" title="Atualizando cotações de demonstração." /> : null}
+      {refreshing ? <LoadingErrorEmpty state="loading" title="Atualizando cotações." /> : null}
       {notice ? (
         <p role="status" className="xp-desc">
           {notice.message} Pedido em {formatTimestamp(notice.requestedAt)}.
@@ -114,47 +140,14 @@ export function DashboardShell({ overview, assets, fixedIncome, news, sectionErr
         onPeriod={setPeriod}
       />
 
-      {income ? (
-        sectionErrors?.fixedIncome ? (
-          <LoadingErrorEmpty state="error" title="Renda fixa indisponível." />
+      <div className="xp-columns">
+        <div className="xp-stack">{marketPanel}</div>
+        {sectionErrors?.news ? (
+          <LoadingErrorEmpty state="error" title="Notícias indisponíveis." />
         ) : (
-          <FixedIncomePanel data={income} />
-        )
-      ) : null}
-
-      {sectionErrors?.rankings ? (
-        <LoadingErrorEmpty state="error" title="Rankings indisponíveis." />
-      ) : ranking ? (
-        <section aria-labelledby="rankings-titulo" className="xp-card">
-          <div>
-            <h2 id="rankings-titulo">Rankings</h2>
-            <DataProvenance dataStatus={ranking.dataStatus} />
-            {methodologyNote ? <p className="xp-desc">{methodologyNote}</p> : null}
-            <p className="xp-desc">
-              {ranking.coverage.status === "PARTIAL"
-                ? "Cobertura parcial"
-                : "Cobertura do universo de demonstração"}
-              . Elegíveis: {ranking.coverage.eligibleCount}. Analisados: {ranking.coverage.analyzedCount}. Altas
-              exibidas: {ranking.gainers.length}. Baixas exibidas: {ranking.losers.length}.
-            </p>
-            <p className="xp-desc">{ranking.coverage.description}</p>
-          </div>
-          {ranking.gainers.length === 0 && ranking.losers.length === 0 ? (
-            <LoadingErrorEmpty state="empty" title="Nenhum ativo elegível neste filtro." />
-          ) : (
-            <div className="xp-stack">
-              <RankingTable title="Altas" rows={ranking.gainers} />
-              <RankingTable title="Baixas" rows={ranking.losers} />
-            </div>
-          )}
-        </section>
-      ) : null}
-
-      {sectionErrors?.news ? (
-        <LoadingErrorEmpty state="error" title="Notícias indisponíveis." />
-      ) : (
-        <NewsPreview news={news} />
-      )}
-    </div>
+          <NewsPreview news={news} />
+        )}
+      </div>
+    </>
   );
 }

@@ -257,7 +257,7 @@ export const DEMO_AS_OF = "2026-01-15T18:00:00.000Z";
 export const DEMO_FETCHED_AT = "2026-01-15T18:00:00.000Z";
 export const DEMO_QUOTE_EXPIRES_AT = "2026-01-15T18:15:00.000Z";
 export const DEMO_REFERENCE_DATE = "2026-01-15";
-export const DEMO_NEWS_SOURCE = "Conteúdo demonstrativo";
+export const DEMO_NEWS_SOURCE = "Guia do painel";
 export const DEMO_ELIGIBILITY_NOTE =
   "Limite de liquidez não aprovado; liquidityMetric é atributo de demonstração e não aplica threshold.";
 export const DEMO_PRICE_METHODOLOGY =
