@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { MarketRadar, type MarketRadarProps } from "@/shared/ui/market-radar";
 
 type Role = "assessor" | "cliente";
-
 const positions = [
   ["Tesouro IPCA+ 2029", "Renda fixa", "R$ 420.500", "+11,2%", "Ativo"],
   ["CDB Banco XP · 2027", "Renda fixa", "R$ 315.000", "+10,8%", "Ativo"],
@@ -49,4 +49,8 @@ export function Dashboard({ role, userName }: { role: Role; userName?: string })
 
 export function ModulePage({ title, description }: { title: string; description: string }) {
   return <><div className="xp-head"><div><div className="xp-kicker">GESTÃO PATRIMONIAL</div><h1>{title}</h1><p>{description}</p></div><button className="xp-btn lime" type="button">＋ Adicionar</button></div><section className="xp-card"><h2>{title} em acompanhamento</h2><p className="xp-desc">Dados demonstrativos do protótipo</p><Positions/></section></>;
+}
+
+export function DashboardAssessoria({ news, alerts, investments, userName }: MarketRadarProps & { userName: string }) {
+  return <><Heading role="assessor" userName={userName}/><MarketRadar news={news} alerts={alerts} investments={investments}/><Stats role="assessor"/><div className="xp-columns"><section className="xp-card"><h2>Evolução patrimonial</h2><p className="xp-desc">Patrimônio consolidado · últimos 8 meses</p><Chart/></section><section className="xp-card"><h2>Alocação da carteira</h2><p className="xp-desc">Distribuição da carteira</p><Allocation/></section></div><div className="xp-columns"><section className="xp-card"><h2>Investimentos em destaque</h2><p className="xp-desc">Posições com melhor acompanhamento</p><Positions/></section><section className="xp-card"><h2>Agenda compartilhada</h2><p className="xp-desc">Próximos compromissos assessor ↔ cliente</p><Events role="assessor"/></section></div></>;
 }
