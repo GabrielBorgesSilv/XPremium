@@ -1,3 +1,5 @@
+import { ModulePage } from "@/shared/ui/dashboard";
+
 export default function AtivosPage() {
-  return <h2 className="text-lg font-medium">Meus ativos</h2>;
+  return <ModulePage title="Investimentos" description="Visão consolidada das posições acompanhadas." />;
 }
