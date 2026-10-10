@@ -11,3 +11,6 @@ export { listarMetricas } from "./metricas/service";
 export type { Metricas } from "./metricas/schema";
 export { listarProspeccao } from "./prospeccao/service";
 export type { Prospeccao } from "./prospeccao/schema";
+
+// Só para desenvolvimento: chamado por scripts/db/seed.ts.
+export { semearAssessor } from "./seed";

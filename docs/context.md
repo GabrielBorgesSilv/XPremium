@@ -57,7 +57,7 @@ Perfil + patrimônio + insights ──▶ módulo assessor ──▶ gestão, m�
 
 ## Questões em aberto
 
-- Stack: Next.js full-stack (TypeScript + React) com SQLite/Drizzle no MVP. Definir se o banco de produção será Postgres.
+- Banco: decidido SQLite/Drizzle no MVP (10/10/2026), com dados sintéticos gerados por seed e estrutura alterada via `db:push`; Supabase/Postgres descartado por ora. Em aberto: onde hospedar a demo (SQLite não roda em hospedagem serverless) e se haverá banco de produção.
 - Provedor de Open Finance (agregador vs. integração direta) e escopo de dados no MVP.
 - Qual(is) API(s) de notícias e LLM usar nos agents.
 - Critérios do benchmark de prospecção (quais atributos comparar).

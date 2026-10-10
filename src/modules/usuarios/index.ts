@@ -7,3 +7,6 @@ export { listarAuth } from "./auth/service";
 export type { Auth } from "./auth/schema";
 export { listarPerfis } from "./perfis/service";
 export type { Perfis } from "./perfis/schema";
+
+// Só para desenvolvimento: chamado por scripts/db/seed.ts.
+export { semearUsuarios } from "./seed";

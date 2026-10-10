@@ -39,6 +39,8 @@ Fluxo no GitHub, usado por toda a equipe: cada funcionalidade ou correção tem 
 - `src/core/` é só infraestrutura (env, db, llm); `src/shared/` não tem regra de negócio. Nenhum dos dois importa `src/modules`.
 - Submódulos seguem o padrão `service.ts` (regra de negócio, com `import "server-only"`), `schema.ts` (Zod) e `db.ts` (tabelas Drizzle).
 - Novo submódulo: crie a pasta com esses arquivos e exporte o que for público no `index.ts` do módulo.
+- Banco de desenvolvimento: SQLite local. Mudou um `db.ts`, rode `npm run db:reset` (push + seed); não crie migrations durante o hackathon.
+- Dados sintéticos de cada módulo ficam em `src/modules/<modulo>/seed.ts` (`semear<Modulo>`, exportado no `index.ts`), usando o `Aleatorio` recebido (`@/shared/aleatorio`), nunca `Math.random`, para que o banco gerado seja igual para toda a equipe.
 - Prefira Server Components e Server Actions; use `"use client"` só quando precisar de interatividade.
 
 ## Código
