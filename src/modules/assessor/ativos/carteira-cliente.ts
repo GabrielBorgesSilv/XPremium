@@ -118,6 +118,10 @@ export type PontoDeAtencao = {
   titulo: string;
   detalhe: string;
   ticker?: string;
+  /** Só em NOTICIA: títulos das notícias, sem números (usados na mensagem de WhatsApp). */
+  noticias?: string[];
+  /** Só em FGC: emissor dos títulos (usado na mensagem de WhatsApp). */
+  emissor?: string;
 };
 
 const ORDEM_SEVERIDADE: Record<Severidade, number> = { ALTA: 0, MEDIA: 1, INFO: 2 };
@@ -148,12 +152,14 @@ export function pontosDeAtencao(
             tipo: "FGC",
             severidade: "ALTA",
             titulo: `Acima da garantia do FGC no ${e.emissor}`,
+            emissor: e.emissor,
             detalhe: `${formatarMoeda(e.valorCoberto)} em títulos cobertos (${e.tickers.join(" + ")}): ${formatarMoeda(e.descoberto)} sem cobertura.`,
           }
         : {
             tipo: "FGC",
             severidade: "MEDIA",
             titulo: `Perto do limite do FGC no ${e.emissor}`,
+            emissor: e.emissor,
             detalhe: `${formatarMoeda(e.valorCoberto)} em títulos cobertos (${e.tickers.join(" + ")}).`,
           },
     );
@@ -172,6 +178,7 @@ export function pontosDeAtencao(
         titulo: `Notícia com possível impacto ${TEXTO_DIRECAO[alerta.direcao]} em ${ticker}`,
         detalhe: `${peso}${alerta.impactos.map((i) => tituloDaNoticia(i.noticiaId)).join("; ")}`,
         ticker,
+        noticias: alerta.impactos.map((i) => tituloDaNoticia(i.noticiaId)),
       });
     }
 
