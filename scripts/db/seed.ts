@@ -3,11 +3,12 @@
  * Cada módulo gera os próprios dados em src/modules/<modulo>/seed.ts.
  * Assume tabelas vazias; para recomeçar do zero use npm run db:reset.
  */
-import { semearAssessor } from "@/modules/assessor";
-import { semearCliente } from "@/modules/cliente";
-import { semearIntegracoes } from "@/modules/integracoes";
-import { semearUsuarios } from "@/modules/usuarios";
 import { criarAleatorio } from "@/shared/aleatorio";
+
+import { semearAssessor } from "@/modules/assessor/seed";
+import { semearCliente } from "@/modules/cliente/seed";
+import { semearIntegracoes } from "@/modules/integracoes/seed";
+import { semearUsuarios } from "@/modules/usuarios/seed";
 
 const SEMENTE_PADRAO = 42;
 
