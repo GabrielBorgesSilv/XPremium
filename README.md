@@ -3,7 +3,7 @@
 Hub centralizado que conecta **cliente** e **assessor** de investimentos da XP.
 
 - **Cliente**: faz a anamnese e conecta suas contas via Open Finance para administrar todos os seus ativos e investimentos em um só lugar.
-- **Assessor**: gerencia e se relaciona com seus clientes, acompanha métricas e prospecta novos clientes com base em benchmark, apoiado por agents de IA que trazem dados bancários e notícias de mercado.
+- **Assessor**: gerencia e se relaciona com seus clientes, acompanha métricas e o mercado ligado às carteiras, apoiado por agents de IA que trazem dados bancários e notícias de mercado.
 
 Contexto completo do produto: [`docs/context.md`](docs/context.md).
 
@@ -23,7 +23,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 | Módulo | Tipo | Submódulos |
 |---|---|---|
 | `cliente` | primordial | `anamnese`, `open-finance`, `patrimonio` |
-| `assessor` | primordial | `clientes`, `ativos`, `metricas`, `prospeccao` |
+| `assessor` | primordial | `clientes`, `ativos`, `metricas` |
 | `usuarios` | suporte | `auth`, `perfis` |
 | `agenda` | suporte | `reunioes` (reuniões assessor ↔ cliente; usado pelas duas áreas) |
 | `integracoes` | suporte | `bancos`, `noticias`, `agents` |
@@ -37,7 +37,7 @@ Cliente ──▶ /cliente  ──▶ [cliente] ──┐
 ├── src/
 │   ├── app/                   # rotas Next: UI e API (camada fina, sem regra de negócio)
 │   │   ├── cliente/           # anamnese, open-finance, patrimonio
-│   │   ├── assessor/          # clientes, ativos, metricas, prospeccao
+│   │   ├── assessor/          # clientes, ativos, metricas
 │   │   └── api/               # route handlers (ex.: /api/health)
 │   ├── modules/
 │   │   ├── cliente/

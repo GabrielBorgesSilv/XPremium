@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Hub XP: produto que conecta **cliente** (anamnese + Open Finance para consolidar investimentos) e **assessor** (gestão de clientes, ativos, métricas e prospecção), com agents de IA para dados bancários e notícias. Contexto completo em `docs/context.md`; visão técnica em `README.md`.
+Hub XP: produto que conecta **cliente** (anamnese + Open Finance para consolidar investimentos) e **assessor** (ferramenta de trabalho para atender clientes XP: clientes, ativos, métricas, mercado e agenda), com agents de IA para dados bancários e notícias. Contexto completo em `docs/context.md`; visão técnica em `README.md`.
 
 ## Git e branches (OBRIGATÓRIO)
 

@@ -60,5 +60,3 @@ export type {
 } from "./ativos/schema";
 export { listarMetricas } from "./metricas/service";
 export type { Metricas } from "./metricas/schema";
-export { listarProspeccao } from "./prospeccao/service";
-export type { Prospeccao } from "./prospeccao/schema";
