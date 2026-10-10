@@ -7,6 +7,12 @@ Hub centralizado para a XP que conecta **cliente** e **assessor** de investiment
 - **Cliente**: principal benefício é **administrar seus investimentos** em um só lugar, consolidando ativos de diferentes instituições.
 - **Assessor**: principal benefício é **gerenciar e se relacionar com seus clientes**, com dados e insights para embasar recomendações.
 
+### Objetivo maior
+
+Aumentar a base de clientes e o patrimônio sob custódia da XP. Investidores de dentro e de fora da XP conectam suas outras instituições pelo **Open Finance** (com consentimento explícito) e recebem uma **visão consolidada do patrimônio** e um **atendimento de assessor que já conhece a situação deles**. Para a XP, esses dados **enriquecem a base** e qualificam a abordagem, gerando mais conversão, captação, cross-sell e produtividade do assessor.
+
+Análise de viabilidade e mercado: `docs/analise-negocio.md`.
+
 ## Arquitetura
 
 **Modular monolith**: uma única aplicação/deploy, dividida em módulos com fronteiras bem definidas (cada módulo é dono dos seus dados e expõe uma interface pública; módulos não acessam o interior uns dos outros).
@@ -64,6 +70,14 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 | Data | Decisão | Substitui |
 |---|---|---|
 | 10/10/2026 | Slogan: **"Estratégias exclusivas, resultados de alto nível."** | "Seu patrimônio. Suas escolhas." (protótipo de UI) |
+| 10/10/2026 | Objetivo maior: enriquecer a base da XP com novos clientes e com o patrimônio que está fora, via Open Finance, para abordagem personalizada e mais vendas | Hub só de consolidação para o cliente |
+| 10/10/2026 | Públicos: prospects (não clientes XP), clientes XP com patrimônio fora e clientes de assessores parceiros | — |
+| 10/10/2026 | Valor para o investidor: visão consolidada e atendimento personalizado de assessor; **gratuito** | Plano premium |
+| 10/10/2026 | Dados do Open Finance: investimentos, contas e saldos, cartão e crédito, cadastro (com minimização por finalidade) | Só investimentos |
+| 10/10/2026 | Consentimento único (consolidação + atendimento por assessor), claro e restrito à assessoria; marketing em massa e repasse ficam fora; validar com o jurídico | Dois consentimentos separados |
+| 10/10/2026 | Relacionamento: assessor da XP → lead e relacionamento da XP; escritório parceiro → do escritório (dados usados dentro da plataforma XP, sem exportação) | — |
+| 10/10/2026 | Diferenciais: assessor humano + dados; prospecção com benchmark | IA dos agents e ecossistema XP como diferenciais principais |
+| 10/10/2026 | Métricas: captação líquida/AuC, conversão de leads, produtividade do assessor, cross-sell e ticket médio | — |
 
 ### Banco de dados
 
@@ -146,6 +160,7 @@ Registro das decisões tomadas, com data, alternativas consideradas e motivo.
 
 ## Questões em aberto
 
+- Negócio (ver `docs/analise-negocio.md`, seção 12): receita da XP por real sob custódia, texto do consentimento com o jurídico, regra do BC para parceiros (1x1x1) e AAIs, integração com o Open Finance/HUB que a XP já tem, metas do piloto.
 - Limite de tentativas de login e de pedidos de recuperação de senha (sem limite no MVP).
 - Serviço de envio de e-mail (hoje o link de redefinição só aparece no terminal em desenvolvimento).
 - Depois da demo: mover `src/features/dashboard` para `src/modules` (nomes em kebab-case/português) e unificar os tipos de ativo/cotação do M2 (`Category`, `Period`, `DataOrigin`, `Money`, `QuotePoint`) com os do M4 (`Categoria`, `Periodo`, `OrigemDado`, `Moeda`, `Cotacao`).
